@@ -10,6 +10,9 @@
 \usepackage{graphicx}
 \usepackage{syntax}
 
+\usepackage[numbers,round]{natbib}
+\bibliographystyle{alphadin}
+
 \title{Verifikation von GALS Systemen}
 \author{Henning Günther}
 
@@ -23,6 +26,10 @@
 \input{gals}
 \chapter{GTL -- GALS Translation Language}
 \input{language}
+\input{ltl-translation}
 \input{translation-c}
+\input{translation-scade}
+
+\bibliography{lit}
 
 \end{document}
