@@ -1,1 +1,31 @@
 \section{GALS-Architekturen}
+Ein GALS System -- GALS steht für "`Globally asynchronous, locally synchronous"' -- besteht aus mehreren synchronen Komponenten, die asynchron miteinander kommunizieren.
+Formal kann ein synchrones System $\alpha$ vollständig als ein 4-Tupel
+\[ \alpha = (I,O,S,t,f) \]
+mit den folgenden Komponenten beschrieben werden ($V$ sei hier die Menge aller möglichen Variablen):
+\begin{itemize}
+\item Eine Menge von Eingabevariablen $I\subseteq V$, also beispielsweise $I=\{x,y\}$, wenn ein System mit zwei Eingabevariablen spezifiziert werden soll.
+\item Eine Menge von Ausgabevariablen $O\subseteq V$.
+\item Die Zustandsmenge $S$, die alle möglichen internen Zustände des Systems darstellt.
+\item Einer Zuordnungsfunktion $t : I\cup O\rightarrow {Set}$ die jeder Variable einen Typen zuordnet.
+\item Der eigentlichen Auswertungsfunktion $f : S\times \left(\prod_{v\in I} t(v)\right)\rightarrow S\times\left(\prod_{v\in O} t(v)\right)$, die also jeder Kombination aus Eingaben und internen Zuständen eine Ausgabe und einen neuen Zustand zuordnet.
+\end{itemize}
+Aus dieser Definition ergibt sich also, dass synchrone Komponenten deterministisch sind, also bei gleichem internen Zustand und gleicher Eingabe immer die gleiche Ausgabe produzieren.
+
+Ein GALS-System $\gamma$ lässt sich mit dieser Definition darstellen als ein Tupel der Form
+\[ \gamma = (\mathcal{A},\mathcal{C}) \]
+wobei die Komponenten folgende Bedeutung haben:
+\begin{itemize}
+\item $\mathcal{A}$ ist eine Menge von synchronen Komponenten.
+\item Die Relation $\mathcal{C}\subseteq V\times V$ gibt an, welche Ausgangsvariablen mit welchen Eingangsvariablen verknüpft sind.
+\end{itemize}
+
+\subsection{Semantik}
+Diese Defintionen geben natürlich noch keinen Aufschluss über die Interpretationsweise der so spezifizierten GALS-Systeme.
+Sie geben lediglich Aufschluss über die Verknüpfung der einzelnen synchronen Komponenten, nicht aber über deren Ausführungsweise.
+Tatsächlich bieten sich eine Vielzahl von Möglichkeiten an, ein gegebenes GALS-System auszuführen.
+Einige davon sollen hier vorgestellt werden.
+
+\subsubsection{Synchrone Ausführung}
+Es ist möglich, ein GALS-System als ein synchrones System zu interpretieren, in dem alle Komponenten gleichzeitig ihre Berechnungsschritte ausführen.
+%BLA BLA BLA
