@@ -8,36 +8,39 @@ Um ein zu verifizierendes GALS-Modell vollständig zu definieren müssen die fol
 \item Die zu verifizierende Eigenschaft in Form einer LTL Formel über die Variablen der einzelnen Komponenten.
 \end{itemize}
 
-\begin{grammar}
-  <declaration> ::= `model' `[' <id> `]' <id> `(' (<argument> (`,' <argument>)*)? `)' <model_contract>
-  \alt `connect' <id> `.' <id> <id> `.' <id> `;'
-  \alt `verify' `{' (<formula> `;')* `}'
-
-  <model_contract> ::= `{' (<formula> `;')* `}'
-  \alt `;'
-
-  <formula> ::= <lit> `<' <lit>
-  \alt <lit> `>' <lit>
-  \alt <lit> `<=' <lit>
-  \alt <lit> `>=' <lit>
-  \alt <lit> `=' <lit>
-  \alt <id> `in' `{' (<lit> (`,' <lit>)*)? `}'
-  \alt `not' <formula>
-  \alt <formula> `and' <formula>
-  \alt <formula> `or' <formula>
-  \alt <formula> `follows' <formula>
-  \alt `always' <formula>
-  \alt `next' <formula>
-  \alt `(' <formula> `)'
-
-  <lit> ::= <int>
-  \alt <id>
-  \alt <id> `.' <id>
-  
-  <id> ::= (`a'-`z' `A'-`Z' `0'-`9')+
-
-  <int> ::= (`0'-`9')+
-\end{grammar}
+\begin{figure}
+  \begin{grammar}
+    <declaration> ::= `model' `[' <id> `]' <id> `(' (<argument> (`,' <argument>)*)? `)' <model_contract>
+    \alt `connect' <id> `.' <id> <id> `.' <id> `;'
+    \alt `verify' `{' (<formula> `;')* `}'
+    
+    <model_contract> ::= `{' (<formula> `;')* `}'
+    \alt `;'
+    
+    <formula> ::= <lit> `<' <lit>
+    \alt <lit> `>' <lit>
+    \alt <lit> `<=' <lit>
+    \alt <lit> `>=' <lit>
+    \alt <lit> `=' <lit>
+    \alt <id> `in' `{' (<lit> (`,' <lit>)*)? `}'
+    \alt `not' <formula>
+    \alt <formula> `and' <formula>
+    \alt <formula> `or' <formula>
+    \alt <formula> `follows' <formula>
+    \alt `always' <formula>
+    \alt `next' <formula>
+    \alt `(' <formula> `)'
+    
+    <lit> ::= <int>
+    \alt <id>
+    \alt <id> `.' <id>
+    
+    <id> ::= (`a'-`z' `A'-`Z' `0'-`9')+
+    
+    <int> ::= (`0'-`9')+
+  \end{grammar}
+  \caption{GTL Grammatik}
+\end{figure}
 
 \begin{tikzpicture}
   \node[draw] (promela) at (1.5,1) {Promela};
@@ -61,14 +64,3 @@ Um ein zu verifizierendes GALS-Modell vollständig zu definieren müssen die fol
   \draw[->,blue] (promela) -- (verifier);
 \end{tikzpicture}
 
-\begin{tikzpicture}
-  \node[draw] (gtl) at (0,2) {GTL};
-  \node[draw] (scade) at (3,2) {Scade};
-  \node[draw] (promela) at (0,1) {Promela};
-  \node[draw] (c) at (3,1) {C};
-  \node[draw] (verifier) at (1.5,0) {Verifier};
-  \draw[->,blue] (gtl) -- (promela);
-  \draw[->,blue] (scade) -- (c);
-  \draw[->,blue] (promela) |- (verifier);
-  \draw[->,blue] (c) |- (verifier);
-\end{tikzpicture}

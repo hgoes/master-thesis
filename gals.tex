@@ -10,11 +10,11 @@ mit den folgenden Komponenten beschrieben werden ($V$ sei hier die Menge aller m
 \item Einer Zuordnungsfunktion $t : I\cup O\rightarrow {Set}$ die jeder Variable einen Typen zuordnet.
 \item Der eigentlichen Auswertungsfunktion $f : S\times \left(\prod_{v\in I} t(v)\right)\rightarrow S\times\left(\prod_{v\in O} t(v)\right)$, die also jeder Kombination aus Eingaben und internen Zuständen eine Ausgabe und einen neuen Zustand zuordnet.
 \end{itemize}
-Aus dieser Definition ergibt sich also, dass synchrone Komponenten deterministisch sind, also bei gleichem internen Zustand und gleicher Eingabe immer die gleiche Ausgabe produzieren.
+Aus dieser Definition ergibt sich, dass synchrone Komponenten deterministisch sind, also bei gleichem internen Zustand und gleicher Eingabe immer die gleiche Ausgabe produzieren.
 
-Ein GALS-System $\gamma$ lässt sich mit dieser Definition darstellen als ein Tupel der Form
+Mit dieser Definition lässt sich ein GALS-System $\gamma$ als ein Tupel der Form
 \[ \gamma = (\mathcal{A},\mathcal{C}) \]
-wobei die Komponenten folgende Bedeutung haben:
+darstellen, wobei die Komponenten folgende Bedeutung haben:
 \begin{itemize}
 \item $\mathcal{A}$ ist eine Menge von synchronen Komponenten.
 \item Die Relation $\mathcal{C}\subseteq V\times V$ gibt an, welche Ausgangsvariablen mit welchen Eingangsvariablen verknüpft sind.
@@ -22,10 +22,15 @@ wobei die Komponenten folgende Bedeutung haben:
 
 \subsection{Semantik}
 Diese Defintionen geben natürlich noch keinen Aufschluss über die Interpretationsweise der so spezifizierten GALS-Systeme.
-Sie geben lediglich Aufschluss über die Verknüpfung der einzelnen synchronen Komponenten, nicht aber über deren Ausführungsweise.
+Sie geben lediglich Aufschluss über die Verknüpfung der einzelnen synchronen Komponenten, nicht aber über deren Ausführung.
 Tatsächlich bieten sich eine Vielzahl von Möglichkeiten an, ein gegebenes GALS-System auszuführen.
 Einige davon sollen hier vorgestellt werden.
 
 \subsubsection{Synchrone Ausführung}
 Es ist möglich, ein GALS-System als ein synchrones System zu interpretieren, in dem alle Komponenten gleichzeitig ihre Berechnungsschritte ausführen.
-%BLA BLA BLA
+\subsection{Vollständig asynchrones System}
+In der vollständig asynchronenen Semantik können Komponenten zu jedem Zeitpunkt, unabhängig von dem Ausführungsstand der anderen, einen Schritt ausführen.
+Das bedeutet also, dass auch Extremfälle wie der, bei dem nur eine Komponente die gesamte Zeit Schritte ausführt, berücksichtigt werden.
+Diese Semantik deckt zwar jede Ausführungsreihenfolge der Komponenten ab, ist aber nicht unbedingt realistisch.
+\subsection{Asynchone Ausführung mit Schranken}
+Um die Probleme der vollständig asynchronen Ausführung zu umgehen kann man die Asynchronität soweit begrenzen, dass die Anzahl der ausgeführten Schritte nie um mehr als einen festen Wert divergiert.

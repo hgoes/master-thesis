@@ -1,4 +1,20 @@
 \section{Promela-C-Integration}
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \node[draw] (gtl) at (0,2) {GTL};
+    \node[draw] (scade) at (3,2) {Scade};
+    \node[draw] (promela) at (0,1) {Promela};
+    \node[draw] (c) at (3,1) {C};
+    \node[draw] (verifier) at (1.5,0) {Verifier};
+    \draw[->,blue] (gtl) -- (promela);
+    \draw[->,blue] (scade) -- (c);
+    \draw[->,blue] (promela) |- (verifier);
+    \draw[->,blue] (c) |- (verifier);
+  \end{tikzpicture}
+  \caption{Simulation durch C-Integration von Promela}
+\end{figure}
+
 Diese Übersetzungsmethode führt keine Optimierungen oder Abstraktionen durch, sondern simuliert das Modell exakt so, wie durch die Spezifikation angegeben.
 Die Kontrakte für die synchronen Komponenten werden also ignoriert.
 
