@@ -38,3 +38,37 @@ Um ein zu verifizierendes GALS-Modell vollständig zu definieren müssen die fol
 
   <int> ::= (`0'-`9')+
 \end{grammar}
+
+\begin{tikzpicture}
+  \node[draw] (promela) at (1.5,1) {Promela};
+  \node[draw] (gtl) at (0,2) {GTL};
+  \node[draw] (scade) at (3,2) {Scade};
+  \node[draw] (verifier) at (1.5,0) {Verifier};
+  \draw[->,blue] (scade) |- (promela);
+  \draw[->,blue] (gtl) |- (promela);
+  \draw[->,blue] (promela) -- (verifier);
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \node[draw] (gtl) at (0,2) {GTL};
+  \node[draw] (scade) at (3,2) {Scade};
+  \node[draw] (promela) at (0,1) {Promela};
+  \node[draw] (testnode) at (3,1) {Scade Testnode};
+  \node[draw] (verifier) at (0,0) {Verifier};
+  \draw[->,blue] (gtl) -- (promela);
+  \draw[->,blue] (scade) -- (testnode);
+  \draw[->,blue] (gtl) -- (testnode);
+  \draw[->,blue] (promela) -- (verifier);
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \node[draw] (gtl) at (0,2) {GTL};
+  \node[draw] (scade) at (3,2) {Scade};
+  \node[draw] (promela) at (0,1) {Promela};
+  \node[draw] (c) at (3,1) {C};
+  \node[draw] (verifier) at (1.5,0) {Verifier};
+  \draw[->,blue] (gtl) -- (promela);
+  \draw[->,blue] (scade) -- (c);
+  \draw[->,blue] (promela) |- (verifier);
+  \draw[->,blue] (c) |- (verifier);
+\end{tikzpicture}
