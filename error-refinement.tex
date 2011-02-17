@@ -16,3 +16,28 @@ Um nun herauszufinden, welche konkreten Fehlerspuren das spezifizierte System nu
 Diesmal wird das echte Systemverhalten als Grundlage herangezogen, wobei aber das Verhalten auf die Spuren begrenzt wird, die durch die Fehlerspur angegeben werden.
 Meldet die Verifikation des so eingegrenzten Systems ebenfalls einen Fehler, so erhält man nicht nur die Bestätigung, dass die vorher erzeugte Fehlerspur echt ist, sondern auch ein konkretes Systemverhalten, dass zu einem Fehler führt.
 Zeigt sich kein Fehler, so kann dies ein Hinweis sein, dass nicht genügend scharfe Kontrakte formuliert wurden.
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \node[draw] (gtl) at (0,10) {GTL};
+    \node[draw] (scade) at (4.5,10) {Scade};
+    \node[draw] (pr1) at (0,9) {\begin{tabular}{c}Promela\\(Abstraktion)\end{tabular}};
+    \node[draw] (ver1) at (0,8) {Verifier};
+    \node[draw] (trace1) at (0,7) {\begin{tabular}{c}Fehlerspur\\(abstrakt)\end{tabular}};
+    \node[draw] (pr2) at (3.5,7) {\begin{tabular}{c}Promela\\(C-Integration)\end{tabular}};
+    \node[draw] (pr3) at (1.5,5.5) {\begin{tabular}{c}Promela\\(eingeschränkt)\end{tabular}};
+    \node[draw] (ver2) at (1.5,4) {Verifier};
+    \node[draw] (trace2) at (1.5,3) {Fehlerspur};
+    \draw[->,blue] (gtl) -- (pr1);
+    \draw[->,blue] (pr1) -- (ver1);
+    \draw[->,blue] (ver1) -- (trace1);
+    \draw[->,blue] (trace1) -| (pr3);
+    \draw[->,blue] (pr2) -| (pr3);
+    \draw[->,blue] (gtl) -| (pr2);
+    \draw[->,blue] (scade) -| (pr2);
+    \draw[->,blue] (pr3) -- (ver2);
+    \draw[->,blue] (ver2) -- (trace2);
+  \end{tikzpicture}
+  \caption{Fehlereingrenzung}
+\end{figure}
