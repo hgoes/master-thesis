@@ -1,0 +1,18 @@
+\section{Fehlereingrenzung}
+Das Ergebnis einer Verifikation, die die Kontrakt-Spezifikationen zur Optimierung verwendet sind eine oder mehrere Fehlerspuren.
+Diese geben eine zeitlich geordnete Kette von Bedingungen über die Variablen der Komponenten des Systems.
+Ein Beispiel für eine solche Spur ist die Kette
+\[ \left[ (a<3,b\in \{3,5,6\}), (a > 4), (b\neq 5) \right] \]
+Diese Kette von Bedingungen spezifiziert aber nicht ein Verhalten, sondern mehrere.
+Die folgenden Verhalten des Systems sind beispielsweise spezifiziert:
+\[ \left[ (a=2,b=3), (a=6), (b = 1) \right] \]
+\[ \left[ (a=1,b=3), (a=5), (b = 1) \right] \]
+Aus dieser Menge von spezifizierten Verhaltensweisen müssen nun nicht alle einen echten Fehler des Systems darstellen.
+Tatsächlich reicht es, wenn ein Verhalten einen Fehler hervorruft.
+Möglich ist aber auch, dass die Kontrakte dem System ein Verhalten erlauben, was das echte System niemals erzeugt.
+In diesem Fall ist die Spezifikation des Systems zu grob und die Fehlerspuren nicht immer echte Fehler.
+
+Um nun herauszufinden, welche konkreten Fehlerspuren das spezifizierte System nun tatsächlich hat, wird eine erneute Verifikation durchgeführt.
+Diesmal wird das echte Systemverhalten als Grundlage herangezogen, wobei aber das Verhalten auf die Spuren begrenzt wird, die durch die Fehlerspur angegeben werden.
+Meldet die Verifikation des so eingegrenzten Systems ebenfalls einen Fehler, so erhält man nicht nur die Bestätigung, dass die vorher erzeugte Fehlerspur echt ist, sondern auch ein konkretes Systemverhalten, dass zu einem Fehler führt.
+Zeigt sich kein Fehler, so kann dies ein Hinweis sein, dass nicht genügend scharfe Kontrakte formuliert wurden.
