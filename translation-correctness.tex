@@ -71,4 +71,25 @@ Ein Prozess kann sich nur in zwei verschiedenen Zuständen befinden:
 
 Diese zwei Zustände entsprechen den Zuständen der Prozesse im anderen Modell:
 Am Anfang befinden sich diese im Zustand $\bot$, danach in einem Zustand aus $Q$.
-Da die Zustand-Labels aus $Q$ generiert werden, haben die Prozesse in beiden Modellen also gleich viele Zustände.
+Da den Zustand-Labels jeweils ein Zustand aus $Q$ entspricht, haben die Prozesse in beiden Modellen also gleich viele Zustände.
+Die Initialsysteme der beiden Modelle sind trivialerweise gleich:
+Im Promela-Modell befinden sich alle Prozesse am Anfang ihres Rumpfes, im abstrakten Modell sind sie alle im Zustand $\bot$.
+
+Befindet sich ein Promela-Prozess am Anfang seines Rumpfes, so lässt sich mit der Regel \emph{IF} und \emph{GOTO} herleiten, dass der Prozess sich nach dem Schritt am Anfang eines der Zustand-Labels befindet, dass zu einem Initial-Zustand des abstrakten Modells korrespondiert.
+
+Steht der Promela-Prozess hingegen am Anfang eines Labels, so blockiert er laut den Regeln \emph{ATOM} und \emph{EXPR} solange, bis der generierte Ausdruck $\llbracket \delta(q) \rrbracket_C$ wahr wird.
+Das bedeutet, dass unabhängig von der Semantik immer gezeigt werden muss, dass für jeden Prozess 
+\[ \xymatrix{ (\llbracket \delta(q)\rrbracket_C\cdot\pi,\mathcal{L},\mathcal{G},\mathcal{C},\gamma)\ar[r]^-{\llbracket \delta(q)\rrbracket_C} &
+              (\pi,\mathcal{L},\mathcal{G},\mathcal{C},\gamma)
+} \]
+genau dann gilt, wenn für das abstrakte Modell im äquivalenten Zustand $s\equiv\mathcal{G}$ gilt:
+\[ \llbracket \delta(q) \rrbracket_S(s) \neq \bot \]
+
+Ist diese Bedingung sichergestellt, ist klar, dass das Promela Modell aus einem äquivalenten Zustand nur dann einen Zustand betritt, wenn dies auch das abstrakte Modell kann.
+Nun ist zu verifizieren, dass die Anweisungen $\llbracket \delta(q)\rrbracket_A$ den Zustand wieder in einen äquivalenten Zustand versetzen, also dass für einen Zustand $s\equiv\mathcal{G}$ gilt
+\[ \xymatrix{ (\llbracket \delta(q)\rrbracket_A\cdot\pi,\emptyset,\mathcal{G},\mathcal{C},\gamma)\ar[r]^-{\llbracket \delta(q)\rrbracket_A} &
+              (\pi,\emptyset,\mathcal{G'},\mathcal{C},\gamma)
+} \]
+genau dann wenn
+\[ \llbracket \delta(q)\rrbracket_S(s)\equiv\mathcal{G'} \]
+gilt.
