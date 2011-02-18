@@ -28,7 +28,9 @@ Um ein solches Modell nun nach Promela zu übersetzen, benötigt man zusätzlich
 \item Außerdem eine Funktion $\llbracket\rrbracket_D : S\rightarrow \textrm{PrDecl}^{*}$, die des globalen Startzustand in eine Folge von Promela-Deklarationen übersetzt.
 \end{enumerate}
 
+Mit diesen Hilfsmitteln lässt sich nun die Übersetzung des Modells nach Promela darstellen als eine Funktion $tr(\Sigma,D,V)$, mit der folgenden Definition:
 \begin{lstlisting}[language=Promela,mathescape=true]
+$\llbracket \alpha \rrbracket_D$
 $[ \forall P=(Q,\delta,\Delta,I,F,Inp,Outp)\in D:$
 active proctype $P$() {
   if $[ \forall i\in I:$
@@ -48,3 +50,6 @@ active proctype $P$() {
 }
 $]$
 \end{lstlisting}
+\subsection{Richtigkeit der Übersetzung}
+Um zu beweisen, dass die angegebene Promela-Übersetzung korrekt ist, muss gezeigt werden, dass die eben definierte Semantik des Modells mit der Semantik des übersetzten Promela-Modells übereinstimmt.
+Um dies zu zeigen, wird die Promela-Semantik verwendet, wie sie in \cite{Weise97anincremental} beschrieben ist.
