@@ -25,7 +25,9 @@ Um ein solches Modell nun nach Promela zu übersetzen, benötigt man zusätzlich
 \begin{enumerate}
 \item Eine Funktion $\llbracket\rrbracket_C : \Sigma\rightarrow \textrm{PrExpr}$, die Semantiksymbole in Promela-Ausdrücke übersetzt, die genau dann ausgeführt werden können, wenn nach der Semantik ein Zustand betreten werden darf.
 \item Eine Funktion $\llbracket\rrbracket_A : \Sigma\rightarrow \textrm{PrStmt}^{*}$, die für jedes Semantiksymbol die Anweisungen generiert, die den globalen Zustand transformieren.
+  Die Anweisungen dürfen unter keinen Umständen blockieren.
 \item Außerdem eine Funktion $\llbracket\rrbracket_D : S\rightarrow \textrm{PrDecl}^{*}$, die des globalen Startzustand in eine Folge von Promela-Deklarationen übersetzt.
+  Diese sind allerdings in so fern eingeschränkt, dass sie nur Variablen oder Kanäle definieren dürfen, aber keine zusätzlichen Prozesse.
 \end{enumerate}
 
 Mit diesen Hilfsmitteln lässt sich nun die Übersetzung des Modells nach Promela darstellen als eine Funktion $tr(\Sigma,D,V)$, mit der folgenden Definition:
@@ -53,3 +55,20 @@ $]$
 \subsection{Richtigkeit der Übersetzung}
 Um zu beweisen, dass die angegebene Promela-Übersetzung korrekt ist, muss gezeigt werden, dass die eben definierte Semantik des Modells mit der Semantik des übersetzten Promela-Modells übereinstimmt.
 Um dies zu zeigen, wird die Promela-Semantik verwendet, wie sie in \cite{Weise97anincremental} beschrieben ist.
+
+Als erstes werden die globalen Deklarationen und Prozessdefinitionen mithilfe der Regel \emph{PTYPE1} abgearbeitet, was zu einem Zustand
+\[ (\epsilon,\mathcal{G}_0,\mathcal{C}_0,\textrm{pdef},\textrm{act}_0,\bot) \]
+führt.
+Dabei enthält \emph{pdef} die Prozessdefinitionen und da alle Prozesse aktiv deklariert sind, ist \emph{act} eine Liste, die für jeden Prozess mit dem Rumpf $\pi$ den Eintrag $(\pi,\pi,\emptyset,\epsilon)$ enthält.
+
+Ein Prozess kann sich nur in zwei verschiedenen Zuständen befinden:
+\begin{itemize}
+\item Ganz am Anfang seines Rumpfes.
+  Diesen Zustand hat der Prozess nur am Anfang seiner Ausführung, da kein Rücksprung zum Anfang des Rumpfes stattfindet.
+\item Am Anfang eines Zustands-Labels.
+  Da die Anweisungsfolge jedes Zustands mit \emph{atomic} gekennzeichnet ist, kann der Prozess sich nicht in einem Zwischenzustand aufhalten.
+\end{itemize}
+
+Diese zwei Zustände entsprechen den Zuständen der Prozesse im anderen Modell:
+Am Anfang befinden sich diese im Zustand $\bot$, danach in einem Zustand aus $Q$.
+Da die Zustand-Labels aus $Q$ generiert werden, haben die Prozesse in beiden Modellen also gleich viele Zustände.
