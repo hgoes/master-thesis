@@ -1,0 +1,50 @@
+\section{Übersetzungskonstruktion}
+Ein spezifiziertes System mit $N$ Prozessen wird dargestellt als
+\[ (\Sigma,D,V) \]
+mit den Variablen $V$, der Semantiksymbole $\Sigma$ und den Prozessen
+\[ D = (P_1,\dots,P_N) \]
+Jeder Prozess ist spezifiziert durch
+\[ P_i = (Q_i,\delta_i,\Delta_i,I_i,F_i,Inp_i,Outp_i) \]
+wobei $Q_i$ die Zustandsmenge des Prozesses ist, $\delta_i: Q_i\rightarrow \Sigma$ die Semantik für jeden Zustand angibt, $\Delta_i\subseteq Q_i\times Q_i$ die Übergänge zwischen Zuständen darstellt, $I_i,F_i\subseteq Q_i$ die Initial- beziehungsweise Finalzustände kodiert und $Inp_i,Outp_i\subseteq V$ die Ein- und Ausgabevariablen des Prozesses angeben.
+
+Die Semantik eines Systems wird durch ein Tupel
+\[ (S,\llbracket \rrbracket_S,\alpha) \]
+angegeben.
+Hierbei stellt $S$ die globale Zustandsmenge dar, $\llbracket \rrbracket_S:\Sigma\rightarrow (S\rightarrow S\cup \{\bot\})$ gibt eine Übersetzung der Semantiksymbole in Zustandsübergänge an und $\alpha\in S$ kennzeichnet den initialen globalen Zustand.
+
+Der aktuelle Zustand eines Systems lässt sich dann angeben als Kombination des globalen, semantikabhängigen Zustands $s\in S$ und den Prozesszuständen $p_i\in Q_i$:
+\[ (s,(p_1,\dots,p_N)) \]
+Die Zustandsübergänge dieses Systems folgen nun einer einfachen Regel
+\[ \inference[step]{p_i\Delta p_i'&\llbracket \delta_i(p_i')\rrbracket_S(s)\neq\bot}{(s,(p_1,\dots,p_i,\dots,p_n))\rightarrow (\llbracket\delta_i(p_i')\rrbracket_S(s),(p_1,\dots,p_i',\dots,p_n))} \]
+Der Initialzustand ist gegeben durch
+\[ \inference[init]{}{(\alpha,(\bot,\dots,\bot))} \]
+Ein Prozess im initialen Zustand kann in jeden Startzustand schalten:
+\[ \inference[start]{p_i=\bot&p_i'\in I_i&\llbracket \delta_i(p_i')\rrbracket_S(s)\neq\bot}{(s,(p_1,\dots,p_i,\dots,p_N))\rightarrow (\llbracket \delta_i(p_i')\rrbracket_S(s),(p_1,\dots,p_i',\dots,p_N))} \]
+
+Um ein solches Modell nun nach Promela zu übersetzen, benötigt man zusätzlich noch drei weitere semantikspezifische Konstrukte:
+\begin{enumerate}
+\item Eine Funktion $\llbracket\rrbracket_C : \Sigma\rightarrow \textrm{PrExpr}$, die Semantiksymbole in Promela-Ausdrücke übersetzt, die genau dann ausgeführt werden können, wenn nach der Semantik ein Zustand betreten werden darf.
+\item Eine Funktion $\llbracket\rrbracket_A : \Sigma\rightarrow \textrm{PrStmt}^{*}$, die für jedes Semantiksymbol die Anweisungen generiert, die den globalen Zustand transformieren.
+\item Außerdem eine Funktion $\llbracket\rrbracket_D : S\rightarrow \textrm{PrDecl}^{*}$, die des globalen Startzustand in eine Folge von Promela-Deklarationen übersetzt.
+\end{enumerate}
+
+\begin{lstlisting}[language=Promela,mathescape=true]
+$[ \forall P=(Q,\delta,\Delta,I,F,Inp,Outp)\in D:$
+active proctype $P$() {
+  if $[ \forall i\in I:$
+     :: goto st_$i$
+     $]$
+  fi;
+  $[ \forall q\in Q:$
+  st_$q$: atomic {
+    $\llbracket \delta(q) \rrbracket_C$;
+    $\llbracket \delta(q) \rrbracket_A$
+    if $[ \forall q'\in Q, q\Delta q':$
+       :: goto st_$q'$
+       $]$
+    fi
+  };
+  $]$
+}
+$]$
+\end{lstlisting}
