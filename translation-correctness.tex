@@ -152,11 +152,14 @@ und für jeden Prozess $p_i$ entweder
 \[ \gamma(i).\sigma_l = \textrm{st\_}p_i \]
 oder
 \[ \gamma(i).\sigma_l = \textrm{Start} \land p_i = \bot \]
-Gilt der erste Fall, so
+Gilt der erste Fall, so lässt sich herleiten
 \[ \inference[IfDo-proc]{
-  I(\textrm{st\_}p_i)\in If &
-  \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{C\_}p_i\textrm{\_}p_i'\right>\ar[r]^-{\llbracket \varphi(p_i')\rrbracket_C}_>{proc} & \left< x \right>}
+  \inference[Basic-proc]{exec(\textrm{C\_}p_i\textrm{\_}p_i',\gamma(i).\sigma_e) & next(\textrm{C\_}p_i\textrm{\_}p_i') = \textrm{A\_}p_i\textrm{\_}p_i'}{
+  \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{C\_}p_i\textrm{\_}p_i'\right>\ar@{|->}[r]^-{\llbracket \varphi(p_i')\rrbracket_C} & _{proc}
+    \left<\gamma(i).\sigma_e,\textrm{A\_}p_i\textrm{\_}p_i'\right>}
   }
-  {\left<\gamma(i).\sigma_e,\textrm{st\_}p_i\right>}
+  }
+  { \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{st\_}p_i\right> \ar@{|->}[r]^-{\llbracket \varphi(p_i')\rrbracket_C} & _{proc}
+      \left<\gamma(i).\sigma_e,\textrm{A\_}p_i\textrm{\_}p_i'\right>}
+  }
 \]
-
