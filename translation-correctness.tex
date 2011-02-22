@@ -62,10 +62,10 @@ Um dies zu zeigen, wird die Promela-Semantik verwendet, wie sie in \cite{Gallard
 Da in dieser Semantik gefordert ist, dass jede Anweisung ein implizites Label erhält, werden folgende Labels für die Anweisungen vergeben:
 \begin{itemize}
 \item Die \emph{If}-Anweisung in Zeile 4 erhält das Label \emph{Start}
-\item In diesem Zweig wird der Ausdruck in Zeile 6 mit dem Label \emph{CI_$n$} versehen
-\item Die folgende Anweisung in Zeile 7 wird mit \emph{AI_$n$} kenntlich gemacht
-\item Der Ausdruck in diesem Zweig auf Zeile 15 bekommt die Kennzeichnung \emph{C_$q$_$q'$}
-\item Die folgende Anweisung in Zeile 16 erhält das Label \emph{A_$q$_$q'$}
+\item In diesem Zweig wird der Ausdruck in Zeile 6 mit dem Label \emph{CI\_$n$} versehen
+\item Die folgende Anweisung in Zeile 7 wird mit \emph{AI\_$n$} kenntlich gemacht
+\item Der Ausdruck in diesem Zweig auf Zeile 15 bekommt die Kennzeichnung \emph{C\_$q$\_$q'$}
+\item Die folgende Anweisung in Zeile 16 erhält das Label \emph{A\_$q$\_$q'$}
 \end{itemize}
 
 Mit diesen Kennzeichnungen ergibt sich nun die \emph{next}-Funktion der Semantik wie folgt:
@@ -74,10 +74,10 @@ Mit diesen Kennzeichnungen ergibt sich nun die \emph{next}-Funktion der Semantik
   \hline
   $L$ & $\textrm{next}(L)$\\
   \hline
-  CI_$n$ & AI_$n$\\
-  AI_$n$ & st_$i$\\
-  C_$q$_$q'$ & A_$q$_$q'$\\
-  A_$q$_$q'$ & st_$q'$\\
+  CI\_$n$ & AI\_$n$\\
+  AI\_$n$ & st\_$i$\\
+  C\_$q$\_$q'$ & A\_$q$\_$q'$\\
+  A\_$q$\_$q'$ & st\_$q'$\\
   \hline
 \end{tabular}
 
@@ -87,8 +87,8 @@ Auch die erforderliche $g$-Funktion, die die Zweige einer \emph{If}-Anweisung an
   \hline
   $L$ & $g(L)$\\
   \hline
-  Start & $\{ \textrm{CI_}0,\textrm{CI_}1,\dots \}$\\
-  st_$q$ & $\{ \textrm{C_}q\textrm{_}0,\textrm{C_}q\textrm{_}1,\dots \}$\\
+  Start & $\{ \textrm{CI\_}0,\textrm{CI\_}1,\dots \}$\\
+  st\_$q$ & $\{ \textrm{C\_}q\textrm{\_}0,\textrm{C\_}q\textrm{\_}1,\dots \}$\\
   \hline
 \end{tabular}
 
@@ -99,11 +99,11 @@ Für den Ausführungsmodus(\emph{mode}) ergibt sich:
   $L$ & $\textrm{mode}(L)$\\
   \hline
   Start & ilv\\
-  CI_$n$ & atm\\
-  AI_$n$ & atm\\
-  st_$q$ & ilv\\
-  C_$q$_$q'$ & atm\\
-  A_$q$_$q'$ & atm\\
+  CI\_$n$ & atm\\
+  AI\_$n$ & atm\\
+  st\_$q$ & ilv\\
+  C\_$q$\_$q'$ & atm\\
+  A\_$q$\_$q'$ & atm\\
   \hline
 \end{tabular}
 
@@ -139,7 +139,7 @@ Zwei Zustände stehen genau dann in Relation, wenn ihre globalen Zustände isomo
 \begin{array}{c}
   (s,(p_1,\dots,p_N))\cong \gamma\\
   \Leftrightarrow\\
-  i(s)=\gamma(0).\sigma_e \land \forall i\in\{1\dots N\}: (\gamma(i).\sigma_l = \textrm{st_}p_i \lor (\gamma(i).\sigma_l = \textrm{Start}\land p_i=\bot))
+  i(s)=\gamma(0).\sigma_e \land \forall i\in\{1\dots N\}: (\gamma(i).\sigma_l = \textrm{st\_}p_i \lor (\gamma(i).\sigma_l = \textrm{Start}\land p_i=\bot))
 \end{array}
 \]
 Nun muss gezeigt werden, dass es sich bei der eben definierten Relation tatsächlich um eine Bisimulationsrelation handelt.
@@ -149,14 +149,14 @@ Betrachten wir also einen Zustand des abstrakten Modells $(s,(p_1,\dots,p_N))$ u
 Sind diese Zustände bisimular, so gilt nach Konstruktion
 \[ i(s) = \gamma(0).\sigma_e \]
 und für jeden Prozess $p_i$ entweder
-\[ \gamma(i).\sigma_l = \textrm{st_}p_i \]
+\[ \gamma(i).\sigma_l = \textrm{st\_}p_i \]
 oder
 \[ \gamma(i).\sigma_l = \textrm{Start} \land p_i = \bot \]
 Gilt der erste Fall, so
 \[ \inference[IfDo-proc]{
-  I(\textrm{st_}p_i)\in If &
-  \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{C_}p_i\textrm{_}p_i'\right>\ar[r]^-{\llbracket \varphi(p_i')\rrbracket_C}_>>{proc} & \left< x \right>}
+  I(\textrm{st\_}p_i)\in If &
+  \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{C\_}p_i\textrm{\_}p_i'\right>\ar[r]^-{\llbracket \varphi(p_i')\rrbracket_C}_>{proc} & \left< x \right>}
   }
-  {\left<\gamma(i).\sigma_e,\textrm{st_}p_i\right>}
+  {\left<\gamma(i).\sigma_e,\textrm{st\_}p_i\right>}
 \]
 

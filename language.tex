@@ -10,11 +10,11 @@ Um ein zu verifizierendes GALS-Modell vollständig zu definieren müssen die fol
 
 \begin{figure}
   \begin{grammar}
-    <declaration> ::= `model' `[' <id> `]' <id> `(' (<argument> (`,' <argument>)*)? `)' <model_contract>
+    <declaration> ::= `model' `[' <id> `]' <id> `(' (<argument> (`,' <argument>)*)? `)' <model\_contract>
     \alt `connect' <id> `.' <id> <id> `.' <id> `;'
     \alt `verify' `{' (<formula> `;')* `}'
     
-    <model_contract> ::= `{' (<formula> `;')* `}'
+    <model\_contract> ::= `{' (<formula> `;')* `}'
     \alt `;'
     
     <formula> ::= <lit> `<' <lit>
