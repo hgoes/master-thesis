@@ -31,65 +31,132 @@ Um ein solches Modell nun nach Promela zu übersetzen, benötigt man zusätzlich
 \end{enumerate}
 
 Mit diesen Hilfsmitteln lässt sich nun die Übersetzung des Modells nach Promela darstellen als eine Funktion $tr(\Sigma,D,V)$, mit der folgenden Definition:
-\begin{lstlisting}[language=Promela,mathescape=true]
+\begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small]
 $\llbracket \alpha \rrbracket_D$
 $[ \forall P=(Q,\delta,\Delta,I,F,Inp,Outp)\in D:$
 active proctype $P$() {
   if $[ \forall i\in I:$
-     :: goto st_$i$
+  :: atomic {
+       $\llbracket \delta(i) \rrbracket_C$;
+       $\llbracket \delta(i) \rrbracket_A$;
+       goto st_$i$
+     }
      $]$
   fi;
   $[ \forall q\in Q:$
-  st_$q$: atomic {
-    $\llbracket \delta(q) \rrbracket_C$;
-    $\llbracket \delta(q) \rrbracket_A$
-    if $[ \forall q'\in Q, q\Delta q':$
-       :: goto st_$q'$
-       $]$
-    fi
-  };
+  st_$q$: if $[ \forall q'\in Q, q\Delta q':$
+        :: atomic {
+             $\llbracket \delta(q) \rrbracket_C$;
+             $\llbracket \delta(q) \rrbracket_A$;
+             goto st_$q'$
+           }
+           $]$
+        fi
   $]$
 }
 $]$
 \end{lstlisting}
 \subsection{Richtigkeit der Übersetzung}
 Um zu beweisen, dass die angegebene Promela-Übersetzung korrekt ist, muss gezeigt werden, dass die eben definierte Semantik des Modells mit der Semantik des übersetzten Promela-Modells übereinstimmt.
-Um dies zu zeigen, wird die Promela-Semantik verwendet, wie sie in \cite{Weise97anincremental} beschrieben ist.
-
-Als erstes werden die globalen Deklarationen und Prozessdefinitionen mithilfe der Regel \emph{PTYPE1} abgearbeitet, was zu einem Zustand
-\[ (\epsilon,\mathcal{G}_0,\mathcal{C}_0,\textrm{pdef},\textrm{act}_0,\bot) \]
-führt.
-Dabei enthält \emph{pdef} die Prozessdefinitionen und da alle Prozesse aktiv deklariert sind, ist \emph{act} eine Liste, die für jeden Prozess mit dem Rumpf $\pi$ den Eintrag $(\pi,\pi,\emptyset,\epsilon)$ enthält.
-
-Ein Prozess kann sich nur in zwei verschiedenen Zuständen befinden:
+Um dies zu zeigen, wird die Promela-Semantik verwendet, wie sie in \cite{Gallardo04formalaspects} beschrieben ist.
+Da in dieser Semantik gefordert ist, dass jede Anweisung ein implizites Label erhält, werden folgende Labels für die Anweisungen vergeben:
 \begin{itemize}
-\item Ganz am Anfang seines Rumpfes.
-  Diesen Zustand hat der Prozess nur am Anfang seiner Ausführung, da kein Rücksprung zum Anfang des Rumpfes stattfindet.
-\item Am Anfang eines Zustands-Labels.
-  Da die Anweisungsfolge jedes Zustands mit \emph{atomic} gekennzeichnet ist, kann der Prozess sich nicht in einem Zwischenzustand aufhalten.
+\item Die \emph{If}-Anweisung in Zeile 4 erhält das Label \emph{Start}
+\item In diesem Zweig wird der Ausdruck in Zeile 6 mit dem Label \emph{CI_$n$} versehen
+\item Die folgende Anweisung in Zeile 7 wird mit \emph{AI_$n$} kenntlich gemacht
+\item Der Ausdruck in diesem Zweig auf Zeile 15 bekommt die Kennzeichnung \emph{C_$q$_$q'$}
+\item Die folgende Anweisung in Zeile 16 erhält das Label \emph{A_$q$_$q'$}
 \end{itemize}
 
-Diese zwei Zustände entsprechen den Zuständen der Prozesse im anderen Modell:
-Am Anfang befinden sich diese im Zustand $\bot$, danach in einem Zustand aus $Q$.
-Da den Zustand-Labels jeweils ein Zustand aus $Q$ entspricht, haben die Prozesse in beiden Modellen also gleich viele Zustände.
-Die Initialsysteme der beiden Modelle sind trivialerweise gleich:
-Im Promela-Modell befinden sich alle Prozesse am Anfang ihres Rumpfes, im abstrakten Modell sind sie alle im Zustand $\bot$.
+Mit diesen Kennzeichnungen ergibt sich nun die \emph{next}-Funktion der Semantik wie folgt:
 
-Befindet sich ein Promela-Prozess am Anfang seines Rumpfes, so lässt sich mit der Regel \emph{IF} und \emph{GOTO} herleiten, dass der Prozess sich nach dem Schritt am Anfang eines der Zustand-Labels befindet, dass zu einem Initial-Zustand des abstrakten Modells korrespondiert.
+\begin{tabular}{|c|c|}
+  \hline
+  $L$ & $\textrm{next}(L)$\\
+  \hline
+  CI_$n$ & AI_$n$\\
+  AI_$n$ & st_$i$\\
+  C_$q$_$q'$ & A_$q$_$q'$\\
+  A_$q$_$q'$ & st_$q'$\\
+  \hline
+\end{tabular}
 
-Steht der Promela-Prozess hingegen am Anfang eines Labels, so blockiert er laut den Regeln \emph{ATOM} und \emph{EXPR} solange, bis der generierte Ausdruck $\llbracket \delta(q) \rrbracket_C$ wahr wird.
-Das bedeutet, dass unabhängig von der Semantik immer gezeigt werden muss, dass für jeden Prozess 
-\[ \xymatrix{ (\llbracket \delta(q)\rrbracket_C\cdot\pi,\mathcal{L},\mathcal{G},\mathcal{C},\gamma)\ar[r]^-{\llbracket \delta(q)\rrbracket_C} &
-              (\pi,\mathcal{L},\mathcal{G},\mathcal{C},\gamma)
-} \]
-genau dann gilt, wenn für das abstrakte Modell im äquivalenten Zustand $s\equiv\mathcal{G}$ gilt:
-\[ \llbracket \delta(q) \rrbracket_S(s) \neq \bot \]
+Auch die erforderliche $g$-Funktion, die die Zweige einer \emph{If}-Anweisung angibt, kann somit hergeleitet werden als:
 
-Ist diese Bedingung sichergestellt, ist klar, dass das Promela Modell aus einem äquivalenten Zustand nur dann einen Zustand betritt, wenn dies auch das abstrakte Modell kann.
-Nun ist zu verifizieren, dass die Anweisungen $\llbracket \delta(q)\rrbracket_A$ den Zustand wieder in einen äquivalenten Zustand versetzen, also dass für einen Zustand $s\equiv\mathcal{G}$ gilt
-\[ \xymatrix{ (\llbracket \delta(q)\rrbracket_A\cdot\pi,\emptyset,\mathcal{G},\mathcal{C},\gamma)\ar[r]^-{\llbracket \delta(q)\rrbracket_A} &
-              (\pi,\emptyset,\mathcal{G'},\mathcal{C},\gamma)
-} \]
-genau dann wenn
-\[ \llbracket \delta(q)\rrbracket_S(s)\equiv\mathcal{G'} \]
-gilt.
+\begin{tabular}{|c|c|}
+  \hline
+  $L$ & $g(L)$\\
+  \hline
+  Start & $\{ \textrm{CI_}0,\textrm{CI_}1,\dots \}$\\
+  st_$q$ & $\{ \textrm{C_}q\textrm{_}0,\textrm{C_}q\textrm{_}1,\dots \}$\\
+  \hline
+\end{tabular}
+
+Für den Ausführungsmodus(\emph{mode}) ergibt sich:
+
+\begin{tabular}{|c|c|}
+  \hline
+  $L$ & $\textrm{mode}(L)$\\
+  \hline
+  Start & ilv\\
+  CI_$n$ & atm\\
+  AI_$n$ & atm\\
+  st_$q$ & ilv\\
+  C_$q$_$q'$ & atm\\
+  A_$q$_$q'$ & atm\\
+  \hline
+\end{tabular}
+
+Zunächst ist es nützlich ein paar allgemeine Aussagen aufzustellen, die die Verifikation der Richtigkeit der Übersetzung erleichtern.
+\begin{enumerate}
+\item Es ist leicht einzusehen, dass für alle Prozesse die Umgebung $\phi_e$ gleich ist, da die Prozesse keine lokalen Variablen deklarieren.
+\end{enumerate}
+
+Um nun zeigen zu können, dass das definierte System $(\Sigma,D,V)$ mit der Semantik $(S,\llbracket \rrbracket_S,\alpha)$ bisimular zum übersetzten Promela Modell $tr(\Sigma,D,V)$ ist, müssen folgende Anforderungen an die Semantik gestellt werden:
+\begin{enumerate}
+\item Es muss eine Bijektion $i$ zwischen Zuständen $S$ und der Promela-Umgebung $\sigma_e$ existieren.
+\item Die Definitionen $\llbracket \alpha \rrbracket_D$ müssen eine initiale Umgebung $\sigma_e^0$ definieren, die isomorph zum Initialzustand $\alpha$ ist: 
+  \[ i(\alpha) = \sigma_e^0 \]
+\item Befinden sich beide Systeme in isomorphen Zuständen, so wird der von $\llbracket \rrbracket_C$ erzeugte Ausdruck genau dann wahr, wenn es im abstrakten Modell einen entsprechenden Übergang zwischen den Zuständen gibt:
+  \[ \begin{array}{rc}
+    i(s) = \sigma_e \Rightarrow &
+    (s,(p_1,\dots,p_i,\dots,p_N))\rightarrow (s',(p_1,\dots,p_i',\dots,p_N)) \\
+    & \Leftrightarrow\\
+    & exec(\llbracket \varphi(p_i')\rrbracket_C,\sigma_e)
+  \end{array} \]
+\item Die Anweisung, die von $\llbracket \rrbracket_A$ generiert wird, darf nie blockieren und muss isomorphe Zustände beibehalten:
+  \[ \begin{array}{rc}
+    i(s) = \sigma_e \Rightarrow &
+    (s,(p_1,\dots,p_i,\dots,p_N))\rightarrow (s',(p_1,\dots,p_i',\dots,p_N))\\
+    & \Leftrightarrow\\
+    & \xymatrix { \left<\sigma_e,L\right> \ar[r]^-{\llbracket \varphi(p_i')\rrbracket_A} & \left<\sigma_e',L'\right> } \land i(\sigma_e) = s'
+  \end{array} \]
+\end{enumerate}
+Nun kann man die Relation $\cong$ angeben, die Zustände des abstrakten Modells mit Zuständen des übersetzten Promela-Modells in Relation setzt.
+Diese wird wie folgt definiert:
+Zwei Zustände stehen genau dann in Relation, wenn ihre globalen Zustände isomorph sind und sich jeder Prozess des Promela-Modells am Label befindet, das mit dem Zustand im abstrakten Modell korrespondiert, oder sich am Label \emph{Start} befindet und der abstrakte Prozess im Zustand $\bot$ ist.
+\[
+\begin{array}{c}
+  (s,(p_1,\dots,p_N))\cong \gamma\\
+  \Leftrightarrow\\
+  i(s)=\gamma(0).\sigma_e \land \forall i\in\{1\dots N\}: (\gamma(i).\sigma_l = \textrm{st_}p_i \lor (\gamma(i).\sigma_l = \textrm{Start}\land p_i=\bot))
+\end{array}
+\]
+Nun muss gezeigt werden, dass es sich bei der eben definierten Relation tatsächlich um eine Bisimulationsrelation handelt.
+Hierfür muss nachgewiesen werden, dass es für jede Transition, die ein bisimularer Zustand durchführen kann, eine Transition des anderen Zustands gibt und die Zielzustände der beiden Transitionen auch wieder bisimular sind.
+
+Betrachten wir also einen Zustand des abstrakten Modells $(s,(p_1,\dots,p_N))$ und einen Zustand des Promela-Modells $\gamma$.
+Sind diese Zustände bisimular, so gilt nach Konstruktion
+\[ i(s) = \gamma(0).\sigma_e \]
+und für jeden Prozess $p_i$ entweder
+\[ \gamma(i).\sigma_l = \textrm{st_}p_i \]
+oder
+\[ \gamma(i).\sigma_l = \textrm{Start} \land p_i = \bot \]
+Gilt der erste Fall, so
+\[ \inference[IfDo-proc]{
+  I(\textrm{st_}p_i)\in If &
+  \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{C_}p_i\textrm{_}p_i'\right>\ar[r]^-{\llbracket \varphi(p_i')\rrbracket_C}_>>{proc} & \left< x \right>}
+  }
+  {\left<\gamma(i).\sigma_e,\textrm{st_}p_i\right>}
+\]
+
