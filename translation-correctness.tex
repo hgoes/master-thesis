@@ -129,7 +129,7 @@ Um nun zeigen zu können, dass das definierte System $(\Sigma,D,V)$ mit der Sema
     i(s) = \sigma_e \Rightarrow &
     (s,(p_1,\dots,p_i,\dots,p_N))\rightarrow (s',(p_1,\dots,p_i',\dots,p_N))\\
     & \Leftrightarrow\\
-    & \xymatrix { \left<\sigma_e,L\right> \ar[r]^-{\llbracket \varphi(p_i')\rrbracket_A} & \left<\sigma_e',L'\right> } \land i(\sigma_e) = s'
+    & \xymatrix { \left<\sigma_e,L\right> \ar[r]^-{\llbracket \varphi(p_i')\rrbracket_A} & \left<\sigma_e',L'\right> } \land i(s') = \sigma_e'
   \end{array} \]
 \end{enumerate}
 Nun kann man die Relation $\cong$ angeben, die Zustände des abstrakten Modells mit Zuständen des übersetzten Promela-Modells in Relation setzt.
@@ -155,11 +155,91 @@ oder
 Gilt der erste Fall, so lässt sich herleiten
 \[ \inference[IfDo-proc]{
   \inference[Basic-proc]{exec(\textrm{C\_}p_i\textrm{\_}p_i',\gamma(i).\sigma_e) & next(\textrm{C\_}p_i\textrm{\_}p_i') = \textrm{A\_}p_i\textrm{\_}p_i'}{
-  \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{C\_}p_i\textrm{\_}p_i'\right>\ar@{|->}[r]^-{\llbracket \varphi(p_i')\rrbracket_C} & _{proc}
+  \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{C\_}p_i\textrm{\_}p_i'\right>\ar@{|->}[r]^-{\llbracket \delta(p_i')\rrbracket_C} & _{proc}
     \left<\gamma(i).\sigma_e,\textrm{A\_}p_i\textrm{\_}p_i'\right>}
   }
   }
-  { \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{st\_}p_i\right> \ar@{|->}[r]^-{\llbracket \varphi(p_i')\rrbracket_C} & _{proc}
+  { \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{st\_}p_i\right> \ar@{|->}[r]^-{\llbracket \delta(p_i')\rrbracket_C} & _{proc}
       \left<\gamma(i).\sigma_e,\textrm{A\_}p_i\textrm{\_}p_i'\right>}
   }
 \]
+Weiterhin ist nach Voraussetzung bekannt, dass die Anweisung $\llbracket \delta(p_i')\rrbracket_A$ nie blockieren darf, also lässt sich herleiten
+\[
+  \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{A\_}p_i\textrm{\_}p_i'\right> \ar@{|->}[r]^-{\llbracket \delta(p_i')\rrbracket_A} & _{proc}
+    \left<\sigma_e',\textrm{st\_}p_i'\right> }
+\]
+Aus der Promela-Semantik lässt sich nun für ein $\gamma$ mit $\gamma(i).\sigma_l = \textrm{st\_}p_i$
+\[
+\inference[Atm-mod]{
+  \inference[Single-int]{
+    \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{st\_}p_i\right> \ar@{|->}[r]^-{\llbracket \delta(p_i')\rrbracket_C} & _{proc}
+      \left<\gamma(i).\sigma_e,\textrm{A\_}p_i\textrm{\_}p_i'\right> }
+  }{
+    \xymatrix{ \gamma \ar@{|->}[r]^-{\llbracket \delta(p_i')\rrbracket_C} & _{int}
+      \gamma'
+    }
+  } & mode(\textrm{C\_}p_i\textrm{\_}p_i') = atm
+}{
+  \xymatrix{ \gamma \ar@{|->}[r]^-{atm_i} & _{mod}
+    \gamma'
+  }
+}
+\]
+wobei $\gamma' = \gamma[\left<\gamma(i).\sigma_e,\textrm{A\_}p_i\textrm{\_}p_i'\right>/i]$.
+Nach der gleichen Regel lässt sich auch herleiten
+\[
+\inference[Atm-mod]{
+  \inference[Single-int]{
+    \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{A\_}p_i\textrm{\_}p_i'\right> \ar@{|->}[r]^-{\llbracket \delta(p_i')\rrbracket_A} & _{proc}
+      \left<\sigma_e',\textrm{st\_}p_i'\right> }
+  }{
+    \xymatrix{ \gamma'\ar@{|->}[r]^-{\llbracket \delta(p_i')\rrbracket_A} & _{int}
+      \gamma''
+    }
+  } & mode(\textrm{A\_}p_i\textrm{\_}p_i') = atm
+}{
+  \xymatrix{ \gamma'\ar@{|->}[r]^-{atm_i} & _{mod}
+    \gamma''
+  }
+}
+\]
+wobei $\gamma'' = \gamma[\left<\sigma_e',\textrm{st\_}p_i'\right>/i]$.
+Nun lassen sich die beiden atomaren Transitionen zusammenfassen:
+\[
+\inference[Atm-sim]{
+  \xymatrix{ \gamma \ar@{|->}[r]^-{atm_i} & _{mod}
+    \gamma'
+  } &
+  \xymatrix{ \gamma'\ar@{|->}[r]^-{atm_i} & _{mod}
+    \gamma''
+  }
+}{
+  \xymatrix{ \gamma \ar@{|->}[r]^-{atm_i} & _{sim}
+    \gamma''
+  }
+}
+\]
+Fasst man nun alle hier angegebenen Ableitungsschritte zusammen, so ergibt sich
+\[
+\inference{
+  exec(\textrm{C\_}p_i\textrm{\_}p_i',\gamma(i).\sigma_e) &
+  \xymatrix{ \left<\gamma(i).\sigma_e,\textrm{A\_}p_i\textrm{\_}p_i'\right> \ar@{|->}[r]^-{\llbracket \delta(p_i')\rrbracket_A} & _{proc}
+    \left<\sigma_e',\textrm{st\_}p_i'\right> }
+}{
+  \xymatrix{ \gamma \ar@{|->}[r]^-{atm_i} & _{sim}
+    \gamma[\left<\sigma_e',\textrm{st\_}p_i'\right>/i]
+  }
+}
+\]
+Diese zwei Vorbedingungen sind genau dann erfüllt, wenn
+\[ (s,(p_1,\dots,p_i,\dots,p_N))\rightarrow (s',(p_1,\dots,p_i',\dots,p_N)) \]
+gilt.
+Außerdem gilt dann $i(s') = \sigma_e'$ und die Bisimularität ist für diesen Fall gezeigt, denn
+\[
+\begin{array}{c}
+  i(s') = \sigma_e' \land (s,(p_1,\dots,p_i,\dots,p_N))\cong\gamma\\
+  \Leftrightarrow\\
+  (s',(p_1,\dots,p_i',\dots,p_N))\cong \gamma[\left<\sigma_e',\textrm{st\_}p_i'\right>/i]
+\end{array}
+\]
+Der Beweis für den Fall, dass sich der Prozess am Label \emph{Start} befindet ist fast äquivalent.
