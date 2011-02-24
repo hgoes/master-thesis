@@ -122,14 +122,14 @@ Um nun zeigen zu können, dass das definierte System $(\Sigma,D,V)$ mit der Sema
     i(s) = \sigma_e \Rightarrow &
     (s,(p_1,\dots,p_i,\dots,p_N))\rightarrow (s',(p_1,\dots,p_i',\dots,p_N)) \\
     & \Leftrightarrow\\
-    & exec(\llbracket \varphi(p_i')\rrbracket_C,\sigma_e)
+    & exec(\llbracket \delta(p_i')\rrbracket_C,\sigma_e)
   \end{array} \]
 \item Die Anweisung, die von $\llbracket \rrbracket_A$ generiert wird, darf nie blockieren und muss isomorphe Zustände beibehalten:
   \[ \begin{array}{rc}
     i(s) = \sigma_e \Rightarrow &
     (s,(p_1,\dots,p_i,\dots,p_N))\rightarrow (s',(p_1,\dots,p_i',\dots,p_N))\\
     & \Leftrightarrow\\
-    & \xymatrix { \left<\sigma_e,L\right> \ar[r]^-{\llbracket \varphi(p_i')\rrbracket_A} & \left<\sigma_e',L'\right> } \land i(s') = \sigma_e'
+    & \xymatrix { \left<\sigma_e,L\right> \ar[r]^-{\llbracket \delta(p_i')\rrbracket_A} & \left<\sigma_e',L'\right> } \land i(s') = \sigma_e'
   \end{array} \]
 \end{enumerate}
 Nun kann man die Relation $\cong$ angeben, die Zustände des abstrakten Modells mit Zuständen des übersetzten Promela-Modells in Relation setzt.
