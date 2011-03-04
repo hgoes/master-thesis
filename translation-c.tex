@@ -19,6 +19,8 @@ Diese Übersetzungsmethode führt keine Optimierungen oder Abstraktionen durch, 
 Die Kontrakte für die synchronen Komponenten werden also ignoriert.
 
 Zunächst wird jede synchrone Komponente mit Hilfe des SCADE-Compilers nach C übersetzt.
+Da der Übersetzungsprozess für jede Komponente einzeln durchgeführt werden muss, muss darauf geachtet werden, dass die Modelle keine Namenskonflikte aufweisen oder die gleichen Sub-Komponenten enthalten\cite{scade_c_integration}.
+
 Dabei generiert der Compiler für jede Komponente zwei Datenstrukturen, die eine enthält die Eingabevariablen, die andere die Ausgabevariablen sowie den internen Zustand der Komponente.
 Außerdem werden zwei Funktionen erstellt:
 Die erste initialisiert den internen Zustand der Komponente, die zweite führt einen einzelnen Berechnungsschritt der Komponente durch.
