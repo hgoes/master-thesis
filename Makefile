@@ -1,5 +1,5 @@
 SOURCES=gals.tex language.tex translation-c.tex translation-scade.tex ltl-translation.tex\
-        error-refinement.tex translation-correctness.tex
+        error-refinement.tex translation-correctness.tex implementation.tex
 
 thesis.pdf: thesis.tex ${SOURCES} lit.bib
 	pdflatex thesis.tex
