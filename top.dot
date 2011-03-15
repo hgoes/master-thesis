@@ -1,0 +1,3 @@
+graph top {
+	top [shape=box,label="&#8868;"];
+}

@@ -1,0 +1,13 @@
+graph example3 {
+	alpha [shape=circle,label="&alpha;"];
+	beta [shape=circle,label="&beta;"];
+	gamma [shape=circle,label="&gamma;"];
+	top [shape=box,label="&#8868;"];
+	bot [shape=box,label="&#8869;"];
+	alpha -- beta;
+	alpha -- gamma [style=dotted];
+	beta -- top;
+	beta -- gamma [style=dotted];
+	gamma -- top;
+	gamma -- bot [style=dotted];
+}

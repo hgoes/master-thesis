@@ -1,0 +1,7 @@
+graph con {
+	alpha [shape=circle,label="&#945;"];
+	f1 [shape=plaintext,label="f1"];
+	f2 [shape=plaintext,label="f2"];
+	alpha -- f1;
+	alpha -- f2 [style=dotted];
+}

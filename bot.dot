@@ -1,0 +1,3 @@
+graph bot {
+	bot [shape=box,label="&#8869;"];
+}

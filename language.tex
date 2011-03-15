@@ -1,4 +1,3 @@
-\section{Eingabesprache}
 Um ein zu verifizierendes GALS-Modell vollständig zu definieren müssen die folgenden Eigenschaften spezifiziert werden:
 \begin{itemize}
 \item Die synchronen Komponenten, aus denen das Gesamtsystem zusammen gesetzt wird.
@@ -47,6 +46,7 @@ Im Gegensatz zu Kontrakten können diese Formeln Variablen aus mehreren Modellen
 Die gesamte Grammatik der GTL-Sprache ist in Abbildung \ref{fig:grammar} angegeben.
 
 \begin{figure}
+  \centering
   \begin{grammar}
     <declaration> ::= `model' `[' <id> `]' <id> `(' (<argument> (`,' <argument>)*)? `)' <model\_contract>
     \alt `connect' <id> `.' <id> <id> `.' <id> `;'
@@ -80,6 +80,8 @@ Die gesamte Grammatik der GTL-Sprache ist in Abbildung \ref{fig:grammar} angegeb
   \caption{GTL Grammatik}
   \label{fig:grammar}
 \end{figure}
+
+
 
 \begin{tikzpicture}
   \node[draw] (promela) at (1.5,1) {Promela};

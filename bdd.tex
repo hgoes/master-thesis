@@ -1,0 +1,82 @@
+\section{Binäre Entscheidungsdiagramme}
+Versucht man, in einem Programm Funktionen genau wie Daten zu behandeln, so stößt man auf verschiedene Probleme:
+\begin{itemize}
+\item Wird die Funktion durch ihren Code repräsentiert, so ist die Darstellung nicht nur abhängig von der Wahl der Programmiersprache, sondern auch uneindeutig, da es in einer Turing-vollständigen Sprache unendlich viele Quelltexte gibt, die eine gegebene Funktion kodieren.
+\item Verwendet man zur Repräsentation die Wertetabelle der Funktion, so ist zwar eine eindeutige Kodierung sichergestellt, allerdings kann schon die Kodierung einer Funktion mit sehr kleinem Wertebereich enorm viel Speicher veranschlagen (Die Kodierung einer Funktion von 32-bit Integer nach Bool würde zum Beispiel schon 0.5 GB Daten benötigen).
+\end{itemize}
+Um diese Probleme zu lösen, kann man binäre Entscheidungsdiagramme (BDD)\footnote{In der englisch-sprachigen Literatur als "`binary decision diagrams"' bezeichnet und mit BDD abgekürzt} verwenden.
+Diese lassen sich verwenden, um Funktionen der Form
+\[ f : \mathbb{B}^n\rightarrow\mathbb{B} \]
+eindeutig zu kodieren (Wobei $n$ beliebig, aber endlich ist).
+
+Ein binäres Entscheidungsdiagramm ist ein gerichteter, azyklischer Graph des folgenden Aufbaus:
+\begin{itemize}
+\item Den einfachsten Fall stellen die Diagramme dar, die nur aus den Symbolen $\top$ oder $\bot$ bestehen (Abbildung \ref{fig:easy_bdd}).
+  \begin{figure}[!h]
+    \centering
+    \begin{tabular}{cc}
+      \includegraphics[scale=.5]{top} & \includegraphics[scale=.5]{bot}
+    \end{tabular}
+    \caption{Die einfachsten zwei Entscheidungsdiagramme}
+    \label{fig:easy_bdd}
+  \end{figure}
+  Diese repräsentieren die Funktion, die für alle Eingaben wahr ist ($\top$) und die Funktion, die für alle Eingaben unwahr ist ($\bot$).
+\item Möchte man die Funktion, die sich, falls die Variable $\alpha$ wahr ist, wie die Funktion $f_1$ und ansonsten wie $f_2$ verhält, kodieren, so erstellt man einen neuen Knoten mit der Bezeichnung $\alpha$ und verbindet ihn mit einer durchzogenen Linie mit dem Diagramm für $f_1$ und mit einer gestrichelten Linie mit dem Diagramm von $f_2$ (Abbildung \ref{fig:con_bdd}).
+  \begin{figure}[!h]
+    \centering
+    \includegraphics[scale=.5]{con}
+    \caption{Zusammengesetztes Entscheidungsdiagramm}
+    \label{fig:con_bdd}
+  \end{figure}
+\end{itemize}
+Mit diesen einfachen Konstruktionsregeln lassen sich nun beliebige Funktionen konstruieren.
+Beispielsweise kann die Funktion $(\alpha\land\beta)\lor \gamma$ wie in Abbildung \ref{fig:example1_bdd} kodiert werden.
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=.5]{example1}
+  \caption{Entscheidungsdiagramm der Funktion $(\alpha\land\beta)\lor \gamma$}
+  \label{fig:example1_bdd}
+\end{figure}
+Diese Art der Kodierung hat nun aber das folgende Problem: Sie ist nicht eindeutig.
+Beispielsweise stellt das Diagramm in Abbildung \ref{fig:example2_bdd} die selbe Funktion dar.
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=.5]{example2}
+  \caption{Äquivalentes Entscheidungsdiagramm der Funktion $(\alpha\land\beta)\lor \gamma$}
+  \label{fig:example2_bdd}
+\end{figure}
+Das liegt daran, dass das Diagramm in Abbildung \ref{fig:example1_bdd} viele redundante Knoten enthält:
+Beide Äste des linken $\gamma$-Knoten führen zum gleichen Knoten, dass heißt an dieser Stelle spielt die Belegung der Variablen keine Rolle.
+Die anderen beiden $\gamma$-Knoten sind äquivalent, da ihre Kinderknoten gleich sind.
+Entfernt man alle diese Redundanzen, so erhält man das \emph{reduzierte} Entscheidungsdiagramm in Abbildung \ref{fig:example3_bdd}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=.5]{example3}
+  \caption{Reduziertes Entscheidungsdiagramm der Funktion $(\alpha\land\beta)\lor \gamma$}
+  \label{fig:example3_bdd}
+\end{figure}
+
+Die Bedingung, dass das Diagramm keine redundanten Knoten aufweisen darf, reicht allerdings noch nicht aus, um eine Eindeutigkeit zu erzwingen, wie das Diagramm in Abbildung \ref{fig:example4_bdd} zeigt.
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=.5]{example4}
+  \caption{Äquivalentes reduziertes Entscheidungsdiagramm der Funktion $(\alpha\land\beta)\lor \gamma$}
+  \label{fig:example4_bdd}
+\end{figure}
+
+Um dieses Problem zu lösen, kann man fordern, dass die Diagramme zusätzlich auch \emph{geordnet} sind, dass heißt es gibt eine totale Ordnung auf den Variablen und Variablen höherer Ordnung haben Verbindungen zu Variablen niedriger Ordnung, aber nicht umgekehrt.
+Das Diagramm in Abbildung \ref{fig:example3_bdd} hat also die Ordnung $\alpha > \beta > \gamma$, während in Abbildung \ref{fig:example4_bdd} die Ordnung $\gamma > \alpha > \beta$ eingehalten wird.
+
+Die so eingeführten \emph{geordneten}, \emph{reduzierten} binären Entscheidungsdiagramme haben damit eine Reihe von Vorteilen gegenüber anderen Funktionskodierungen:
+\begin{itemize}
+\item Sie sind eindeutig, jede Funktion hat genau ein Entscheidungsdiagramm.
+  Außerdem sind sie schon eindeutig über ihren Anfangsknoten definiert, so dass ein Test auf Gleichheit in konstanter Zeit möglich ist (Zum Vergleich: Bei der Kodierung als Wertetabelle benötigt man $2^n$ Vergleiche wobei $n$ die Anzahl der Variablen ist und bei der Kodierung als Quelltext ist ein Test auf Äquivalenz in vielen Fällen prinzipiell unmöglich\footnote{Gezeigt durch die Unentscheidbarkeit des Halteproblems\cite{halteproblem}}).
+\item Eine Auswertung der Funktion ist effizient möglich:
+  An jedem Knoten wird entschieden, ob die entsprechende Variable wahr oder falsch ist und der entsprechende Ast verfolgt.
+  Endet man bei dem Knoten $\top$, so ist das Ergebnis der Funktion wahr, endet man bei $\bot$, so ist es falsch.
+\item Für viele Funktionen ist das entsprechende Entscheidungsdiagramm sehr klein.
+  Allerdings lässt sich zeigen, dass es Funktionen gibt, für die keine effiziente Repräsentation als Entscheidungsdiagramm existiert, wie zum Beispiel die Multiplikationsfunktion\cite{Bryant98onthe}.
+\item Speichert man mehrere Entscheidungsdiagramme, so kann man den Speicherbedarf enorm verringern, indem man gleiche Knoten zwischen Diagrammen teilt.
+\end{itemize}
+
+In dem Rest dieser Arbeit sind mit dem Begriff "`Entscheidungsdiagramm"' immer geordnete, reduzierte und geteilte Entscheidungsdiagramme gemeint.
