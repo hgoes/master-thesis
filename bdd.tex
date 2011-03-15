@@ -80,3 +80,39 @@ Die so eingeführten \emph{geordneten}, \emph{reduzierten} binären Entscheidung
 \end{itemize}
 
 In dem Rest dieser Arbeit sind mit dem Begriff "`Entscheidungsdiagramm"' immer geordnete, reduzierte und geteilte Entscheidungsdiagramme gemeint.
+Mehr zu Entscheidungsdiagrammen im allgemeinen lässt sich in \cite{knuth2011computer} finden.
+\subsection{Binäre Mengen}
+Die von Entscheidungsdiagrammen repräsentierten Funktionen lassen sich auch als Mengen von binären Daten auffassen:
+Die Funktion gibt hierbei an, ob sich ein Datum in der Menge befindet.
+Kodiert man natürliche Zahlen beispielsweise mit den drei Bits $b_0$, $b_1$ und $b_2$ (Wobei $b_0$ das niederwertigste Bit kodiert), so lässt sich die Menge $\{2,3,5\}$ auffassen als das Diagramm in Abbildung \ref{fig:example_set1_bdd}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=.5]{example_set1}
+  \caption{Entscheidungsdiagramm der Menge $\{2,3,5\}$}
+  \label{fig:example_set1_bdd}
+\end{figure}
+
+Verwendet man Mengen, um verschiedene mögliche Werte einer Variable zu speichern, so kann es nützlich für die Geschwindigkeit der Verifikation sein, wenn man effiziente Algorithmen finden kann, um Operationen gleichzeitig auf den einzelnen Werten der Menge auszuführen.
+Für eine binäre Operation $\circ$ wird also ein effizienter Algorithmus auf Entscheidungsdiagrammen gesucht, der für zwei Mengen $A$ und $B$ die Menge
+\[ \{ a\circ b\ |\ a\in A,b\in B\} \]
+berechnet.
+
+Um beispielsweise die elementweise Addition von zwei Mengen angeben zu können, definiert man zunächst eine Hilfsfunktion "`plus"', die zusätzlich noch einen Parameter enthält, die den Übertrag der letzten Bit-Addition speichert.
+Addiert man nun zwei Diagramme, deren Hauptknoten die selbe Markierung $x$ haben, so ergibt sich ein neues Diagramm mit dem Hauptknoten der Markierung $x$, der wie folgt aufgebaut ist:
+\[ \textrm{plus}\Bigg(\bdd{plus1_lhs},\bdd{plus1_rhs},0\Bigg) = \bdd{plus1_res} \]
+Der linke Ast des Resultats muss hierbei den Fall behandeln, dass das Ergebnis der Addition im Bit $x$ den Wert 1 erhält.
+Dies kann nur dann passieren, wenn genau eines der Argument-Bits 1 ist.
+Hierfür gibt es trivialerweise zwei Möglichkeiten, bei der einen ist das erste Argument 1 und der linke Ast des ersten Argument wird ohne Überhang mit dem rechten Ast des zweiten Arguments addiert; bei der anderen Möglichkeit ist es genau andersrum.
+Da beide Möglichkeiten auftreten können, müssen die Ergebnisse vereinigt werden, was auf Entscheidungsdiagramm-Ebene einer Disjunktion entspricht.
+Für den rechten Ast des Resultats muss man nun die Möglichkeiten betrachten, bei denen das Bit $x$ den Wert 0 erhalten kann.
+Dies kann geschehen, wenn beide Bits der Argumente 0 sind, oder wenn beide 1 sind.
+Im letzteren Fall muss dann beim rekursiven Aufruf der Überhang hinzugefügt werden.
+
+Wird bei der Addition bereits ein Überhang berücksichtigt, so ändert sich die Argumentation leicht, ist aber im wesentlichen symmetrisch:
+\[ \textrm{plus}\Bigg(\bdd{plus1_lhs},\bdd{plus1_rhs},1\Bigg) = \bdd{plus2_res} \]
+
+Im Fall, dass der Knoten eines der Argumente niedrigere Ordnung besitzt -- hier wird nur der Fall betrachtet, dass das zweite Argument niedrigere Ordnung hat, da die Addition symmetrisch ist -- kann man sich überlegen, dass das zweite Argument hierbei äquivalent zu einem Diagramm ist, bei dem ein mit $x$ markierter Knoten oben steht, dessen Äste beide zum ursprünglichen Diagramm führen.
+Setzt man dies dann in die erste Gleichung ein, so erhält man (für $y<x$):
+\[ \textrm{plus}\Bigg(\bdd{plus1_lhs},\underbrace{\bdd{plus3_rhs}}_R,0\Bigg) = \bdd{plus3_res} \]
+Die Gleichung mit Übertrag ist genau äquivalent zu den vorherigen Fällen und daher weg gelassen.
+

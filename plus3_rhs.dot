@@ -1,0 +1,7 @@
+graph plus3rhs {
+	y [shape=circle];
+	C [shape=plaintext];
+	D [shape=plaintext];
+	y -- C;
+	y -- D [style=dotted];
+}

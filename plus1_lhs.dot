@@ -1,0 +1,7 @@
+graph plus1lhs {
+	x [shape=circle,label="x"];
+	A [shape=plaintext];
+	B [shape=plaintext];
+	x -- A;
+	x -- B [style=dotted];
+}

@@ -1,0 +1,19 @@
+graph exampleset1 {
+	b0 [shape=circle,label="b0"];
+	b1_1 [shape=circle,label="b1"];
+	b1_2 [shape=circle,label="b1"];
+	b2_1 [shape=circle,label="b2"];
+	b2_2 [shape=circle,label="b2"];
+	top [shape=box,label="&#8868;"];
+	bot [shape=box,label="&#8869;"];
+	b0 -- b1_1;
+	b0 -- b1_2 [style=dotted];
+	b1_1 -- b2_1;
+	b1_1 -- b2_2 [style=dotted];
+	b1_2 -- b2_1;
+	b1_2 -- bot [style=dotted];
+	b2_1 -- bot;
+	b2_1 -- top [style=dotted];
+	b2_2 -- top;
+	b2_2 -- bot [style=dotted];
+}
