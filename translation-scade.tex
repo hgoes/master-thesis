@@ -1,6 +1,12 @@
 \section{SCADE Übersetzung}
 Diese Übersetzungsmethode wird benutzt, um die Korrektheit der Kontrakte für synchrone Komponenten zu verifizieren.
 Dazu wird für jede Komponente ein SCADE-Knoten erstellt, der dann im Design-Verifier der SCADE-Suite auf Korrektheit getestet werden kann.
-
 Der generierte Testknoten überwacht alle Ein- und Ausgänge der Komponente und gibt eine boolesche Variable zurück, die wahr ist, wenn die geforderte Eigenschaft erfüllt ist und falsch ist, wenn sie verletzt ist.
 Der Design-Verifier kann nun benutzt werden, um sicher zu stellen, dass die ausgegebene Variable immer wahr ist.
+
+Der Büchi-Automat, der die zu verifizierende Eigenschaft der Komponente darstellt, wird hierfür in eine SCADE-Zustandsmaschine übersetzt.
+Jeder Zustand der Maschine definiert einen Wert für die Resultat-Variable.
+Die Transitionen von Zustand $A$ in Zustand $B$ erhalten genau die Bedingungen, die in Zustand $B$ gelten müssen.
+Zusätzlich zu den vom Büchi-Automaten vorgesehenen Transitionen erhält jeder Zustand noch eine Transition in den Fehlerzustand:
+In diesem hat die Resultat-Variable den Wert falsch.
+Die Transition ist von niedrigster Priorität, wird also nur dann geschaltet, wenn keine andere Transition schalten kann.
