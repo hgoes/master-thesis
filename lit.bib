@@ -59,6 +59,177 @@
   timestamp = {2011.03.04}
 }
 
+@BOOK{spinbook,
+  title = {{The SPIN Model Checker: Primer and Reference Manual}},
+  publisher = {Addison-Wesley Professional},
+  year = {2003},
+  author = {Holzmann, Gerard J.},
+  month = sep,
+  abstract = {{Preface ''The worst thing about new books is thatthey keep us from
+	reading the old ones.' '(Joseph Joubert, 1754-1824) A system is correct
+	if it meets its design requirements. This much is agreed.But if the
+	system we are designing is a piece of software, especially if itinvolves
+	concurrency, how can we show this? It is not enough to merely showthat
+	a system can meet its requirements. A few tests generally suffice
+	todemonstrate that. The real test is to show that a system cannot
+	fail to meet itsrequirements. Dijkstra's well-known dictum on testing1
+	applies especially to concurrentsoftware: the non-determinism of
+	concurrent system executions makes it hardto devise a traditional
+	test suite with sufficient coverage. There are fundamentalproblems
+	here, related to both the limited controllability of events in distributedsystem
+	executions and to the limited observability of those events. A well-designed
+	system provably meets its design requirements. But, if wecannot achieve
+	this degree of certainty with standard test methods, what elsecan
+	we do? Using standard mathematics is not much of an option in thisdomain.
+	A thorough hand proof of even simple distributed programs canchallenge
+	the most hardened mathematician. At first blush, mechanical proofprocedures
+	also do not seem to hold much promise: it was shown long ago that
+	it is fundamentally impossible to construct a general proof procedure
+	forarbitrary programs.3 So what gives? 1. The quote ''Program testing
+	can be used to show the presence of bugs, but never to showtheir
+	absence'' first appeared in Dijkstra 1972, p. 6. The quote has a
+	curious pendant in Dijkstra1965 that is rarely mentioned: ''One can
+	never guarantee that a proof is correct, the bestone can say is:
+	"I have not discovered any mistakes."'' 2. For instance, process
+	scheduling decisions made simultaneously by different processors
+	atdistinct locations in a larger network. Fortunately, if some modest
+	conditions are met, we can mechanically verifythe correctness of
+	distributed systems software. It is the subject of this bookto show
+	what these ''modest conditions'' are and how we can use relativelysimple
+	tool-based verification techniques to tackle demanding software designproblems.
+	LOGIC MODEL CHECKING The method that we will use to check the correctness
+	of software designs isstandard in most engineering disciplines. The
+	method is called model checking.When the software itself cannot be
+	verified exhaustively, we can build asimplified model of the underlying
+	design that preserves its essential characteristicsbut that avoids
+	known sources of complexity. The design model canoften be verified,
+	while the full-scale implementation cannot. Bridge builders and airplane
+	designers apply much the same technique whenfaced with complex design
+	problems. By building and analyzing models (orprototypes) the risk
+	of implementing a subtly flawed design is reduced. It isoften too
+	expensive to locate or fix design errors once they hav e reached
+	theimplementation phase. The same is true for the design of complex
+	software.The modeling techniques that we discuss in this book work
+	especially well forconcurrent software, which, as luck will have
+	it, is also the most difficult todebug and test with traditional
+	means. The models we will build can be seen as little programs, written
+	in, what mayat first look like, a strangely abstract language. The
+	models that are written inthis language are in fact executable. The
+	behaviors they specify can be simulatedand explored exhaustively
+	by the model checker in the hunt for logicerrors. Constructing and
+	executing these high-level models can be fun andinsightful. It often
+	also gives a sufficiently different perspective on a programmingproblem
+	that may lead to new solutions, even before any precise checks are
+	performed. A logic model checker is designed to use efficient procedures
+	for characterizingall possible executions, rather than a small subset,
+	as one might see in trialexecutions. Since it can explore all behaviors,
+	the model checker can apply arange of sanity checks to the design
+	model, and it can successfully identifyunexecutable code, or potentially
+	deadlocking concurrent executions. It canev en check for compliance
+	with complex user-defined correctness criteria.Model checkers are
+	unequalled in their ability to locate subtle bugs in systemdesigns,
+	providing far greater control than the more traditional methods basedon
+	human inspection, testing, or random simulation. Model checking techniques
+	have been applied in large scale industrial applications,to reduce
+	the reliance on testing, to detect design flaws early in adesign
+	cycle, or to prove their absence in a final design. Some examples
+	ofthese applications are discussed in this book. THE SPIN MODEL CHECKER
+	The methodology we describe in this book centers on the use of the
+	modelchecker SPIN. This verification system was developed at Bell
+	Labs in theeighties and nineties and is freely available from the
+	Web (see Appendix D).The tool continues to evolve and has over many
+	years attracted a fairly broadgroup of users in both academia and
+	industry. At the time of writing, SPIN isone of the most widely used
+	logic model checkers in the world. In 2002 SPIN was recognized by
+	the ACM (the Association for ComputingMachinery) with its most prestigious
+	Software System Award. In receivingthis award, SPIN was placed in
+	the league of truly breakthrough software systemssuch as UNIX, TeX,
+	Smalltalk, Postscript, TCP/IP, and Tcl/Tk. Theaw ard has brought
+	a significant amount of additional attention to the tool andits underlying
+	technology. With all these developments there has been agrowing need
+	for a single authoritative and comprehensive user guide. Thisbook
+	is meant to be that guide. The material in this book can be used
+	either as classroom material or as aself-study guide for new users
+	who want to learn about the background anduse of logic model checking
+	techniques. A significant part of the book isdevoted to a comprehensive
+	set of reference materials for SPIN that combinesinformation that
+	both novice and experienced users can apply on a daily basis. BOOK
+	STRUCTURE SPIN can be used to thoroughly check high-level models
+	of concurrent systems.This means that we first have to explain how
+	one can convenientlymodel the behavior of a concurrent system in
+	such a way that SPIN can checkit. Next, we have to show how to define
+	correctness properties for the detailedchecks, and how to design
+	abstraction methods that can be used to renderseemingly complex verification
+	problems tractable. We do all this in the firstpart of this book,
+	Chapters 1 to 5. The second part, Chapters 6 to 10, provides a treatment
+	of the theory behindsoftware model checking, and a detailed explanation
+	of the fundamental algorithmsthat are used in SPIN. The third part
+	of the book, Chapters 11 to 15, contains more targeted help ingetting
+	started with the practical application of the tool. In this part
+	of thebook we discuss the command line interface to SPIN, the graphical
+	user interfaceXSPIN, and also a closely related graphical tool that
+	can be used for anintuitive specification of correctness properties,
+	the Timeline editor. This partis concluded with a discussion of the
+	application of SPIN to a range of standardproblems in distributed
+	systems design. Chapters 16 to 19, the fourth and last part of the
+	book, include a complete setof reference materials for SPIN and its
+	input language, information that was sofar only available in scattered
+	form in books, tutorials, papers, and Web pages.This part contains
+	a full set of manual pages for every language construct andev ery
+	tool option available in the most recent versions of SPIN and XSPIN.The
+	Web site http://spinroot.com/spin/Doc/Book\_extras/ contains online
+	versions of all examples used in this book, some lecture materials,
+	and an up to date list of errata. For courses in model checking techniques,
+	the material included here can provideboth a thorough understanding
+	of the theory of logic model checking andhands-on training with the
+	practical application of a well-known model checkingsystem. For a
+	more targeted use that is focused directly on the practicalapplication
+	of SPIN, the more foundational part of the book can be skipped.A
+	first version of this text was used for several courses in formal
+	verificationtechniques that I taught at Princeton University in New
+	Jersey, at ColumbiaUniversity in New York, and at the Royal Institute
+	of Technology in Stockholm,Sweden, in the early nineties. I am most
+	grateful to everyone who gavefeedback, caught errors, and made suggestions
+	for improvements, as well as toall dedicated SPIN users who have
+	graciously done this throughout the years,and who fortunately continue
+	to do so. I especially would like to thank Dragan Bosnacki, from
+	Eindhoven Universityin The Netherlands, who read multiple drafts
+	for this book with an unusuallykeen eye for spotting inconsistencies,
+	and intercepting flaws. I would alsolike to thank Al Aho, Rajeev
+	Alur, Jon Bentley, Ramesh Bharadwaj, EdBrinksma, Marsha Chechik,
+	Costas Courcoubetis, Dennis Dams, Matt Dwyer,Vic Du, Kousha Etessami,
+	Michael Ferguson, Rob Gerth, Patrice Godefroid,Jan Hajek, John Hatcliff,
+	Klaus Havelund, Leszek Holenderski, BrianKernighan, Orna Kupferman,
+	Bob Kurshan, Pedro Merino, Alice Miller, DougMcIlroy, Anna Beate
+	Oestreicher, Doron Peled, Rob Pike, Amir Pnueli, AnujPuri, Norman
+	Ramsey, Jim Reeds, Dennis Ritchie, Willem-Paul de Roever,Judi Romijn,
+	Theo Ruys, Ravi Sethi, Margaret Smith, Heikki Tauriainen, KenThompson,
+	Howard Trickey, Moshe Vardi, Phil Winterbottom, Pierre Wolper,Mihalis
+	Yannakakis, and Ozan Yigit, for their often profound influence thathelped
+	to shape the tool, and this book. Gerard J. Holzmann gholzmann@acm.org
+	}},
+  citeulike-article-id = {689167},
+  citeulike-linkout-0 = {http://www.amazon.ca/exec/obidos/redirect?tag=citeulike09-20\&amp;path=ASIN/0321228626},
+  citeulike-linkout-1 = {http://www.amazon.de/exec/obidos/redirect?tag=citeulike01-21\&amp;path=ASIN/0321228626},
+  citeulike-linkout-2 = {http://www.amazon.fr/exec/obidos/redirect?tag=citeulike06-21\&amp;path=ASIN/0321228626},
+  citeulike-linkout-3 = {http://www.amazon.jp/exec/obidos/ASIN/0321228626},
+  citeulike-linkout-4 = {http://www.amazon.co.uk/exec/obidos/ASIN/0321228626/citeulike00-21},
+  citeulike-linkout-5 = {http://www.amazon.com/exec/obidos/redirect?tag=citeulike07-20\&path=ASIN/0321228626},
+  citeulike-linkout-6 = {http://www.worldcat.org/isbn/0321228626},
+  citeulike-linkout-7 = {http://books.google.com/books?vid=ISBN0321228626},
+  citeulike-linkout-8 = {http://www.amazon.com/gp/search?keywords=0321228626\&index=books\&linkCode=qs},
+  citeulike-linkout-9 = {http://www.librarything.com/isbn/0321228626},
+  day = {14},
+  howpublished = {Hardcover},
+  isbn = {0321228626},
+  keywords = {checking, model},
+  owner = {guenther},
+  posted-at = {2006-06-08 00:32:12},
+  priority = {2},
+  timestamp = {2011.03.16},
+  url = {http://www.amazon.com/exec/obidos/redirect?tag=citeulike07-20\&path=ASIN/0321228626}
+}
+
 @BOOK{knuth2011computer,
   title = {The Art of Computer Programming, Volume 4A: Combinatorial Algorithms,
 	Part 1},
