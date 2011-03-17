@@ -1,3 +1,6 @@
 \section{LTL Übersetzung}
 Um LTL Formeln einfacher übersetzen zu können und zu kanonisieren, werden diese in Büchi-Automaten übersetzt.
 Diese Übersetzung benutzt den in \cite{Gerth95simpleon-the-fly} beschriebenen Algorithmus.
+
+Da der Übersetzungsalgorithmus keine "`always"'-Konstrukte zulässt, müssen diese zunächst mit der folgenden Identität transformiert werden:
+\[ \textbf{always}\ \varphi = \lnot\top U \lnot\varphi \]
