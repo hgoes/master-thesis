@@ -2,5 +2,95 @@
 Um LTL Formeln einfacher übersetzen zu können und zu kanonisieren, werden diese in Büchi-Automaten übersetzt.
 Diese Übersetzung benutzt den in \cite{Gerth95simpleon-the-fly} beschriebenen Algorithmus.
 
-Da der Übersetzungsalgorithmus keine "`always"'-Konstrukte zulässt, müssen diese zunächst mit der folgenden Identität transformiert werden:
+Da der Übersetzungsalgorithmus keine \emph{always}-Konstrukte zulässt, müssen diese zunächst mit der folgenden Identität transformiert werden:
 \[ \textbf{always}\ \varphi = \lnot\top U \lnot\varphi \]
+Außerdem müssen für den Algorithmus alle Negationen so weit wie möglich nach innen geschoben werden, bis sie nur noch vor atomaren Aussagen stehen.
+Um die Größe der Formeln nicht unnötig zu erhöhen wird dual zum \emph{until}-Operator $U$ der Operator $V$ eingeführt, der über die folgende Identität definiert ist:
+\[ \varphi V\psi = \lnot (\lnot\varphi U\lnot\psi) \]
+
+Für die Konstruktion des Büchi-Automaten wird ein Graph aufgebaut, der Schrittweise erweitert wird, bis der Büchi-Automat vollständig ist.
+Die Knoten des Graphen benötigen die folgenden Felder:
+\begin{description}
+\item[Name] Ein eindeutiger Bezeichner für den Knoten.
+  Es wird vorausgesetzt, dass es eine Funktion \emph{new\_name} existiert, die bei jedem Aufruf einen neuen, eindeutigen Namen zurück gibt.
+\item[Incoming] Gibt die Knoten an, die eine Kante in diesen Knoten besitzen.
+  Das Symbol \emph{init} wird verwendet, um anzuzeigen, dass der Knoten initial ist.
+\item[New] Eine Liste von Formeln, die noch nicht bearbeitet wurde.
+\item[Old] Die Liste der Formeln, die bereits abgearbeitet wurden.
+\item[Next] Formeln, die in allen Nachfolgeknoten gelten müssen.
+\end{description}
+Der Anfangsknoten hat einen beliebigen Namen, das Symbol \emph{init} in der \emph{Incoming}-Menge und die gesamte zu übersetzende Formel als \emph{New}-Feld.
+Die restlichen Felder sind leer.
+Der zentrale Bestandteil des Algorithmus ist die \emph{expand}-Funktion.
+Diese nimmt einen Knoten und die Menge aller bisher generierten Knoten und erstellt durch rekursive Aufrufe ihrer selbst die resultierende Knotenmenge.
+
+\begin{codebox}
+\Procname{$\proc{Expand}(Node,NodeSet)$}
+\li \If $\attrib{Node}{New}\isequal\emptyset$ \Then
+\li \If $\exists N\in NodeSet: \attrib{N}{Old}\isequal\attrib{Node}{Old} \mbox{ and } \attrib{N}{Next}\isequal\attrib{Node}{Next}$ \Then
+\li $\attrib{N}{Incoming}\gets \attrib{N}{Incoming}\cup\attrib{Node}{Incoming}$
+\li \Return $NodeSet$
+\li \Else \Return $\proc{Expand}([Name\gets \proc{NewName}(),Incoming\gets \{\attrib{Node}{Name}\},$
+\Startalign{\Return $\proc{Expand}([$}
+\> $New\gets\attrib{Node}{Next}, Old\gets\emptyset, Next\gets\emptyset],$\\
+\> $\{Node\}\cup NodeSet)$
+\Stopalign
+\li \Else
+\li $\eta\gets \attrib{Node}{New}[0]$
+\li $\attrib{Node}{New}\gets\attrib{Node}{New}\setminus\{\eta\}$
+\li \If $\eta\isequal P\mbox{ or }\eta\isequal\lnot P\mbox{ or }\eta\isequal\top\mbox{ or }\eta\isequal\bot$ \Then
+\li \If $\eta\isequal\bot\mbox{ or }\lnot\eta\in\attrib{Node}{Old}$
+\li \Then \Return $NodeSet$
+\li \Else
+\li $\attrib{Node}{Old}\gets \attrib{Node}{Old}\cup\{\eta\}$
+\li \Return $\proc{Expand}(Node,NodeSet)$
+\End
+\li \ElseIf $\eta\isequal\varphi U\psi$ \Then
+\li $Node1\gets [Name\gets\proc{NewName}(),Incoming\gets\attrib{Node}{Incoming},$
+\Startalign{$Node1\gets [$}
+\> $New\gets\attrib{Node}{New}\cup(\{\proc{New1}(\eta)\}\setminus\attrib{Node}{Old}),$\\
+\> $Old\gets\attrib{Node}{Old}\cup\{\eta\},Next\gets\attrib{Node}{Next}\cup\{\proc{Next1}(\eta)\}]$
+\Stopalign
+\li $Node2\gets [Name\gets\proc{NewName}(),Incoming\gets\attrib{Node}{Incoming},$
+\Startalign{$Node2\gets [$}
+\> $New\gets\attrib{Node}{New}\cup(\{\proc{New2}(\eta)\}\setminus\attrib{Node}{Old}),$\\
+\> $Old\gets\attrib{Node}{Old}\cup\{\eta\},Next\gets\attrib{Node}{Next} ]$
+\Stopalign
+\li \Return $\proc{Expand}(Node2,\proc{Expand}(Node1,NodeSet))$
+
+\li \ElseIf $\eta\isequal\varphi\land\psi$\Then
+\li \Return $\proc{Expand}([Name\gets\attrib{Node}{Name},Incoming\gets\attrib{Node}{Incoming},$
+\Startalign{\Return $\proc{Expand}([$}
+\> $New\gets\attrib{Node}{New}\cup(\{\varphi,\psi\}\setminus\attrib{Node}{Old}),$\\
+\> $Old\gets\attrib{Node}{Old}\cup\{\eta\},Next\gets\attrib{Node}{Next}],NodeSet)$
+\Stopalign
+
+\li \ElseIf $\eta\isequal X\varphi$ \Then
+\li \Return $\proc{Expand}([Name\gets\attrib{Node}{Name},Incoming\gets\attrib{Node}{Incoming},$
+\Startalign{\Return $\proc{Expand}([$}
+\> $New\gets\attrib{Node}{New},Old\gets\attrib{Node}{Old}\cup\{\eta\},$\\
+\> $Next\gets\attrib{Node}{Next}\cup\{\varphi\}],NodeSet)$
+\Stopalign
+\End
+\End
+\End
+\end{codebox}
+Die Hilfsfunktionen \proc{New1}, \proc{New2} und \proc{Next1} sind hierbei über Tabelle \ref{tab:helper_funcs} definiert.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+    $\eta$ & \proc{New1} & \proc{Next1} & \proc{New2}\\
+    \hline
+    \hline
+    $\varphi U\psi$ & $\{\varphi\}$ & $\{\varphi U\psi\}$ & $\{\psi\}$\\
+    \hline
+    $\varphi V\psi$ & $\{\psi\}$ & $\{\varphi V\psi\}$ & $\{\varphi,\psi\}$\\
+    \hline
+    $\varphi\lor\psi$ & $\{\varphi\}$ & $\emptyset$ & $\{\psi\}$\\
+    \hline
+  \end{tabular}
+  \caption{Hilfsfunktionen}
+  \label{tab:helper_funcs}
+\end{table}
