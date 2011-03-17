@@ -1,4 +1,3 @@
-\section{GALS-Architekturen}
 Ein GALS System -- GALS steht für "`Globally asynchronous, locally synchronous"' -- besteht aus mehreren synchronen Komponenten, die asynchron miteinander kommunizieren.
 Formal kann ein synchrones System $\alpha$ vollständig als ein 4-Tupel
 \[ \alpha = (I,O,S,t,f) \]
@@ -20,17 +19,17 @@ darstellen, wobei die Komponenten folgende Bedeutung haben:
 \item Die Relation $\mathcal{C}\subseteq V\times V$ gibt an, welche Ausgangsvariablen mit welchen Eingangsvariablen verknüpft sind.
 \end{itemize}
 
-\subsection{Semantik}
+\section{Semantik}
 Diese Defintionen geben natürlich noch keinen Aufschluss über die Interpretationsweise der so spezifizierten GALS-Systeme.
 Sie geben lediglich Aufschluss über die Verknüpfung der einzelnen synchronen Komponenten, nicht aber über deren Ausführung.
 Tatsächlich bieten sich eine Vielzahl von Möglichkeiten an, ein gegebenes GALS-System auszuführen.
 Einige davon sollen hier vorgestellt werden.
 
-\subsubsection{Synchrone Ausführung}
+\subsection{Synchrone Ausführung}
 Es ist möglich, ein GALS-System als ein synchrones System zu interpretieren, in dem alle Komponenten gleichzeitig ihre Berechnungsschritte ausführen.
-\subsection{Vollständig asynchrones System}
+\section{Vollständig asynchrones System}
 In der vollständig asynchronenen Semantik können Komponenten zu jedem Zeitpunkt, unabhängig von dem Ausführungsstand der anderen, einen Schritt ausführen.
 Das bedeutet also, dass auch Extremfälle wie der, bei dem nur eine Komponente die gesamte Zeit Schritte ausführt, berücksichtigt werden.
 Diese Semantik deckt zwar jede Ausführungsreihenfolge der Komponenten ab, ist aber nicht unbedingt realistisch.
-\subsection{Asynchone Ausführung mit Schranken}
+\section{Asynchone Ausführung mit Schranken}
 Um die Probleme der vollständig asynchronen Ausführung zu umgehen kann man die Asynchronität soweit begrenzen, dass die Anzahl der ausgeführten Schritte nie um mehr als einen festen Wert divergiert.
