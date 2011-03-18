@@ -12,64 +12,64 @@ Für die Konstruktion des Büchi-Automaten wird ein Graph aufgebaut, der Schritt
 Die Knoten des Graphen benötigen die folgenden Felder:
 \begin{description}
 \item[Name] Ein eindeutiger Bezeichner für den Knoten.
-  Es wird vorausgesetzt, dass es eine Funktion \emph{new\_name} existiert, die bei jedem Aufruf einen neuen, eindeutigen Namen zurück gibt.
+  Es wird vorausgesetzt, dass es eine Funktion \proc{NewName} existiert, die bei jedem Aufruf einen neuen, eindeutigen Namen zurück gibt.
 \item[Incoming] Gibt die Knoten an, die eine Kante in diesen Knoten besitzen.
-  Das Symbol \emph{init} wird verwendet, um anzuzeigen, dass der Knoten initial ist.
+  Das Symbol \const{init} wird verwendet, um anzuzeigen, dass der Knoten initial ist.
 \item[New] Eine Liste von Formeln, die noch nicht bearbeitet wurde.
 \item[Old] Die Liste der Formeln, die bereits abgearbeitet wurden.
 \item[Next] Formeln, die in allen Nachfolgeknoten gelten müssen.
 \end{description}
-Der Anfangsknoten hat einen beliebigen Namen, das Symbol \emph{init} in der \emph{Incoming}-Menge und die gesamte zu übersetzende Formel als \emph{New}-Feld.
+Der Anfangsknoten hat einen beliebigen Namen, das Symbol \const{Init} in der \emph{Incoming}-Menge und die gesamte zu übersetzende Formel als \emph{New}-Feld.
 Die restlichen Felder sind leer.
 Der zentrale Bestandteil des Algorithmus ist die \emph{expand}-Funktion.
 Diese nimmt einen Knoten und die Menge aller bisher generierten Knoten und erstellt durch rekursive Aufrufe ihrer selbst die resultierende Knotenmenge.
 
 \begin{codebox}
-\Procname{$\proc{Expand}(Node,NodeSet)$}
+\Procname{$\proc{Expand}(\id{Node},\id{NodeSet})$}
 \li \If $\attrib{Node}{New}\isequal\emptyset$ \Then
 \li \If $\exists N\in NodeSet: \attrib{N}{Old}\isequal\attrib{Node}{Old} \mbox{ and } \attrib{N}{Next}\isequal\attrib{Node}{Next}$ \Then
 \li $\attrib{N}{Incoming}\gets \attrib{N}{Incoming}\cup\attrib{Node}{Incoming}$
-\li \Return $NodeSet$
-\li \Else \Return $\proc{Expand}([Name\gets \proc{NewName}(),Incoming\gets \{\attrib{Node}{Name}\},$
+\li \Return \id{NodeSet}
+\li \Else \Return $\proc{Expand}([\id{Name}\gets \proc{NewName}(),\id{Incoming}\gets \{\attrib{Node}{Name}\},$
 \Startalign{\Return $\proc{Expand}([$}
-\> $New\gets\attrib{Node}{Next}, Old\gets\emptyset, Next\gets\emptyset],$\\
-\> $\{Node\}\cup NodeSet)$
+\> $\id{New}\gets\attrib{Node}{Next}, \id{Old}\gets\emptyset, \id{Next}\gets\emptyset],$\\
+\> $\{\id{Node}\}\cup \id{NodeSet})$
 \Stopalign
 \li \Else
 \li $\eta\gets \attrib{Node}{New}[0]$
 \li $\attrib{Node}{New}\gets\attrib{Node}{New}\setminus\{\eta\}$
 \li \If $\eta\isequal P\mbox{ or }\eta\isequal\lnot P\mbox{ or }\eta\isequal\top\mbox{ or }\eta\isequal\bot$ \Then
 \li \If $\eta\isequal\bot\mbox{ or }\lnot\eta\in\attrib{Node}{Old}$
-\li \Then \Return $NodeSet$
+\li \Then \Return \id{NodeSet}
 \li \Else
 \li $\attrib{Node}{Old}\gets \attrib{Node}{Old}\cup\{\eta\}$
-\li \Return $\proc{Expand}(Node,NodeSet)$
+\li \Return $\proc{Expand}(\id{Node},\id{NodeSet})$
 \End
-\li \ElseIf $\eta\isequal\varphi U\psi$ \Then
-\li $Node1\gets [Name\gets\proc{NewName}(),Incoming\gets\attrib{Node}{Incoming},$
-\Startalign{$Node1\gets [$}
-\> $New\gets\attrib{Node}{New}\cup(\{\proc{New1}(\eta)\}\setminus\attrib{Node}{Old}),$\\
-\> $Old\gets\attrib{Node}{Old}\cup\{\eta\},Next\gets\attrib{Node}{Next}\cup\{\proc{Next1}(\eta)\}]$
+\li \ElseIf $\eta\isequal\varphi U\psi\mbox{ or }\eta\isequal\varphi V\psi\mbox{ or }\eta\isequal\varphi\lor\psi$ \Then
+\li $\id{Node1}\gets [\id{Name}\gets\proc{NewName}(),\id{Incoming}\gets\attrib{Node}{Incoming},$
+\Startalign{$\id{Node1}\gets [$}
+\> $\id{New}\gets\attrib{Node}{New}\cup(\{\proc{New1}(\eta)\}\setminus\attrib{Node}{Old}),$\\
+\> $\id{Old}\gets\attrib{Node}{Old}\cup\{\eta\},\id{Next}\gets\attrib{Node}{Next}\cup\{\proc{Next1}(\eta)\}]$
 \Stopalign
-\li $Node2\gets [Name\gets\proc{NewName}(),Incoming\gets\attrib{Node}{Incoming},$
-\Startalign{$Node2\gets [$}
-\> $New\gets\attrib{Node}{New}\cup(\{\proc{New2}(\eta)\}\setminus\attrib{Node}{Old}),$\\
-\> $Old\gets\attrib{Node}{Old}\cup\{\eta\},Next\gets\attrib{Node}{Next} ]$
+\li $\id{Node2}\gets [\id{Name}\gets\proc{NewName}(),\id{Incoming}\gets\attrib{Node}{Incoming},$
+\Startalign{$\id{Node2}\gets [$}
+\> $\id{New}\gets\attrib{Node}{New}\cup(\{\proc{New2}(\eta)\}\setminus\attrib{Node}{Old}),$\\
+\> $\id{Old}\gets\attrib{Node}{Old}\cup\{\eta\},\id{Next}\gets\attrib{Node}{Next} ]$
 \Stopalign
-\li \Return $\proc{Expand}(Node2,\proc{Expand}(Node1,NodeSet))$
+\li \Return $\proc{Expand}(\id{Node2},\proc{Expand}(\id{Node1},\id{NodeSet}))$
 
 \li \ElseIf $\eta\isequal\varphi\land\psi$\Then
-\li \Return $\proc{Expand}([Name\gets\attrib{Node}{Name},Incoming\gets\attrib{Node}{Incoming},$
+\li \Return $\proc{Expand}([\id{Name}\gets\attrib{Node}{Name},\id{Incoming}\gets\attrib{Node}{Incoming},$
 \Startalign{\Return $\proc{Expand}([$}
-\> $New\gets\attrib{Node}{New}\cup(\{\varphi,\psi\}\setminus\attrib{Node}{Old}),$\\
-\> $Old\gets\attrib{Node}{Old}\cup\{\eta\},Next\gets\attrib{Node}{Next}],NodeSet)$
+\> $\id{New}\gets\attrib{Node}{New}\cup(\{\varphi,\psi\}\setminus\attrib{Node}{Old}),$\\
+\> $\id{Old}\gets\attrib{Node}{Old}\cup\{\eta\},\id{Next}\gets\attrib{Node}{Next}],\id{NodeSet})$
 \Stopalign
 
-\li \ElseIf $\eta\isequal X\varphi$ \Then
-\li \Return $\proc{Expand}([Name\gets\attrib{Node}{Name},Incoming\gets\attrib{Node}{Incoming},$
+\li \ElseIf $\eta\isequal \textbf{next }\varphi$ \Then
+\li \Return $\proc{Expand}([\id{Name}\gets\attrib{Node}{Name},\id{Incoming}\gets\attrib{Node}{Incoming},$
 \Startalign{\Return $\proc{Expand}([$}
-\> $New\gets\attrib{Node}{New},Old\gets\attrib{Node}{Old}\cup\{\eta\},$\\
-\> $Next\gets\attrib{Node}{Next}\cup\{\varphi\}],NodeSet)$
+\> $\id{New}\gets\attrib{Node}{New},\id{Old}\gets\attrib{Node}{Old}\cup\{\eta\},$\\
+\> $\id{Next}\gets\attrib{Node}{Next}\cup\{\varphi\}],\id{NodeSet})$
 \Stopalign
 \End
 \End
@@ -91,6 +91,13 @@ Die Hilfsfunktionen \proc{New1}, \proc{New2} und \proc{Next1} sind hierbei über
     $\varphi\lor\psi$ & $\{\varphi\}$ & $\emptyset$ & $\{\psi\}$\\
     \hline
   \end{tabular}
-  \caption{Hilfsfunktionen}
+  \caption{Hilfsfunktionen für den LTL Übersetzungsalgorithmus}
   \label{tab:helper_funcs}
 \end{table}
+
+Um eine gegebene Formel $\varphi$ zu übersetzen, ruft man die Funktion also wie folgt auf:
+\[ \proc{Expand}([\id{Name}\gets\proc{NewName}(),\id{Incoming}\gets\const{Init},\id{New}\gets\{\varphi\},\id{Old}\gets\emptyset,\id{Next}\gets\emptyset],\emptyset) \]
+Per Konstruktion ist am Ende des Durchlaufs das \id{New}-Feld aller Knoten leer.
+Die atomaren Aussagen in den \id{Old}-Feldern der Knoten stellen die Aussagen dar, die in dem entsprechenden Zustand des Büchi-Automaten wahr sein müssen.
+Um den Graphen zu konstruieren, müssen noch die die Informationen der \id{Incoming}-Felder verwendet werden, um die Folgezustände von jedem Zustand zu berechnen.
+Die \id{Next}-Felder enthalten keine relevanten Informationen für den Büchi-Automaten.
