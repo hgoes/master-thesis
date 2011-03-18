@@ -17,13 +17,18 @@
 
 Diese Übersetzungsmethode führt keine Optimierungen oder Abstraktionen durch, sondern simuliert das Modell exakt so, wie durch die Spezifikation angegeben.
 Die Kontrakte für die synchronen Komponenten werden also ignoriert.
+Um die Komponenten zu simulieren reichen die Informationen in der GTL-Spezifikation nicht aus, denn die Modell sind hier nur als Referenzen vorhanden.
+Die eigentliche Implementierung findet in den synchronen Formalismen statt, also in dieser Arbeit in SCADE.
+Die SCADE-Komponenten müssen also nach Promela übersetzt werden, damit das Gesamtmodell simuliert und verifiziert werden kann.
+Eine direkte Übersetzung ist zwar prinzipiell möglich, aber aufgrund der Mächtigkeit der SCADE Sprache mit sehr viel Aufwand verbunden.
+Einfacher ist es, die von SCADE angebotene C-Übersetzung zu verwenden und den generierten C-Code in Promela einzubinden, was SPIN seit Version 4 erlaubt.
 
 Zunächst wird jede synchrone Komponente mit Hilfe des SCADE-Compilers nach C übersetzt.
 Da der Übersetzungsprozess für jede Komponente einzeln durchgeführt werden muss, muss darauf geachtet werden, dass die Modelle keine Namenskonflikte aufweisen oder die gleichen Sub-Komponenten enthalten\cite{scade_c_integration}.
 
-Dabei generiert der Compiler für jede Komponente zwei Datenstrukturen, die eine enthält die Eingabevariablen, die andere die Ausgabevariablen sowie den internen Zustand der Komponente.
+Der Compiler generiert nun für jede Komponente zwei Datenstrukturen, die erste enthält die Eingabevariablen und erhält das Namensprefix "`inC\_"', die zweite enthält die Ausgabevariablen sowie den internen Zustand der Komponente und ist mit dem Prefix "`outC\_"' versehen.
 Außerdem werden zwei Funktionen erstellt:
-Die erste initialisiert den internen Zustand der Komponente, die zweite führt einen einzelnen Berechnungsschritt der Komponente durch.
+Die erste initialisiert den internen Zustand der Komponente und hat das Suffix "`\_reset"', die zweite führt einen einzelnen Berechnungsschritt der Komponente durch und ist genau wie die Komponente benannt.
 
 %Jede synchrone Komponente wird nun durch einen Promela-Prozess repräsentiert, der zunächst die Datenstrukturen initialisiert und dann in jedem Schritt die Eingabevariablen in die C-Datenstruktur kopiert, die Schrittfunktion aufruft und die Ergebnisse in die Ausgabevariablen schreibt.
 Die Übersetzung geht nun wie folgt vor:
@@ -67,3 +72,32 @@ c_code {
 }
   \end{lstlisting}
 \end{enumerate}
+Die gesamte Übersetzung des vorgestellten Modells sieht also so aus:
+\begin{lstlisting}[language=promela]
+c_code {
+  \#include "Engine.h"
+}
+
+c_state "outC_Engine Engine_state" "Global"
+
+c_decl {
+  inC_Engine Engine_input;
+}
+
+proctype Power { ... }
+proctype SpeedRegulator { ... }
+
+proctype Engine {
+  c_code {
+    Engine_reset(&now.Engine_state);
+  };
+  do
+  :: c_code {
+       Engine(&Engine_input,&now.Engine_state);
+     }
+  od
+}
+\end{lstlisting}
+Problematisch bei der C-Übersetzung ist allerdings zu sehen, dass der übersetzte Code alle Ausgabevariablen der Komponente in den Zustandsraum der Komponente übernimmt, obwohl sie eventuell gar nicht für den Folgezustand der Komponente entscheidend sind.
+Das kann dazu führen, dass die Verifikation mit der C-Übersetzung mehr Zustände generiert als es eine äquivalente, auf direkter Übersetzung basierende Übersetzung tun würde.
+Das Problem kann für die C-Übersetzung nicht umgangen werden, da die Information, ob eine Ausgabevariable für den nächsten Zustand verantwortlich ist, tiefergehende Analysen des SCADE Modells erfordern würden, die auf einer quasi-Übersetzung des SCADE-Codes nach Promela gleich käme.
