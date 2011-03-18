@@ -1,0 +1,15 @@
+\section{Büchi-Automaten}
+Büchi-Automaten stellen eine Erweiterung von endlichen Automaten auf unendliche Eingaben dar\cite{buchibasics}.
+Anders als endliche Automaten, die eine Eingabe akzeptieren, wenn die Ausführung in einem finalen Zustand endet, akzeptiert ein Büchi-Automat eine Eingabe genau dann, wenn die Ausführung unendlich oft einen finalen Zustand erreicht.
+
+Formal ist ein Büchi-Automat ein Tupel
+\[ A = (Q,\Sigma,\delta,q_0,F) \]
+wobei die Symbole folgende Bedeutung haben:
+\begin{itemize}
+  \item $Q$ ist die Menge der Zustände des Automaten.
+  \item Das Alphabet $\Sigma$, über dem der Automat definiert ist.
+  \item $\delta : Q\times\Sigma\rightarrow Q$ ist die Übergangsfunktion des Automaten.
+  \item $q_0\in Q$ ist der Startzustand.
+  \item $F\subseteq Q$ ist die Finalzustandsmenge.
+\end{itemize}
+Ein Wort $a_0a_1a_2\dots$ wird nun also genau dann akzeptiert, wenn es eine Folge von Zuständen $q_0q_1q_2\dots$ gibt, wobei stets gilt $\delta(q_n,a_n)=q_{n+1}$ und in der mindestens ein Zustand aus $F$ unendlich oft vorkommt.

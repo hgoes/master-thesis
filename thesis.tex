@@ -1,23 +1,23 @@
 \documentclass[10pt]{scrbook}
 
-\usepackage[bookmarks=true,colorlinks=false]{hyperref}
+\usepackage[bookmarks=true,colorlinks=false]{hyperref} % PDF-Inhaltsverzeichnis und Links
 
-\usepackage[utf8]{inputenc}
-\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc} % UTF-8 Kodierung
+\usepackage[ngerman]{babel} % Deutsche Silbentrennung
 
 \usepackage[T1]{fontenc}
-\usepackage[lf]{venturis}
-\usepackage{graphicx}
-\usepackage[nounderscore]{syntax}
-\usepackage{amssymb}
-\usepackage[numbers,round]{natbib}
-\usepackage{tikz}
-\usepackage{listings}
-\usepackage{stmaryrd}
-\usepackage{semantic}
-\usepackage[all]{xy}
-\usepackage{clrscode3e}
-\usepackage{tocbibind}
+\usepackage[lf]{venturis} % Eine schöne Schriftart
+\usepackage{graphicx} % For includegraphics
+\usepackage[nounderscore]{syntax} % Syntax im BNF-Stil (Niemals das "nounderscore entfernen, das macht alles kaputt!)
+\usepackage{amssymb} % Für \mathbb
+\usepackage[numbers]{natbib} % Literaturverzeichnis
+\usepackage{tikz} % Für Grafiken und Diagramme
+\usepackage{listings} % Für Quellcode-Listings (Promela,GTL etc.)
+\usepackage{stmaryrd} % Für \llbracket,\rrbracket
+\usepackage{semantic} % Strukturelle Operationelle Semantik
+\usepackage[all]{xy} % XY-Matrix Umgebung für Diagramme
+\usepackage{clrscode3e} % Für Pseudo-Code im Cormen-Stil
+\usepackage{tocbibind} % Bindet das Literaturverzeichnis ins Inhaltsverzeichnis ein
 
 \bibliographystyle{alphadin}
 
@@ -50,6 +50,7 @@
 \input{language}
 \chapter{Modelltransformationen}
 \input{ltl}
+\input{buchi}
 \input{ltl-translation}
 \input{translation-correctness}
 \chapter{Implementierung}
@@ -58,7 +59,8 @@
 \input{translation-c}
 \input{translation-scade}
 \input{error-refinement}
-
+\chapter{Fallbeispiele}
+\chapter{Ausblick}
 \bibliography{lit}
 
 \end{document}
