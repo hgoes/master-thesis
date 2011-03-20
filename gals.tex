@@ -26,7 +26,6 @@ Tatsächlich bieten sich eine Vielzahl von Möglichkeiten an, ein gegebenes GALS
 Einige davon sollen hier vorgestellt werden.
 
 \section{Synchrone Ausführung}
-%Es ist möglich, ein GALS-System als ein synchrones System zu interpretieren, in dem alle Komponenten gleichzeitig ihre Berechnungsschritte ausführen.
 Bei der synchronen Ausführung führen alle Systeme gleichzeitig ihren Berechnungsschritt aus.
 Da eine echte Gleichzeitigkeit aber von SPIN nicht unterstützt wird, muss sie dadurch angenähert werden, dass die Komponenten zwar nacheinander ihre Schritte ausführen, aber dies  immer in der gleichen Reihenfolge tun.
 
@@ -45,10 +44,52 @@ Da eine echte Gleichzeitigkeit aber von SPIN nicht unterstützt wird, muss sie d
     
   \end{tikzpicture}
   \caption{Synchrone Ausführung}
+  \label{fig:synchronized_execution}
 \end{figure}
+
+In Abbildung \ref{fig:synchronized_execution} wird eine mögliche Ausführung der drei Prozesse $P_1$, $P_2$ und $P_3$ gezeigt.
+Andere Ausführungsmöglichkeiten unterscheiden sich nur durch die Reihenfolge, in der die Prozesse ihren Berechnungsschritt ausführen.
+Für ein System mit $n$ Prozessen gibt es also $n!$ Möglichkeiten der Ausführung.
+
+Vorteile dieser Architektur sind eine extrem einfache Implementierung, sowie wenige Ausführungsreihenfolgen, die bei der Verifikation in Betracht gezogen werden müssen.
+Das zu verifizierende Zustandsmodell des Systems hat also sehr viel weniger Zustände als die der anderen Architekturen.
+Der Nachteil ist jedoch, dass es für viele Szenarien sehr unrealistisch ist, perfekte Synchronität zu fordern.
+In Kommunikationsnetzen bedeuten schon minimale Verzögerungen bei der Zustellung von Nachrichten, dass Prozesse nicht mehr echt synchron laufen, selbst wenn ihre Uhren genau gleich gehen.
+
 \section{Vollständig asynchrones System}
-In der vollständig asynchronenen Semantik können Komponenten zu jedem Zeitpunkt, unabhängig von dem Ausführungsstand der anderen, einen Schritt ausführen.
-Das bedeutet also, dass auch Extremfälle wie der, bei dem nur eine Komponente die gesamte Zeit Schritte ausführt, berücksichtigt werden.
-Diese Semantik deckt zwar jede Ausführungsreihenfolge der Komponenten ab, ist aber nicht unbedingt realistisch.
+%In der vollständig asynchronenen Semantik können Komponenten zu jedem Zeitpunkt, unabhängig von dem Ausführungsstand der anderen, einen Schritt ausführen.
+%Das bedeutet also, dass auch Extremfälle wie der, bei dem nur eine Komponente die gesamte Zeit Schritte ausführt, berücksichtigt werden.
+%Diese Semantik deckt zwar jede Ausführungsreihenfolge der Komponenten ab, ist aber nicht unbedingt realistisch.
+Im Gegensatz zur synchronen Architektur steht die vollständig asynchrone: 
+Hier kann zu jedem Zeitpunkt jeder Prozess unabhängig vom Fortschritt der anderen einen Berechnungsschritt ausführen.
+Eine Mögliche asynchrone Ausführung von drei Prozessen ist in Abbildung \ref{fig:asynchronous_execution} gezeigt.
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}
+    \node[fill=d2,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_2$] at (0,0) {};
+    \node[fill=d2,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_2$] at (0.5,0) {};
+    \node[fill=d2,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_2$] at (1,0) {};
+    \node[fill=d3,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_3$] at (1.5,0) {};
+    \node[fill=d3,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_3$] at (2,0) {};
+    \node[fill=d3,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_3$] at (2.5,0) {};
+    \node[fill=d1,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_1$] at (3,0) {};
+    \node[fill=d3,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_3$] at (3.5,0) {};
+    \node at (4,0) {\dots};
+  \end{tikzpicture}
+  \caption{Asynchrone Ausführung}
+  \label{fig:asynchronous_execution}
+\end{figure}
+
+Eine asynchrone Architektur löst das Problem der synchronen Architektur, indem sie sämtliche theoretisch mögliche Verschachtelungen der Ausführungen der Prozesse bei der Verifikation berücksichtigt.
+Dies führt aber zu zwei neuen Problemen:
+Zum einen nimmt die Zustandsgröße des Systems eventuell gewaltig zu; $n$ Prozesse haben nach $m$ Ausführungsschritten bereits $n^m$ mögliche Ausführungen.
+Zwar führen meist viele unterschiedliche Verschachtelungen zu den selben Zuständen, aber im schlimmsten Fall führt eine vollständig asynchrone Architektur zu einer gewaltigen Zustandsexplosion.
+Das zweite Problem ist, dass diese Architektur auch extrem unrealistische Ausführungen in Erwägung zieht:
+Ein Prozess kann zum Beispiel immer rechnen, während ein anderer nie zum Zuge kommt.
+In der Verifikation können so Fehlerzustände erkannt werden, die in der Realität nie vorkommen.
+\section{Asynchrone Ausführung mit Fairness}
+Um das Problem zu umgehen, dass einzelne Prozesse "`verhungern"', also nie einen Rechenschritt ausführen dürfen, kann man so genannte \emph{Fairness}-Kriterien definieren:
+Diese besagen, dass nur Ausführungen für die Verifikation in Betracht gezogen werden, in denen jeder Prozess immer mal wieder an die Reihe kommt.
+SPIN unterstützt die Modellierung von Fairness-Kriterien durch die Definition von Labels, die immer mal wieder erreicht werden müssen, damit die Ausführung in Betracht gezogen wird.
 \section{Asynchone Ausführung mit Schranken}
 Um die Probleme der vollständig asynchronen Ausführung zu umgehen kann man die Asynchronität soweit begrenzen, dass die Anzahl der ausgeführten Schritte nie um mehr als einen festen Wert divergiert.
