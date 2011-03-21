@@ -17,7 +17,7 @@ Diesmal wird das echte Systemverhalten als Grundlage herangezogen, wobei aber da
 Meldet die Verifikation des so eingegrenzten Systems ebenfalls einen Fehler, so erhält man nicht nur die Bestätigung, dass die vorher erzeugte Fehlerspur echt ist, sondern auch ein konkretes Systemverhalten, dass zu einem Fehler führt.
 Zeigt sich kein Fehler, so kann dies ein Hinweis sein, dass nicht genügend scharfe Kontrakte formuliert wurden.
 
-\begin{figure}
+\begin{figure}[h]
   \centering
   \begin{tikzpicture}
     \node[draw] (gtl) at (0,10) {GTL};
@@ -40,4 +40,17 @@ Zeigt sich kein Fehler, so kann dies ein Hinweis sein, dass nicht genügend scha
     \draw[->,blue] (ver2) -- (trace2);
   \end{tikzpicture}
   \caption{Fehlereingrenzung}
+  \label{fig:error-refinement}
 \end{figure}
+
+Um diese Technik konkret umsetzen zu können, müssen an vielen Stellen der Implementierung Erweiterungen vorgenommen werden.
+Hierzu betrachten wir Abbildung \ref{fig:error-refinement}:
+\begin{itemize}
+\item Zunächst muss der aus der GTL-Spezifikation generierte Promela-Code in der Lage sein, Fehlerspuren zu erzeugen, die Aufschluss darüber geben, welche Transitionen des generierten Büchi-Automaten zu dem Fehler führten.
+  Zwar erzeugt auch SPIN schon Fehlerspuren, jedoch geben diese Auskunft über die Ausführungsposition im Quelltext und sind daher extrem schwer zurück auf die Zustände des Büchi-Automaten zu rechnen.
+  Die Lösung besteht darin, im generierten Quelltext vor jedem Betreten eines Zustands mit der \emph{printf}-Anweisung eine Ausgabe zu erzeugen, die den Namen des betretenden Zustands enthält.
+  Spielt man eine generierte Fehlerspur nun in SPIN ab, so erhält man genau die Ausgaben für die betretenden Zustände und kann eine genaue Fehlerspur für den Büchi-Automaten berechnen.
+\item Die so generierte Fehlerspur muss jetzt noch benutzt werden, um in der Verifikation per C-Integration die Pfade zu beschränken.
+  Dies geschieht, indem die Schnittmenge des generierte Büchi-Automat für die zu verifizierende Eigenschaft und des Automaten aus der Fehlerspur gebildet wird.
+  Damit werden im Modell nur Pfade verifiziert, die der Fehlerspur entsprechen.
+\end{itemize}
