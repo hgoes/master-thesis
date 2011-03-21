@@ -1,0 +1,9 @@
+\section{Abstraktion durch statische BDD}
+Um die in der GTL-Spezifikation gegebenen Kontrakte für die Komponenten des GALS-Systems für die Verifikation benutzen zu können, müssen diese in den Promela-Formalismus übertragen werden.
+Durch die LTL$\rightarrow$Büchi-Übersetzung (Siehe Abschnitt \ref{sec:ltl-translation}) liegen die abstrahierten Komponenten bereits als Büchi-Automaten vor.
+Die Zustände der Automaten enthalten aber nicht nur konkrete Wertzuweisungen für die Variablen der Komponenten, sondern auch Einschränkungen der Wertebereiche, die sogar von anderen Variablen abhängen können (Zum Beispiel Relationen wie $x < y + 3$).
+Um zumindest Einschränkungen der Wertebereiche, die nicht von anderen Variablen abhängen (Zum Beispiel $x < 5$), übersetzen zu können, kann man BDDs benutzen.
+
+Dazu wird jede Relation der Form $x R c$, wobei $x$ eine Variable und $c$ eine Konstante ist in ein BDD übersetzt.
+Das BDD kann nun statt der Werte, die es repräsentiert zur Verifikation verwendet werden.
+Da die Verifikation allerdings keinen direkten Zugriff mehr auf die Information hat, welches BDD von einem Wert repräsentiert wird, muss vor der Verifikation eine Tabelle erstellt werden, in der gespeichert wird, welche BDD miteinander kompatibel sind, also zwischen welchen die Implikation "`$\Rightarrow$"' gilt.
