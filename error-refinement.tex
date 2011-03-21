@@ -50,6 +50,8 @@ Hierzu betrachten wir Abbildung \ref{fig:error-refinement}:
   Zwar erzeugt auch SPIN schon Fehlerspuren, jedoch geben diese Auskunft über die Ausführungsposition im Quelltext und sind daher extrem schwer zurück auf die Zustände des Büchi-Automaten zu rechnen.
   Die Lösung besteht darin, im generierten Quelltext vor jedem Betreten eines Zustands mit der \emph{printf}-Anweisung eine Ausgabe zu erzeugen, die den Namen des betretenden Zustands enthält.
   Spielt man eine generierte Fehlerspur nun in SPIN ab, so erhält man genau die Ausgaben für die betretenden Zustände und kann eine genaue Fehlerspur für den Büchi-Automaten berechnen.
+\item Die Fehlerspur wird kodiert als eine Liste, in der jedes Element einem Zeitschritt entspricht.
+  Ein Element enthält eine Abbildung von den Variablen des Systems auf BDDs, die den erlaubten Wertebereich dieser Variablen zum Zeitpunkt des Elements festlegen.
 \item Die so generierte Fehlerspur muss jetzt noch benutzt werden, um in der Verifikation per C-Integration die Pfade zu beschränken.
   Dies geschieht, indem die Schnittmenge des generierte Büchi-Automat für die zu verifizierende Eigenschaft und des Automaten aus der Fehlerspur gebildet wird.
   Damit werden im Modell nur Pfade verifiziert, die der Fehlerspur entsprechen.
