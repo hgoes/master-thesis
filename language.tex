@@ -55,7 +55,8 @@ Die gesamte Grammatik der GTL-Sprache ist in Abbildung \ref{fig:grammar} angegeb
     <model\_contract> ::= `{' (<formula> `;')* `}'
     \alt `;'
     
-    <formula> ::= <lit> `<' <lit>
+    <formula> ::= <var>
+    \alt <lit> `<' <lit>
     \alt <lit> `>' <lit>
     \alt <lit> `<=' <lit>
     \alt <lit> `>=' <lit>
@@ -70,9 +71,11 @@ Die gesamte Grammatik der GTL-Sprache ist in Abbildung \ref{fig:grammar} angegeb
     \alt `(' <formula> `)'
     
     <lit> ::= <int>
-    \alt <id>
-    \alt <id> `.' <id>
+    \alt <var>
     
+    <var> ::= <id>
+    \alt <id> `.' <id>
+
     <id> ::= (`a'-`z' `A'-`Z' `0'-`9')+
     
     <int> ::= (`0'-`9')+
