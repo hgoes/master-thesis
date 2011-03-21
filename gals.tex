@@ -92,4 +92,9 @@ Um das Problem zu umgehen, dass einzelne Prozesse "`verhungern"', also nie einen
 Diese besagen, dass nur Ausführungen für die Verifikation in Betracht gezogen werden, in denen jeder Prozess immer mal wieder an die Reihe kommt.
 SPIN unterstützt die Modellierung von Fairness-Kriterien durch die Definition von Labels, die immer mal wieder erreicht werden müssen, damit die Ausführung in Betracht gezogen wird.
 \section{Asynchone Ausführung mit Schranken}
-Um die Probleme der vollständig asynchronen Ausführung zu umgehen kann man die Asynchronität soweit begrenzen, dass die Anzahl der ausgeführten Schritte nie um mehr als einen festen Wert divergiert.
+%Um die Probleme der vollständig asynchronen Ausführung zu umgehen kann man die Asynchronität soweit begrenzen, dass die Anzahl der ausgeführten Schritte nie um mehr als einen festen Wert divergiert.
+Obwohl das Hinzufügen von Fairness-Eigenschaften die Fälle entfernt, in denen ein Prozess niemals zur Ausführung kommt, so werden immer noch extrem unrealistische Szenarien betrachtet:
+In der Realität wird es beispielsweise nie vorkommen, dass ein Prozess nur ein mal einen Berechnungsschritt durchführt, während ein anderer im gleichen Zeitraum 1000 ausführt.
+Wesentlich realistischere Ausführungen erreicht man, wenn einzelnen Prozessen nur für einen gewissen Zeitraum erlaubt, mehr oder weniger Schritte als die anderen auszuführen.
+Hierzu zählt man die Berechnungsschritte, die jeder Prozess bereits ausgeführt hat und überprüft, dass zu jedem Zeitpunkt der Verifikation die Bedingung "`Keine zwei Prozesse liegen um mehr als $x$ Berechnungsschritte von einander entfernt"' erfüllt ist.
+
