@@ -1,1 +1,11 @@
 \section{Abstraktion durch dynamische BDD}
+Um die Probleme der statischen BDD-Übersetzung zu lösen, bietet es sich an, die Berechnung der BDDs erst während der Verifikation durchzuführen.
+Der Vorteil ist, dass man nun auch mehrere Variablen miteinander in Beziehung setzten kann und auch Modelle verifizieren kann, die Zyklen enthalten.
+Es kann allerdings passieren, dass bei der Verifikation mehrfach die gleiche BDD Operation ausgeführt wird; dies lässt sich aber durch den Einsatz eines Operationscaches vermeiden.
+
+Für die Implementierung der dynamischen BDDs wurde die C-Bibliothek \emph{CUDD}
+\footnote{Die Abkürzung steht für {\bf C}olorado {\bf U}niversity {\bf D}ecision {\bf D}iagram Package.
+  Ein Benutzerhandbuch, sowie die Quellen sind online erhältlich\cite{cudd}.
+  Die Bibliothek ist unter einer BSD-artigen Lizenz veröffentlicht.
+}
+gewählt, da diese im Gegensatz zu anderen Bibliotheken Zugriff auf ihre internen Schnittstellen bietet und somit sehr gut zu erweitern ist.
