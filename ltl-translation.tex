@@ -102,3 +102,46 @@ Per Konstruktion ist am Ende des Durchlaufs das \id{New}-Feld aller Knoten leer.
 Die atomaren Aussagen in den \id{Old}-Feldern der Knoten stellen die Aussagen dar, die in dem entsprechenden Zustand des Büchi-Automaten wahr sein müssen.
 Um den Graphen zu konstruieren, müssen noch die die Informationen der \id{Incoming}-Felder verwendet werden, um die Folgezustände von jedem Zustand zu berechnen.
 Die \id{Next}-Felder enthalten keine relevanten Informationen für den Büchi-Automaten.
+\subsection{Übersetzung des Existenzquantors}
+Mithilfe des Existenzquantors ist es möglich, Werte zu einem bestimmten Zeitpunkt zu binden und zu einem späteren Zeitpunkt wieder zu verwenden.
+Beispielsweise gibt die Formel
+\[ \textbf{exists}\ u = \mathit{Engine}.\mathit{state} : \textbf{next}\ u = \mathit{Engine}.\mathit{state} \]
+an, dass die Variable "`$\mathit{Engine}.\mathit{state}$"' im nächsten Zustand den gleichen Wert wie im aktuellen besitzen soll.
+
+Um dieses Konstrukt zu übersetzen kann man Variablen einführen, die die Geschichte von Variablen speichern.
+Muss also beispielsweise der Wert einer Variable überprüft werden, der drei Schritte in der Vergangenheit liegt, so müssen drei neue Variablen in das Modell eingefügt werden, die die letzten drei Werte der Variablen speichern.
+
+Die Anzahl der Schritte, die in die Vergangenheit geschaut werden muss ist allerdings nicht immer endlich.
+Betrachten wir die leicht abgewandelte Formel
+\[ \textbf{exists}\ u = \mathit{Engine}.\mathit{state} : \textbf{always}\ u = \mathit{Engine}.\mathit{state} \]
+die aussagt, dass der Wert einer Variable für immer konstant bleiben soll, so ist leicht einzusehen, dass man für die Verifikation unendlich viele Geschichtsvariablen einführen müsste.
+Verwendet man also diese Übersetzung, so muss man die Verwendung des Existenzquantors einschränken:
+Die durch den Quantor gebundene Variable darf nicht innerhalb eines \emph{always}-Operators vorkommen.
+
+Der Algorithmus zur Übersetzung ist in Abbildung \ref{fig:translate_history} angegeben.
+\begin{figure}[h]
+\begin{codebox}
+\Procname{$\proc{TranslateHistory}(\id{expr},\id{vars})$}
+\li \If $\id{expr}\isequal (\textbf{exists}\ u=x : f)$ \Then
+\li $\attrib{vars[u]}{var}\gets x$
+\li $\attrib{vars[u]}{level}\gets 0$
+\li \Return $\proc{TranslateHistory}(f,\id{vars})$
+\li \ElseIf $\id{expr}\isequal v$\>\>\>\>\>\>\Comment$v$ ist Variable
+\Then
+\li \If $\id{vars}[v]\isequal\const{Nil}$\Then
+\li \Return $v$
+\li \Else \Return $\id{vars}[v]$
+\End
+\li \ElseIf $\id{expr}\isequal (\textbf{next}\ f)$\Then
+\li $\forall v: \attrib{vars[v]}{level}\gets \attrib{vars[v]}{level}+1$
+\li \Return $(\textbf{next}\ \proc{TranslateHistory}(\id{f},\id{vars}))$
+\li \ElseIf $\id{expr}\isequal (\textbf{always} f)$\Then
+\li \Return $(\textbf{always}\ \proc{TranslateHistory}(\id{f},\emptyset))$
+\li \ElseIf $\id{expr}\isequal (\id{lhs}\ \id{op}\ \id{rhs})$\>\>\>\>\>\>\Comment $\id{op}$ ist $\land$, $\lor$, $<$, $>$ oder eine andere Relation
+\Then
+\li \Return ($\proc{TranslateHistory}(\id{lhs},\id{vars})\ \id{op}\ \proc{TranslateHistory}(\id{rhs},\id{vars})$)
+\End
+\end{codebox}
+\caption{Übersetzung von Geschichtsvariablen}
+\label{fig:translate_history}
+\end{figure}
