@@ -81,9 +81,73 @@ Die so eingeführten \emph{geordneten}, \emph{reduzierten} binären Entscheidung
 
 In dem Rest dieser Arbeit sind mit dem Begriff "`Entscheidungsdiagramm"' immer geordnete, reduzierte und geteilte Entscheidungsdiagramme gemeint.
 Mehr zu Entscheidungsdiagrammen im allgemeinen lässt sich in \cite{knuth2011computer} finden.
-\subsection{Binäre Mengen}
-Die von Entscheidungsdiagrammen repräsentierten Funktionen lassen sich auch als Mengen von binären Daten auffassen:
-Die Funktion gibt hierbei an, ob sich ein Datum in der Menge befindet.
+\section{Datentypen als Entscheidungsdiagramme}
+Da Enscheidungsdiagramme binäre Funktionen auf boolesche Werte kodieren, lassen sie sich auch verwenden, um Mengen von endlichen Datentypen zu kodieren.
+Das ist möglich, weil sich jeder endliche Datentyp binär kodieren lässt (Notfalls durch Durchnummerierung aller möglichen Werte).
+Die entsprechende Funktion gibt also \emph{wahr} zurück, wenn sich das Element, dass der binären Kodierung entspricht sich in der Menge befindet.
+
+Ist also ein endlicher Datentyp $T$ zusammen mit einer Kodierungsfunktion $c : T\rightarrow \{0,1\}^n$ gegeben, so lässt sich ein BDD für eine beliebige Menge $Q\subseteq T$ konstruieren, indem man für jedes Element $q\in Q$ der Menge das BDD konstruiert, dass die Funktion repräsentiert, die nur bei dem Wert $c(q)$ wahr ist.
+Die so generierten BDD werden dann per Disjunktion zu einem BDD zusammengefügt.
+Diese Konstruktion ist aber extrem ineffizient, da sehr viele BDDs erstellt und sofort wieder verworfen werden.
+Effizienter ist es, das BDD mit einem \emph{divide-and-conquer}-Algorithmus zu erstellen:
+Dieser erhält eine Menge der noch zu kodierenden Werte sowie die Bitposition, an der gerade kodiert wird (beginnend bei Bit null).
+Der Algorithmus teilt nun die Menge in zwei Mengen:
+Die eine enthält die Werte deren Kodierung an der aktuellen Bitposition eine null aufweisen, die andere Menge enthält die restlichen Werte.
+Auf diesen Mengen wird der Algorithmus nun rekursiv aufgerufen.
+Die vollständige Implementierung ist in Abbildung \ref{alg:create_bdd} zu sehen.
+
+\begin{figure}[h]
+\centering
+\begin{codebox}
+\Procname{$\proc{CreateBDD}(Q,\id{Pos})$}
+\li \If $Q\isequal\emptyset$\Then
+\li \Return $\proc{Leaf}(0)$
+\End
+\li \If $\id{Pos}\isequal n$\Then
+\li \Return $\proc{Leaf}(1)$
+\End
+\li $Q_l\gets \{ v\ |\ v\in Q, c(v)[\id{Pos}]\isequal 0 \}$
+\li $Q_r\gets \{ v\ |\ v\in Q, c(v)[\id{Pos}]\isequal 1 \}$
+\li \Return $\proc{Node}(\id{Pos},\proc{CreateBDD}(Q_l,\id{Pos}+1),\proc{CreateBDD}(Q_r,\id{Pos}+1))$
+\end{codebox}
+\caption{Eine Funktion, um endliche Mengen in BDDs umzuwandeln}
+\label{alg:create_bdd}
+\end{figure}
+
+Um ein BDD nun wieder in eine Menge zu verwandeln, kann man das Diagramm rekursiv durchlaufen.
+Die entsprechende Funktion erhält das aktuell betrachtete Teildiagramm sowie die Bitposition und den binären Wert der bis zu dieser Position kodiert wurde.
+Enspricht das Diagramm dem Nullblatt, so bedeutet dies, dass vom Teildiagramm keine Werte kodiert werden, es wird also die leere Menge zurück gegeben.
+Ist die Bitposition am Ende des kodierbaren Bereichs angelangt, so wird der aktuelle Wert von dem Teildiagramm kodiert und damit als einzelnes Element dekodiert und zurück gegeben.
+Entspricht der aktuelle Hauptknoten des Diagramms nicht der aktuellen Bitposition, so ist der Wert an der aktuellen Bitposition egal, das Ergebnis ist also die Vereinigung der Aufrufe mit Wert null und eins an der aktuellen Bitposition.
+Ansonsten wird der linke Ast des Knotens mit dem Wert eins belegt, der rechte mit null und die Ergebnisse der rekursiven Aufrufe vereinigt.
+Der vollständige Algorithmus ist in Abbildung \ref{alg:decode_bdd} angegeben.
+
+\begin{figure}[h]
+\begin{codebox}
+\Procname{$\proc{DecodeBDD}(\id{Tree},\id{Pos},\id{Value})$}
+\li \If $\id{Tree}\isequal\proc{Leaf}(0)$\Then
+\li \Return $\emptyset$
+\li \ElseIf $\id{Pos}\isequal n$\Then
+\li \Return $\{c^{-1}(\id{Value})\}$
+\li \ElseIf $\id{Tree}\isequal\id{Leaf}(1)\mbox{ or }\attrib{Tree}{id}<\id{Pos}$\Then
+\li \Return $\proc{DecodeBDD}(\id{Tree},\id{Pos}+1,\id{Value}\|(1<<\id{Pos}))\ \cup$
+\Startalign{\Return}
+\> $\proc{DecodeBDD}(\id{Tree},\id{Pos}+1,\id{Value})$
+\Stopalign
+\li \Else
+\li \Return $\proc{DecodeBDD}(\attrib{Tree}{left},\id{Pos}+1,\id{Value}\|(1<<\id{Pos}))\ \cup$
+\Startalign{\Return}
+\> $\proc{DecodeBDD}(\attrib{Tree}{right},\id{Pos}+1,\id{Value})$
+\Stopalign
+\End
+\end{codebox}
+\caption{Algorithmus um BDDs in Mengen umzuwandeln}
+\label{alg:decode_bdd}
+\end{figure}
+
+Im folgenden sollen sowohl Datentypen wie auch Algorithmen auf ihnen in BDD-Form realisiert werden.
+\subsection{Integer}
+Ganze Zahlen mit oder ohne Vorzeichen lassen sich sehr leicht binär kodieren.
 Kodiert man natürliche Zahlen beispielsweise mit den drei Bits $b_0$, $b_1$ und $b_2$ (Wobei $b_0$ das niederwertigste Bit kodiert), so lässt sich die Menge $\{2,3,5\}$ auffassen als das Diagramm in Abbildung \ref{fig:example_set1_bdd}.
 \begin{figure}[h]
   \centering
@@ -116,3 +180,7 @@ Setzt man dies dann in die erste Gleichung ein, so erhält man (für $y<x$):
 \[ \textrm{plus}\Bigg(\bdd{plus1_lhs},\underbrace{\bdd{plus3_rhs}}_R,0\Bigg) = \bdd{plus3_res} \]
 Die Gleichung mit Übertrag ist genau äquivalent zu den vorherigen Fällen und daher weg gelassen.
 
+\subsection{Tupel}
+Tupel lassen sich einfach binär kodieren, indem man die Binärkodierung aller Elemente hintereinander schreibt.
+Diese Art der Kodierung hat den Vorteil, dass es einfach möglich ist, Restriktionen auf einzelnen Elementen zu formulieren.
+Möchte man beispielsweise alle Tupel kodieren, deren zweites Element eine bestimmte Bedingung erfüllt, so reicht es, die Bedingung nur auf dem Element selbst zu übersetzen und alle Kennzeichnungen der Knoten in dem resultierenden Diagramm um die Bitbreite des ersten Elements zu erhöhen.

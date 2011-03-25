@@ -12,10 +12,23 @@ Um die formale Korrektheit der Übersetzung durch statische BDDs zu beweisen, m�
 Die Semantiksymbole $\Sigma$ sind hierbei eine Menge von Relationen, die höchstens eine Variable enthalten können, also z.B. "`$\{x<5,y=4\}$"'.
 
 Durch einfache Umformungen lässt sich also jedes Semantiksymbol $\eta\in\Sigma$ als eine Abbildung von Variablen $V$ auf ein Entscheidungsdiagramm, dass die Relationen auf der entsprechenden Variable repräsentiert darstellen:
-\[ \eta : (V\rightarrow \mathbb{BDD})\times\mathbb{N} \]
+\[ \eta : V\rightarrow \mathbb{BDD} \]
 Ist keine Relation für eine Variable angegeben, so ist die Variable unbeschränkt und durch das BDD repräsentiert, dass alle möglichen Werte enthält.
 
 Die Funktion $\llbracket\rrbracket_C$ betrachtet die Eingabevariablen des übergebenen Semantiksymbols $\eta$, also die Menge
 \[ \{ (v,\eta(v))\ |\ v\in \mathit{Inp}_i \} \]
 Für jedes dieser Tupel wird nun ein Promela Ausdruck generiert, der überprüft, ob die Variable $v$ mit einem zu $\eta(v)$ kompatiblen BDD belegt ist.
 Kompatibel bedeutet hierbei, dass die Gleichung $v\cap\eta(v)\neq \emptyset$ erfüllt ist.
+
+Die Anweisungen, die von der $\llbracket\rrbracket_A$-Funktion generiert werden, weisen den Ausgabevariablen der Komponente neue BDDs zu.
+Das bedeutet, dass für jedes Tupel der Menge
+\[ \{ (v,\eta(v))\ |\ v\in \mathit{Out}_i \} \]
+die Anweisung
+\begin{lstlisting}[language=promela,mathescape=true]
+  v = $\eta(v)$;
+\end{lstlisting}
+generiert wird.
+
+Für jede Variable der Komponente wird durch $\llbracket\rrbracket_D$ eine globale Integer Variable generiert, die die Repräsentation des entsprechenden BDDs enthält.
+Sind die Variablen von zwei Komponenten durch eine \emph{connect}-Deklaration verbunden, so wird nur eine Variable für die Eingangsvariable generiert, damit das Modell nicht unnötig vergrößert wird.
+Schreibt der Ausgabeprozess auf seine Variable, so wird das Ergebnis stattdessen direkt in die gemeinsam verwendete Variable geschrieben.
