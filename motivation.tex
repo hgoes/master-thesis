@@ -1,1 +1,10 @@
-Hier ein bisschen Motivation zum Thema
+Die Verifikation von GALS-Systemen steht vor zwei Problemen:
+\begin{itemize}
+\item Zum einen fehlen Werkzeuge, die sowohl synchrone wie auch asynchrone Systeme unterstützen.
+  Formalismen, die für synchrone Systeme entworfen sind, haben in der Regel keine Möglichkeit, Asynchronität oder Nichtdeterminismus zu modellieren.
+  Asynchrone Formalismen bieten zwar meist Unterstützung für synchrone Systeme, allerdings in den meisten Fällen nicht sehr elegant oder performant.
+\item Zum anderen können GALS-Systeme beträchtliche Größen annehmen und damit ohne die manuelle Einführung von Vereinfachungen und Abstraktionen nur noch schwer in absehbarer Zeit zu verifizieren sein.
+  Das manuelle Einführen von Abstraktionen ist aber sehr schwierig und kann bei ungenauen Abstraktionen zu schwer auffindbaren Fehlern in der Verifikation führen.
+  Automatisch zu überprüfen, ob eine gegebene Abstraktion korrekt ist, ist in keinem in dieser Arbeit untersuchtem Formalismus vorgesehen.
+\end{itemize}
+Diese Arbeit versucht beide Probleme durch die Einführung eines neuen Formalismus zu lösen, der die Vorteile von synchronen und asynchronen Formalismen vereint und zusätzlich die Möglichkeit bietet, sichere Abstraktionen durch Kontrakte einzuführen.
