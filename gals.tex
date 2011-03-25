@@ -87,6 +87,13 @@ Zwar führen meist viele unterschiedliche Verschachtelungen zu den selben Zustä
 Das zweite Problem ist, dass diese Architektur auch extrem unrealistische Ausführungen in Erwägung zieht:
 Ein Prozess kann zum Beispiel immer rechnen, während ein anderer nie zum Zuge kommt.
 In der Verifikation können so Fehlerzustände erkannt werden, die in der Realität nie vorkommen.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=.5]{async}
+  \caption{Mögliche Ausführungspfade eines asynchronen Systems}
+  \label{fig:asynchronous_paths}
+\end{figure}
 \section{Asynchrone Ausführung mit Fairness}
 Um das Problem zu umgehen, dass einzelne Prozesse "`verhungern"', also nie einen Rechenschritt ausführen dürfen, kann man so genannte \emph{Fairness}-Kriterien definieren:
 Diese besagen, dass nur Ausführungen für die Verifikation in Betracht gezogen werden, in denen jeder Prozess immer mal wieder an die Reihe kommt.
