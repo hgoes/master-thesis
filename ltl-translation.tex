@@ -103,7 +103,10 @@ Die atomaren Aussagen in den \id{Old}-Feldern der Knoten stellen die Aussagen da
 Um den Graphen zu konstruieren, müssen noch die die Informationen der \id{Incoming}-Felder verwendet werden, um die Folgezustände von jedem Zustand zu berechnen.
 Die \id{Next}-Felder enthalten keine relevanten Informationen für den Büchi-Automaten.
 \subsection{Übersetzung des Existenzquantors}
-Mithilfe des Existenzquantors ist es möglich, Werte zu einem bestimmten Zeitpunkt zu binden und zu einem späteren Zeitpunkt wieder zu verwenden.
+Mithilfe des Existenzquantors ist es möglich, Werte zu einem bestimmten Zeitpunkt zu binden und zu einem späteren Zeitpunkt wieder zu verwenden
+\footnote{Eine sehr viel generellere Definition des Existenzquantors findet sich in \cite{exists_quantor}.
+  Es wird jedoch kein allgemeiner Übersetzungsalgorithmus angegeben, weshalb in dieser Arbeit eine sehr eingeschränkte Version verwendet wird.
+}.
 Beispielsweise gibt die Formel
 \[ \textbf{exists}\ u = \mathit{Engine}.\mathit{state} : \textbf{next}\ u = \mathit{Engine}.\mathit{state} \]
 an, dass die Variable "`$\mathit{Engine}.\mathit{state}$"' im nächsten Zustand den gleichen Wert wie im aktuellen besitzen soll.
