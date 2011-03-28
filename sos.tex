@@ -1,0 +1,19 @@
+\section{Operationelle Semantik}
+\inference[model]{\alpha \vdash_G(ms,cs,vs) & c\vdash_C f}{\textbf{model}\ n\ \textbf{\{} c\textbf{\}}\ \alpha\vdash_G(ms\cup\{(n,f)\},cs,vs)}
+
+\inference[connect]{\alpha\vdash_G(ms,cs,vs)}{\textbf{connect}\ cm_f\textbf{.}cv_f\ cm_t\textbf{.}cv_t\textbf{;}\ \alpha\vdash_G(ms,cs\cup\{(cm_f,cv_f,cm_t,cv_t)\},vs)}
+
+\inference[verify]{\alpha\vdash_G(ms,cs,vs) & c\vdash_V f}{\textbf{verify}\ \textbf{\{}c\textbf{\}}\ \alpha\vdash_G (ms,cs,vs\cup\{f\})}
+
+\begin{tabular}{ll}
+  \inference[$\epsilon$-formulas]{}{\epsilon\vdash_V(\top,\textrm{bool})} &
+  \inference[formulas]{\alpha\vdash_V (r_2,\textrm{bool}) & f,T,\emptyset\vdash_V(r_1,\textrm{bool})}{f\textbf{;}\ \alpha\vdash_V (r_1\land r_2,\textrm{bool})}\\
+  \inference[var(1)]{(v,q,n)\in\gamma & (q,t)\in T}{v,T,\gamma\vdash_V (q^n,t)} &
+  \inference[var(2)]{\lnot\exists q,n: (v,q,n)\in\gamma & (v,t)\in T}{v,T,\gamma\vdash_V (v,t)}
+\end{tabular}
+
+\inference[not]{e,T,\gamma\vdash_V (e',\textrm{bool})}{\textbf{not}\ e,T,\gamma\vdash_V (\lnot e',\textrm{bool})}
+
+\inference[exists]{f,T,\gamma\cup\{(u,e,0)\}\vdash_V f'}{\textbf{exists}\ u\textbf{=}e\textbf{:} f,T,\gamma\vdash_V f'}
+
+\inference[next]{f,T,\{ (u,e,n+i)\ |\ (u,e,n)\in\gamma\}\vdash f' & f,T,\gamma\vdash_V f'}{\textbf{next} i\ f,T,\gamma\vdash_V f'}
