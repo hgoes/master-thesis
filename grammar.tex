@@ -1,0 +1,42 @@
+\begin{grammar}
+  <declaration> ::= `model' `[' <id> `]' <id> `(' (<argument> (`,' <argument>)*)? `)' <model\_contract>
+  \alt `connect' <id> `.' <id> <id> `.' <id> `;'
+  \alt `verify' `{' (<formula> `;')* `}'
+  
+  <model\_contract> ::= `{' (<formula> `;')* `}'
+  \alt `;'
+  
+  <formula> ::= <var>
+  \alt <expr> `<' <expr>
+  \alt <expr> `>' <expr>
+  \alt <expr> `<=' <expr>
+  \alt <expr> `>=' <expr>
+  \alt <expr> `=' <expr>
+  \alt <id> `in' `{' (<lit> (`,' <lit>)*)? `}'
+  \alt `not' <formula>
+  \alt <formula> `and' <formula>
+  \alt <formula> `or' <formula>
+  \alt <formula> `follows' <formula>
+  \alt `always' <formula>
+  \alt `next' <formula>
+  \alt `finally' <int> <formula>
+  \alt `exists' <id> `=' <lit> `:' <formula>
+  \alt `(' <formula> `)'
+  
+  <lit> ::= <int>
+  \alt <var>
+  
+  <var> ::= <id>
+  \alt <id> `.' <id>
+  
+  <id> ::= (`a'-`z' `A'-`Z' `0'-`9')+
+  
+  <int> ::= (`0'-`9')+
+  
+  <expr> ::= <lit>
+  \alt <expr> `+' <expr>
+  \alt <expr> `-' <expr>
+  \alt <expr> `*' <expr>
+  \alt <expr> `/' <expr>
+  \alt `(' <expr> `)'
+\end{grammar}
