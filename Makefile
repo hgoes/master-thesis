@@ -18,6 +18,9 @@ $(BDDS): %.pdf: %.dot
 	inkscape -z -f $*.svg -A $@
 	pdfcrop $@ $@
 
+overview.pdf: overview.tex grammar.tex
+	pdflatex overview.tex
+
 clean:
 	rm -f $(BDDS)
 	rm -f thesis.aux thesis.out thesis.log thesis.blg thesis.bbl missfont.log
