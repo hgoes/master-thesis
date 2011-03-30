@@ -98,6 +98,14 @@ Tritt ein \emph{always}-Operator auf, so werden für die Ableitung der Unterform
 \[
 \inference[always]{f,T,\emptyset\vdash_V (f',\textrm{bool})}{\textbf{always}\ f,T,\gamma\vdash_V (\lnot(\top U (\lnot f')),\textrm{bool})}
 \]
+Der \emph{finally}-Operator ist nur eingeführt, um die Aussage "`Innerhalb der nächsten $i$ Schritte passiert $f$"' einfacher zu formulieren.
+Er kann rekursiv mithilfe des \emph{or}- und \emph{next}-Operators definiert werden.
+\[
+\inference[finally-0]{f,T,\gamma\vdash_V f'}{\textbf{finally}0\ f,T,\gamma\vdash_V f'}
+\]
+\[
+\inference[finally-i]{f\ \textbf{or}\ (\textbf{next}\ \textbf{finally}(i-1)\ f),T,\gamma\vdash_V f'}{\textbf{finally}i\ f,T,\gamma\vdash_V f'}
+\]
 Gleichheitstests können auf allen Variablen gleichen Typs durchgeführt werden.
 \[
 \inference[equal]{f,T,\gamma\vdash_V (f',t) & g,T,\gamma\vdash_V (g',t)}{f=g,T,\gamma\vdash_V(f'=g',\textrm{bool})}
@@ -123,7 +131,13 @@ Einfache arithmetische Operationen werden ebenfalls unterstützt.
 \[
 \inference[minus]{f,T,\gamma\vdash_V (f',\textrm{int}) & g,T,\gamma\vdash_V (g',\textrm{int})}{f\textbf{-}g,T,\gamma\vdash_V (f'-g',\textrm{int})}
 \]
-
-%\[
-%\inference[elem]{\forall s\in S: s,T,\gamma\vdash_V (s',\textrm{int})}{
-%\]
+\[
+\inference[times]{f,T,\gamma\vdash_V (f',\textrm{int}) & g,T,\gamma\vdash_V (g',\textrm{int})}{f\textbf{*}g,T,\gamma\vdash_V (f'\cdot g',\textrm{int})}
+\]
+\[
+\inference[div]{f,T,\gamma\vdash_V (f',\textrm{int}) & g,T,\gamma\vdash_V (g',\textrm{int})}{f\textbf{/}g,T,\gamma\vdash_V (\frac{f'}{g'},\textrm{int})}
+\]
+Um die Aussage "`Variable $v$ hat den Wert $s_1$ oder $s_2$ oder\dots"' abzukürzen, kann man eine Menge von Werten angeben, die die Variable annehmen darf.
+\[
+\inference[elem]{\forall i\in\{0,\dots,n\}: s_i,T,\gamma\vdash_V (s_i',t) & T(v)=t}{v\ \textbf{in}\ \textbf{\{}s_0,\dots,s_n\textbf{\}},T,\gamma\vdash_V (\bigvee_{i\in\{0,\dots,n\}} v=s_i',\textrm{bool}) }
+\]
