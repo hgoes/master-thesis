@@ -89,6 +89,8 @@ Die gesamte Grammatik der GTL-Sprache ist in Abbildung \ref{fig:grammar} angegeb
 Die Ausdrücke, die zur Spezifikation von Kontrakten sowie zur Formulierung von einzuhaltenden Bedingungen verwendet werden, stellen eine Untermenge der so genannten LTL-Formeln (LTL steht für "`linear temporal logic"') dar.
 Da der SCADE Design Verifier nicht in der Lage ist, Liveness-Eigenschaften zu verifizieren, können in den Formeln allerdings keine \emph{until}-Konstrukte verwendet werden.
 
+\input{sos}
+
 \begin{tikzpicture}
   \node[draw] (promela) at (1.5,1) {Promela};
   \node[draw] (gtl) at (0,2) {GTL};

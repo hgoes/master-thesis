@@ -1,19 +1,118 @@
 \section{Operationelle Semantik}
-\inference[model]{\alpha \vdash_G(ms,cs,vs) & c\vdash_C f}{\textbf{model}\ n\ \textbf{\{} c\textbf{\}}\ \alpha\vdash_G(ms\cup\{(n,f)\},cs,vs)}
+\subsection{Variablen}
+In den LTL-Formeln der Semantik können frühere Werte von Variablen referenziert werden.
+Hierfür werden die Variablen mit einer natürlichen Zahl versehen, die die Anzahl von Schritten angibt, die in die Vergangenheit geschaut werden soll.
 
-\inference[connect]{\alpha\vdash_G(ms,cs,vs)}{\textbf{connect}\ cm_f\textbf{.}cv_f\ cm_t\textbf{.}cv_t\textbf{;}\ \alpha\vdash_G(ms,cs\cup\{(cm_f,cv_f,cm_t,cv_t)\},vs)}
+Variablen kommen in der operationellen Semantik in zwei Formen vor:
+In der zu verifizierenden Formel kommen sie qualifiziert mit dem Modellnamen vor, die Variablen sind also Element der Menge $\mathit{Id}\times\mathit{Id}\times\mathbb{N}$.
+In Modell-Kontrakten ist der Modellname klar, daher sind die Variablen hier unqualifiziert und damit Element der Menge $\mathit{Id}\times\mathbb{N}$.
+\subsection{Aufbau}
+Die Semantik eines GTL-Modells wird durch ein Tripel angegeben, bestehend aus der Menge der Modelle, der Verbindungen zwischen den Variablen, sowie der LTL-Formel, deren Gültigkeit verifiziert werden soll.
+\[ \mathcal{S} = \mathcal{M}\times\mathcal{C}\times\mathit{LTL}(\mathit{Id}\times\mathit{Id}\times\mathbb{N}) \]
+Die LTL-Formel ist über Paare von Namen definiert, wobei der erste den Namen des Modells angibt und der zweite den der Variable im Modell.
+Die Menge aller Modellkonfigurationen $\mathcal{M}$ ist gegeben durch Abbildungen von Modellnamen auf Tupel von Kontrakten in Form von LTL-Formeln über die Variablennamen des entsprechenden Modells und Initialisierungswerten für die Modellvariablen.
+\[ \mathcal{M} = \mathit{Id}\rightarrow \mathit{LTL}(\mathit{Id})\times\mathcal{D} \]
+Die Initialisierungswerte werden über eine Abbildung von Variablennamen auf Werte $\mathit{Val}$ dargestellt:
+\[ \mathcal{D} = \mathit{Id}\rightarrow\mathit{Val} \]
+Die Verbindungen zwischen Modellen werden als Viertupel dargestellt, die das Modell und die Variable angibt, von dem die Verbindung ausgeht und Modell und Variable, in dem die Verbindung endet.
+\[ \mathcal{C} = \mathit{Id}\times\mathit{Id}\times\mathit{Id}\times\mathit{Id} \]
+\subsection{Ableitungsregeln}
+Um nun die Ableitungsregeln zu formulieren zu können, die angeben, wie ein gegebenes Textmodell in ein GTL-Modell übersetzt wird, müssen zuerst die Ableitungsarten eingeführt werden.
+Zunächst gibt es die globale Ableitungsrelation $\vdash$.
+Die Aussage $\gamma,T\vdash m$ sagt also aus:
+Gegeben ein Textmodell $\gamma$ und eine Typenbindung $T : \mathit{Id}\times\mathit{Id}\rightarrow\mathit{Type}\times\{\mathit{Inp},\mathit{Outp}\}$ lässt sich das GTL-Modell $m : \mathcal{M}$ ableiten.
 
-\inference[verify]{\alpha\vdash_G(ms,cs,vs) & c\vdash_V f}{\textbf{verify}\ \textbf{\{}c\textbf{\}}\ \alpha\vdash_G (ms,cs,vs\cup\{f\})}
+Die Ableitung $\vdash_C$ leitet den Kontrakt von Modellen sowie die Initialisierungswerte ihrer Variablen her.
+Die Aussage $\gamma,T\vdash_C (c,d)$ gibt also an: Gegeben eine textuelle Repräsentation $\gamma$ und eine Typbindung $T$ lässt sich der Kontrakt(LTL-Formel) $c$ und die Initialisierung $d : \mathit{Id}\rightarrow \mathit{Val}$ ableiten.
 
-\begin{tabular}{ll}
-  \inference[$\epsilon$-formulas]{}{\epsilon\vdash_V(\top,\textrm{bool})} &
-  \inference[formulas]{\alpha\vdash_V (r_2,\textrm{bool}) & f,T,\emptyset\vdash_V(r_1,\textrm{bool})}{f\textbf{;}\ \alpha\vdash_V (r_1\land r_2,\textrm{bool})}\\
-  \inference[var(1)]{(v,q,n)\in\gamma & (q,t)\in T}{v,T,\gamma\vdash_V (q^n,t)} &
-  \inference[var(2)]{\lnot\exists q,n: (v,q,n)\in\gamma & (v,t)\in T}{v,T,\gamma\vdash_V (v,t)}
-\end{tabular}
+Formeln werden mithilfe von $\vdash_V$ abgeleitet.
+Diese Relation gibt an, ob sich ein Ausdruck zu einer Formel eines bestimmten Typs ableiten lässt.
+Die Aussage $e,T\vdash_V (f,t)$ sagt also aus, dass gegeben die Typisierung $T$ und den Ausdruck $e$ sich die LTL-Formel $f$ vom Typ $t$ herleiten lässt.
 
-\inference[not]{e,T,\gamma\vdash_V (e',\textrm{bool})}{\textbf{not}\ e,T,\gamma\vdash_V (\lnot e',\textrm{bool})}
+Um die korrekte Typisierung von Modellen sicher stellen zu können, benötigt man noch eine weitere Ableitungsart:
+$\vdash_T$ gibt an, ob ein synchrones Modell, dass durch die übergebenen Parameter spezifiziert wird, eine gegebene Typisierung erfüllt.
+Da diese Ableitung abhängig vom synchronen Formalismus ist, wird sie hier nicht explizit angegeben.
 
-\inference[exists]{f,T,\gamma\cup\{(u,e,0)\}\vdash_V f'}{\textbf{exists}\ u\textbf{=}e\textbf{:} f,T,\gamma\vdash_V f'}
-
-\inference[next]{f,T,\{ (u,e,n+i)\ |\ (u,e,n)\in\gamma\}\vdash f' & f,T,\gamma\vdash_V f'}{\textbf{next} i\ f,T,\gamma\vdash_V f'}
+Zunächst wird definiert, wie sich ein leeres Textmodell herleiten lässt; die Modelle und Verbindungen sind leer, die zu verifizierende Formel ist $\top$, also immer wahr.
+\[
+\inference[empty]{}{\epsilon,T\vdash (\emptyset,\emptyset,\top)}
+\]
+Damit eine Modelldeklaration gültig ist, muss sich der Inhalt des Kontraktes $c$ mit $\vdash_C$ ableiten lassen und das referenzierte synchrone Modell wohlgetypt im Verhältnis zum restlichen Modell sein:
+\[
+\inference[model]{\alpha,T \vdash(ms,cs,vs) & c,\{ (v,t,d)\ |\ (n,v,t,d)\in T \}\vdash_C f & \beta,\mathit{args}\vdash_T T}{\textbf{model[}\beta\textbf{]}\ n\textbf{(}\mathit{args}\textbf{)}\ \textbf{\{} c\textbf{\}}\ \alpha,T\vdash(ms\cup\{(n,f)\},cs,vs)}
+\]
+Eine Deklaration einer Verbindung ist gültig, wenn beide Variablen den gleichen Typ besitzen.
+Außerdem muss die erste Variable eine Ausgabe-, die andere eine Eingabe-Variable sein.
+\[
+\inference[connect]{\alpha,T\vdash(ms,cs,vs) & T(cm_f,cv_f)=(t,\mathit{Outp}) & T(cm_t,cv_t) = (t,\mathit{Inp})}{\textbf{connect}\ cm_f\textbf{.}cv_f\ cm_t\textbf{.}cv_t\textbf{;}\ \alpha,T\vdash(ms,cs\cup\{(cm_f,cv_f,cm_t,cv_t)\},vs)}
+\]
+Eine Verifikationsblock muss sich mit $\vdash_C$ zu einer LTL-Formel ableiten lassen.
+Gibt es mehr als einen Block, so werden die Formeln per Konjunktion zusammengefasst.
+\[
+\inference[verify]{\alpha,T\vdash(ms,cs,vs) & c,T\vdash_C (f,\emptyset)}{\textbf{verify}\ \textbf{\{}c\textbf{\}}\ \alpha,T\vdash (ms,cs,vs\land f))}
+\]
+Ein leerer Kontrakt erlaubt dem Prozess jedes Verhalten und wird daher durch die LTL-Formel $\top$ repräsentiert.
+\[
+\inference[$\epsilon$-contract]{}{\epsilon,T\vdash_C (\top,\emptyset)}
+\]
+Eine gültige Initialisierungsdeklaration liegt dann vor, wenn der Typ der initialisierten Variable dem des Wertes entspricht.
+\[
+\inference[init]{\alpha,T\vdash_C (c,i) & d\in T(c)}{\textbf{init}\ v\ d\textbf{;}\ \alpha,T\vdash_C (c,i\cup\{(v,d)\})}
+\]
+Eine Kontraktformel ist gültig, wenn sie sich erfolgreich zu einer LTL-Formel des Typs "`bool"' ableiten lässt.
+Zu beachten ist, dass das Schlüsselwort \emph{contract} auch weggelassen werden kann.
+\[
+\inference[formula]{\alpha,T\vdash_C (c,i) & e,T,\emptyset\vdash_V (f,\textrm{bool})}{\textbf{contract}\ e\textbf{;}\ \alpha,T\vdash_C (c\land f,i)}
+\]
+Eine Variable kann zwei verschiedene Bedeutungen haben:
+Entweder ist sie eine durch einen $\exists$-Quantor gebundene Variable (1) oder eine normale qualifizierte oder unqualifizierte Variable.
+In beiden Fällen ist der Typ des Ausdrucks der Typ der Variable.
+\[
+\begin{array}{ll}
+  \inference[var(1)]{(v,q,n)\in\gamma & T(q)=t}{v,T,\gamma\vdash_V (q^n,t)} &
+  \inference[var(2)]{\lnot\exists q,n: (v,q,n)\in\gamma & T(v)=t}{v,T,\gamma\vdash_V (v,t)}
+\end{array}
+\]
+Die Regeln für die logischen Konnektoren \emph{not}, \emph{true}, \emph{false}, \emph{and}, \emph{or} und \emph{follows} sind genau wie in der normalen Logik definiert:
+\[
+\begin{array}{ll}
+  \inference[not]{e,T,\gamma\vdash_V (e',\textrm{bool})}{\textbf{not}\ e,T,\gamma\vdash_V (\lnot e',\textrm{bool})} &
+  \inference[and]{e_1,T,\gamma\vdash_V (e_1',\textrm{bool}) & e_2,T,\gamma\vdash_V (e_2',\textrm{bool})}{e_1\ \textbf{and}\ e_2,T,\gamma\vdash_V (e_1'\land e_2',\textrm{bool})}\\[20pt]
+  \inference[true]{}{\textbf{true},T,\gamma\vdash_V(\top,\textrm{bool})} &
+  \inference[or]{e_1,T,\gamma\vdash_V (e_1',\textrm{bool}) & e_2,T,\gamma\vdash_V (e_2',\textrm{bool})}{e_1\ \textbf{or}\ e_2,T,\gamma\vdash_V (e_1'\lor e_2',\textrm{bool})}\\[20pt]
+  \inference[false]{}{\textbf{false},T,\gamma\vdash_V(\top,\textrm{bool})} &
+  \inference[follows]{e_1,T,\gamma\vdash_V (e_1',\textrm{bool}) & e_2,T,\gamma\vdash_V (e_2',\textrm{bool})}{e_1\ \textbf{follows}\ e_2,T,\gamma\vdash_V (\lnot e_1'\lor e_2',\textrm{bool})}
+\end{array}
+\]
+Der $\exists$-Quantor bindet eine neue Variable an die aktuelle Version einer existierenden.
+Das bedeutet, dass auf frühere Werte einer Variable zurück gegriffen werden kann, wenn die Variable in einem \emph{next}-Kontext verwendet wird.
+\[
+\inference[exists]{f,T,\gamma\cup\{(u,e,0)\}\vdash_V f'}{\textbf{exists}\ u\textbf{=}e\textbf{:}\ f,T,\gamma\vdash_V f'}
+\]
+Der \emph{next}-Operator wird in sein LTL-Äquivalent übersetzt.
+Allerdings müssen die gebundenen Variablen auf den neuen Kontext angepasst werden, indem sie auf einen Wert früher in der Geschichte referenziert werden.
+\[
+\inference[next]{f,T,\{ (u,e,n+1)\ |\ (u,e,n)\in\gamma\}\vdash_V (f',\textrm{bool})}{\textbf{next}\ f,T,\gamma\vdash_V (\bigcirc f',\textrm{bool})}
+\]
+Tritt ein \emph{always}-Operator auf, so werden für die Ableitung der Unterformel alle Bindungen entfernt, da gebundene Variablen nicht innerhalb eines \emph{always}-Operators auftauchen dürfen.
+\[
+\inference[always]{f,T,\emptyset\vdash_V (f',\textrm{bool})}{\textbf{always}\ f,T,\gamma\vdash_V (\lnot(\top U (\lnot f')),\textrm{bool})}
+\]
+Gleichheitstests können auf allen Variablen gleichen Typs durchgeführt werden.
+\[
+\inference[equal]{f,T,\gamma\vdash_V (f',t) & g,T,\gamma\vdash_V (g',t)}{f=g,T,\gamma\vdash_V(f'=g',\textrm{bool})}
+\]
+\[
+\inference[nequal]{f,T,\gamma\vdash_V (f',t) & g,T,\gamma\vdash_V (g',t)}{f\textbf{!=}g,T,\gamma\vdash_V(\lnot(f'=g'),\textrm{bool})}
+\]
+Während Datentyp-spezifische Relationen wie $<$ oder $>$ nur auf speziellen Typen ausgeführt werden können (in diesem Fall "`int"').
+\[
+\inference[lesser]{f,T,\gamma\vdash_V (f',\textrm{int}) & g,T,\gamma\vdash_V (g',\textrm{int})}{f<g,T,\gamma\vdash_V(f'<g',\textrm{bool})}
+\]
+\[
+\inference[greater]{f,T,\gamma\vdash_V (f',\textrm{int}) & g,T,\gamma\vdash_V (g',\textrm{int})}{f>g,T,\gamma\vdash_V(f'>g',\textrm{bool})}
+\]
+Statt Variablen können für Integer auch Konstanten verwendet werden. 
+\[
+\inference[const]{n\in\mathbb{N}}{n,T,\gamma\vdash_V (n,\textrm{int})}
+\]
