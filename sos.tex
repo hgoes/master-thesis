@@ -116,3 +116,14 @@ Statt Variablen können für Integer auch Konstanten verwendet werden.
 \[
 \inference[const]{n\in\mathbb{N}}{n,T,\gamma\vdash_V (n,\textrm{int})}
 \]
+Einfache arithmetische Operationen werden ebenfalls unterstützt.
+\[
+\inference[plus]{f,T,\gamma\vdash_V (f',\textrm{int}) & g,T,\gamma\vdash_V (g',\textrm{int})}{f\textbf{+}g,T,\gamma\vdash_V (f'+g',\textrm{int})}
+\]
+\[
+\inference[minus]{f,T,\gamma\vdash_V (f',\textrm{int}) & g,T,\gamma\vdash_V (g',\textrm{int})}{f\textbf{-}g,T,\gamma\vdash_V (f'-g',\textrm{int})}
+\]
+
+%\[
+%\inference[elem]{\forall s\in S: s,T,\gamma\vdash_V (s',\textrm{int})}{
+%\]

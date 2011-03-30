@@ -56,11 +56,11 @@ Die gesamte Grammatik der GTL-Sprache ist in Abbildung \ref{fig:grammar} angegeb
     \alt `;'
     
     <formula> ::= <var>
-    \alt <lit> `<' <lit>
-    \alt <lit> `>' <lit>
-    \alt <lit> `<=' <lit>
-    \alt <lit> `>=' <lit>
-    \alt <lit> `=' <lit>
+    \alt <expr> `<' <expr>
+    \alt <expr> `>' <expr>
+    \alt <expr> `<=' <expr>
+    \alt <expr> `>=' <expr>
+    \alt <expr> `=' <expr>
     \alt <id> `in' `{' (<lit> (`,' <lit>)*)? `}'
     \alt `not' <formula>
     \alt <formula> `and' <formula>
@@ -80,6 +80,13 @@ Die gesamte Grammatik der GTL-Sprache ist in Abbildung \ref{fig:grammar} angegeb
     <id> ::= (`a'-`z' `A'-`Z' `0'-`9')+
     
     <int> ::= (`0'-`9')+
+
+    <expr> ::= <lit>
+    \alt <expr> `+' <expr>
+    \alt <expr> `-' <expr>
+    \alt <expr> `*' <expr>
+    \alt <expr> `/' <expr>
+    \alt `(' <expr> `)'
   \end{grammar}
   \caption{GTL Grammatik}
   \label{fig:grammar}
