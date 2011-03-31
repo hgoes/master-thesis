@@ -1,0 +1,41 @@
+\chapter{Installation}
+Hier wird beschrieben, wie die im Rahmen dieser Arbeit entwickelte Software installiert werden kann.
+\section{Voraussetzungen}
+Die folgenden Software-Pakete werden für die Kompilierung der Software benötigt:
+\begin{itemize}
+\item Der Haskell-Compiler \emph{GHC}\footnote{Glasgow Haskell Compiler}.
+  Es bietet sich die Installation der "`Haskell Platform"' an, die neben dem Compiler noch benötigte Distributionstools und Bibliotheken mitbringt.
+  Die Linux-Distributionen "`Ubuntu"', "`Debian"', "`Fedora"', "`Arch Linux"', "`Gentoo"' und "`NixOS"' bieten diese bereits über ihre interne Paketverwaltung an.
+  Für andere Systeme ist die Plattform unter \url{http://hackage.haskell.org/platform/} erhältlich.
+\item Die Haskell-Bibliotheken "`binary"' und "`bzlib"', welche beide über die Haskell-Pa\-ket\-ver\-wal\-tung "`hackage"' verfügbar sind und damit automatisch bei der Kompilierung heruntergeladen und installiert werden.
+\end{itemize}
+Für die Nutzung aller Features des GTL-Tools sind außerdem die folgenden Softwarekomponenten erforderlich:
+\begin{itemize}
+\item Der Model-Checker \emph{SPIN}, erhältlich unter \url{http://spinroot.com}.
+  Die Software ist in C geschrieben und hat keine externen Abhängigkeiten und sollte daher auf fast jeder Plattform verfügbar sein.
+\item Die BDD-Bibliothek \emph{CUDD}, die man unter \url{http://vlsi.colorado.edu/~fabio/CUDD/} in Quelltextform findet.
+\item Für die Überprüfung der synchronen Komponenten ist das Entwicklungswerkzeug \emph{SCADE} erforderlich.
+  Als einzige Komponente ist diese nicht frei verfügbar, sondern muss von der Firma "`Esterel Technologies"' (\url{http://esterel-technologies.com} lizensiert werden.
+\end{itemize}
+Soll die aktuellste Version der Quelltexte bezogen werden, so benötigt man außerdem die Versionsverwaltung \emph{git}, erhältlich unter \url{http://git-scm.com/}.
+\section{Quelltext beziehen}
+Für den Quelltext zu der Anwendung entpackt man entweder die mitgelieferten Archive, oder lädt den aktuellsten Entwicklungsstand der Pakete per \emph{git} herunter.
+Der entsprechende Befehl lautet
+\begin{lstlisting}[language=bash,mathescape=true]
+git checkout https://github.com/hguenther/$name$
+\end{lstlisting}
+Wobei $name$ den Namen des Paketes bezeichnet.
+Die zu herunterladenen Pakete sind:
+\begin{itemize}
+\item language-scade
+\item language-promela
+\item bdd
+\item gtl
+\end{itemize}
+\section{Kompilieren}
+In jedem Quelltext-Verzeichnis muss nun der Befehl
+\begin{lstlisting}[language=bash]
+cabal install
+\end{lstlisting}
+ausgeführt werden.
+Hierbei ist zu beachten, dass das Paket "`gtl"' als letztes installiert werden muss, da es von allen anderen abhängt.
