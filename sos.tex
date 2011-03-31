@@ -73,7 +73,7 @@ In beiden Fällen ist der Typ des Ausdrucks der Typ der Variable.
   \inference[var(2)]{\lnot\exists q,n: (v,q,n)\in\gamma & T(v)=t}{v,T,\gamma\vdash_V (v,t)}
 \end{array}
 \]
-Die Regeln für die logischen Konnektoren \emph{not}, \emph{true}, \emph{false}, \emph{and}, \emph{or} und \emph{follows} sind genau wie in der normalen Logik definiert:
+Die Regeln für die logischen Konnektoren \emph{not}, \emph{true}, \emph{false}, \emph{and}, \emph{or} und \emph{implies} sind genau wie in der normalen Logik definiert:
 \[
 \begin{array}{ll}
   \inference[not]{e,T,\gamma\vdash_V (e',\textrm{bool})}{\textbf{not}\ e,T,\gamma\vdash_V (\lnot e',\textrm{bool})} &
@@ -81,7 +81,7 @@ Die Regeln für die logischen Konnektoren \emph{not}, \emph{true}, \emph{false},
   \inference[true]{}{\textbf{true},T,\gamma\vdash_V(\top,\textrm{bool})} &
   \inference[or]{e_1,T,\gamma\vdash_V (e_1',\textrm{bool}) & e_2,T,\gamma\vdash_V (e_2',\textrm{bool})}{e_1\ \textbf{or}\ e_2,T,\gamma\vdash_V (e_1'\lor e_2',\textrm{bool})}\\[20pt]
   \inference[false]{}{\textbf{false},T,\gamma\vdash_V(\top,\textrm{bool})} &
-  \inference[follows]{e_1,T,\gamma\vdash_V (e_1',\textrm{bool}) & e_2,T,\gamma\vdash_V (e_2',\textrm{bool})}{e_1\ \textbf{follows}\ e_2,T,\gamma\vdash_V (\lnot e_1'\lor e_2',\textrm{bool})}
+  \inference[implies]{e_1,T,\gamma\vdash_V (e_1',\textrm{bool}) & e_2,T,\gamma\vdash_V (e_2',\textrm{bool})}{e_1\ \textbf{implies}\ e_2,T,\gamma\vdash_V (\lnot e_1'\lor e_2',\textrm{bool})}
 \end{array}
 \]
 Der $\exists$-Quantor bindet eine neue Variable an die aktuelle Version einer existierenden.
