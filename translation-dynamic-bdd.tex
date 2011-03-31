@@ -9,3 +9,11 @@ Für die Implementierung der dynamischen BDDs wurde die C-Bibliothek \emph{CUDD}
   Die Bibliothek ist unter einer BSD-artigen Lizenz veröffentlicht.
 }
 gewählt, da diese im Gegensatz zu anderen Bibliotheken Zugriff auf ihre internen Schnittstellen bietet und somit sehr gut zu erweitern ist.
+
+Die Integration in SPIN erfolgt über die C-Schnittstelle, die es erlaubt, zur Berechnung von Folgezuständen C-Code zu verwenden.
+Wie auch bei der Abstraktion durch statische BDD werden die LTL-Formeln, die die Komponenten abstrahieren, in Büchi-Automaten übersetzt.
+Jede atomare Aussage, die eine Ausgabevariable enthält wird nun in die Form $\alpha R e$ gebracht, wobei $\alpha$ eine Ausgabevariable, $R$ eine beliebige Relation und $e$ ein Ausdruck, der keine Ausgabevariablen enthält ist.
+Enthält die atomare Aussage keine Ausgabevariable, so wird eine Testfunktion generiert, die prüft, ob die BDD der Eingabevariablen die Relation erfüllen.
+Ansonsten wird eine Funktion generiert, die zunächst das BDD für den Ausdruck $e$ berechnet und dann einen BDD aller Werte berechnet, die die Relation erfüllen.
+Für die Relation $=$ ist dieser BDD einfach der BDD für $e$, während er für $!=$ das Komplement ist.
+Ist die Relation beispielsweise $>$, so berechnet die Funktion das Minimum des BDDs für $e$ und erstellt ein BDD, dass alle Werte, die größer sind enthält.
