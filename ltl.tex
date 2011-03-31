@@ -3,22 +3,22 @@ LTL-Formeln können benutzt werden, um das zeitabhängige Verhalten von Systemen
 Die LTL-Logik stellt eine Erweiterung der Aussagenlogik dar, so dass nicht nur Aussagen über den jetzigen Zustand getroffen werden können, sondern auch über noch folgende Zustände.
 Die Aussagenlogik wird um folgende Operatoren erweitert:
 \begin{itemize}
-\item Der \emph{next}-Operator (Auch mit $X$ bezeichnet) sagt aus, dass eine Formel im nächstens Zustand gilt.
-  Die Formel $X\varphi$ spezifiziert also Pfade der Form
+\item Der \emph{next}-Operator (Auch mit $\bigcirc$ bezeichnet) sagt aus, dass eine Formel im nächstens Zustand gilt.
+  Die Formel $\bigcirc\varphi$ spezifiziert also Pfade der Form
   \[ \xymatrix @R=0em {
       \bullet \ar[r] & \bullet \ar[r] & \bullet \ar@{-->}[r] &\\
       & \varphi & &
   }
     \]
-\item Mit dem \emph{always}-Operator (Abgekürzt $A$) versehene Formeln gelten sowohl im aktuellen wie auch in allen folgenden Zuständen.
-  Die Formel $A\varphi$ erlaubt also alle Pfade der Form
+\item Mit dem \emph{always}-Operator ($\square$) versehene Formeln gelten sowohl im aktuellen wie auch in allen folgenden Zuständen.
+  Die Formel $\square\varphi$ erlaubt also alle Pfade der Form
   \[ \xymatrix @R=0em {
       \bullet \ar[r] & \bullet \ar[r] & \bullet \ar@{-->}[r] &\\
       \varphi & \varphi & \varphi &
   }
     \]
-\item Der \emph{finally}-Operator ($F$) gibt an, dass eine Formel irgendwann in der Zukunft einmal gelten wird.
-  Die Formel $F\varphi$ spezifiziert zum Beispiel Pfade der Form
+\item Der \emph{finally}-Operator ($\diamond$) gibt an, dass eine Formel irgendwann in der Zukunft einmal gelten wird.
+  Die Formel $\diamond\varphi$ spezifiziert zum Beispiel Pfade der Form
   \[ \xymatrix @R=0em {
     \bullet \ar[r] & \bullet \ar@{-->}[r] & \bullet \ar[r] & \bullet \ar@{-->}[r] & \\
     & & \varphi & &
