@@ -160,7 +160,9 @@ Verwendet man Mengen, um verschiedene mögliche Werte einer Variable zu speicher
 Für eine binäre Operation $\circ$ wird also ein effizienter Algorithmus auf Entscheidungsdiagrammen gesucht, der für zwei Mengen $A$ und $B$ die Menge
 \[ \{ a\circ b\ |\ a\in A,b\in B\} \]
 berechnet.
+Im folgenden wird die Implementierung einiger einfacher Operationen erläutert.
 
+\subsubsection{Addition}
 Um beispielsweise die elementweise Addition von zwei Mengen angeben zu können, definiert man zunächst eine Hilfsfunktion "`plus"', die zusätzlich noch einen Parameter enthält, die den Übertrag der letzten Bit-Addition speichert.
 Addiert man nun zwei Diagramme, deren Hauptknoten die selbe Markierung $x$ haben, so ergibt sich ein neues Diagramm mit dem Hauptknoten der Markierung $x$, der wie folgt aufgebaut ist:
 \[ \textrm{plus}\Bigg(\bdd{plus1_lhs},\bdd{plus1_rhs},0\Bigg) = \bdd{plus1_res} \]
@@ -179,6 +181,9 @@ Im Fall, dass der Knoten eines der Argumente niedrigere Ordnung besitzt -- hier 
 Setzt man dies dann in die erste Gleichung ein, so erhält man (für $y<x$):
 \[ \textrm{plus}\Bigg(\bdd{plus1_lhs},\underbrace{\bdd{plus3_rhs}}_R,0\Bigg) = \bdd{plus3_res} \]
 Die Gleichung mit Übertrag ist genau äquivalent zu den vorherigen Fällen und daher weg gelassen.
+Um das Ergebnis der Addition zweier BDD auszurechnen ruft man nun die definierte Hilfsfunktion mit dem Parameter 0 für den Übertrag auf.
+\subsubsection{Subtraktion}
+
 
 \subsection{Tupel}
 Tupel lassen sich einfach binär kodieren, indem man die Binärkodierung aller Elemente hintereinander schreibt.

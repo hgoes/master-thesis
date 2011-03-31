@@ -83,7 +83,7 @@ Eine Mögliche asynchrone Ausführung von drei Prozessen ist in Abbildung \ref{f
 Eine asynchrone Architektur löst das Problem der synchronen Architektur, indem sie sämtliche theoretisch mögliche Verschachtelungen der Ausführungen der Prozesse bei der Verifikation berücksichtigt.
 Dies führt aber zu zwei neuen Problemen:
 Zum einen nimmt die Zustandsgröße des Systems eventuell gewaltig zu; $n$ Prozesse haben nach $m$ Ausführungsschritten bereits $n^m$ mögliche Ausführungen.
-Zwar führen meist viele unterschiedliche Verschachtelungen zu den selben Zuständen, aber im schlimmsten Fall führt eine vollständig asynchrone Architektur zu einer gewaltigen Zustandsexplosion.
+Zwar führen meist viele unterschiedliche Verschachtelungen zu den selben Zuständen, in diesem Fall kann die Technik der "`partial order reduction"'\cite{partial_order_reduction} verwendet werden, aber im schlimmsten Fall führt eine vollständig asynchrone Architektur zu einer gewaltigen Zustandsexplosion.
 Das zweite Problem ist, dass diese Architektur auch extrem unrealistische Ausführungen in Erwägung zieht:
 Ein Prozess kann zum Beispiel immer rechnen, während ein anderer nie zum Zuge kommt.
 In der Verifikation können so Fehlerzustände erkannt werden, die in der Realität nie vorkommen.
@@ -98,7 +98,7 @@ In der Verifikation können so Fehlerzustände erkannt werden, die in der Realit
 Um das Problem zu umgehen, dass einzelne Prozesse "`verhungern"', also nie einen Rechenschritt ausführen dürfen, kann man so genannte \emph{Fairness}-Kriterien definieren:
 Diese besagen, dass nur Ausführungen für die Verifikation in Betracht gezogen werden, in denen jeder Prozess immer mal wieder an die Reihe kommt.
 SPIN unterstützt die Modellierung von Fairness-Kriterien durch die Definition von Labels, die immer mal wieder erreicht werden müssen, damit die Ausführung in Betracht gezogen wird.
-\section{Asynchone Ausführung mit Schranken}
+\section{Asynchrone Ausführung mit Schranken}
 %Um die Probleme der vollständig asynchronen Ausführung zu umgehen kann man die Asynchronität soweit begrenzen, dass die Anzahl der ausgeführten Schritte nie um mehr als einen festen Wert divergiert.
 Obwohl das Hinzufügen von Fairness-Eigenschaften die Fälle entfernt, in denen ein Prozess niemals zur Ausführung kommt, so werden immer noch extrem unrealistische Szenarien betrachtet:
 In der Realität wird es beispielsweise nie vorkommen, dass ein Prozess nur ein mal einen Berechnungsschritt durchführt, während ein anderer im gleichen Zeitraum 1000 ausführt.
