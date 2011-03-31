@@ -31,3 +31,8 @@ Die Aussagenlogik wird um folgende Operatoren erweitert:
     \varphi & \varphi & \varphi & \psi &
   } \]
 \end{itemize}
+Um die vollständige Mächtigkeit von LTL zu erreichen reicht es allerdings auch schon, nur die Operatoren $\bigcirc$ und $U$ zu haben, denn der \emph{finally}-Operator lässt sich ausdrücken als
+\[ \diamond\varphi = \top U \varphi \]
+und der \emph{always}-Operator als
+\[ \square\varphi = \lnot (\top U \lnot\varphi) \]
+Alle anderen Operatoren sind also zwar nützlich, aber nicht benötigt.
