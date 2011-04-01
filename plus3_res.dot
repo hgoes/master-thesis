@@ -1,7 +1,7 @@
 graph plus3res {
 	x [shape=circle];
-	lhs [shape=plaintext,label="plus(A,R,0)\n&#8744;\nplus(A,R,1)"];
-	rhs [shape=plaintext,label="plus(B,R,0)\n&#8744;\nplus(B,R,0)"];
+	lhs [shape=plaintext,label="plus(A,R,0)\n&#8744;\nplus(B,R,0)"];
+	rhs [shape=plaintext,label="plus(A,R,1)\n&#8744;\nplus(B,R,0)"];
 	x -- lhs;
 	x -- rhs [style=dotted];
 }
