@@ -183,8 +183,10 @@ Setzt man dies dann in die erste Gleichung ein, so erhält man (für $y<x$):
 Die Gleichung mit Übertrag ist genau äquivalent zu den vorherigen Fällen und daher weg gelassen.
 Um das Ergebnis der Addition zweier BDD auszurechnen ruft man nun die definierte Hilfsfunktion mit dem Parameter 0 für den Übertrag auf.
 \subsubsection{Subtraktion}
-
-
+Für die Subtraktion muss der Code für die Addition nur leicht verändert werden:
+\[ \textrm{minus}\Bigg(\bdd{plus1_lhs},\bdd{plus1_rhs},0\Bigg) = \bdd{minus1_res} \]
+\[ \textrm{minus}\Bigg(\bdd{plus1_lhs},\bdd{plus1_rhs},1\Bigg) = \bdd{minus2_res} \]
+\[ \textrm{minus}\Bigg(\bdd{plus1_lhs},\underbrace{\bdd{plus3_rhs}}_R,0\Bigg) = \bdd{plus3_res} \]
 \subsection{Tupel}
 Tupel lassen sich einfach binär kodieren, indem man die Binärkodierung aller Elemente hintereinander schreibt.
 Diese Art der Kodierung hat den Vorteil, dass es einfach möglich ist, Restriktionen auf einzelnen Elementen zu formulieren.

@@ -5,7 +5,7 @@ SOURCES=gals.tex language.tex translation-c.tex translation-scade.tex ltl-transl
 
 BDDS=top.pdf bot.pdf con.pdf example1.pdf example2.pdf example3.pdf example4.pdf\
      example_set1.pdf plus1_lhs.pdf plus1_rhs.pdf plus1_res.pdf plus2_res.pdf plus3_rhs.pdf\
-     plus3_res.pdf async.pdf
+     plus3_res.pdf async.pdf minus1_res.pdf minus2_res.pdf minus3_res.pdf
 
 thesis.pdf: thesis.tex $(SOURCES) lit.bib $(BDDS)
 	pdflatex thesis.tex

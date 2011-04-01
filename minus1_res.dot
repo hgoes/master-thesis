@@ -1,0 +1,7 @@
+graph minus1res {
+	x [shape=circle];
+	lhs [shape=plaintext,label="minus(A,D,0)\n&#8744;\nminus(B,C,1)"];
+	rhs [shape=plaintext,label="minus(A,C,0)\n&#8744;\nminus(B,D,0)"];
+	x -- lhs;
+	x -- rhs [style=dotted];
+}
