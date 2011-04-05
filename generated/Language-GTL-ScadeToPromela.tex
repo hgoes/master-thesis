@@ -1,0 +1,33 @@
+\haddockmoduleheading{Language.GTL.ScadeToPromela}
+\label{module:Language.GTL.ScadeToPromela}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.ScadeToPromela (
+    convertType,  scadeToPromela,  declarationToProcess,  dataDefToSteps, 
+    equationsToSteps,  equationToSteps,  buildAssign
+  ) where\end{verbatim}}
+\haddockendheader
+
+\begin{haddockdesc}
+\item[
+convertType\ ::\ TypeExpr\ ->\ Typename
+]
+\item[
+scadeToPromela\ ::\ {\char 91}Declaration{\char 93}\ ->\ {\char 91}Module{\char 93}
+]
+\item[
+declarationToProcess\ ::\ Declaration\ ->\ Module
+]
+\item[
+dataDefToSteps\ ::\ DataDef\ ->\ ({\char 91}Declaration{\char 93},\ {\char 91}Step{\char 93})
+]
+\item[
+equationsToSteps\ ::\ {\char 91}Equation{\char 93}\ ->\ ({\char 91}Declaration{\char 93},\ {\char 91}Step{\char 93})
+]
+\item[
+equationToSteps\ ::\ Equation\ ->\ ({\char 91}Declaration{\char 93},\ {\char 91}Step{\char 93})
+]
+\item[
+buildAssign\ ::\ {\char 91}LHSId{\char 93}\ ->\ Expr\ ->\ {\char 91}Step{\char 93}
+]
+\end{haddockdesc}

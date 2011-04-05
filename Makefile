@@ -1,13 +1,15 @@
 SOURCES=gals.tex language.tex translation-c.tex translation-scade.tex ltl-translation.tex\
         error-refinement.tex translation-correctness.tex implementation.tex bdd.tex spin.tex\
         scade.tex motivation.tex ltl.tex buchi.tex translation-static-bdd.tex\
-	translation-dynamic-bdd.tex sos.tex grammar.tex installation.tex
+	translation-dynamic-bdd.tex sos.tex grammar.tex installation.tex sourcedoc.tex
 
 BDDS=top.pdf bot.pdf con.pdf example1.pdf example2.pdf example3.pdf example4.pdf\
      example_set1.pdf plus1_lhs.pdf plus1_rhs.pdf plus1_res.pdf plus2_res.pdf plus3_rhs.pdf\
      plus3_res.pdf async.pdf minus1_res.pdf minus2_res.pdf minus3_res.pdf
 
-thesis.pdf: thesis.tex $(SOURCES) lit.bib $(BDDS)
+GENERATED=generated/*.tex generated/haddock.sty
+
+thesis.pdf: thesis.tex $(SOURCES) lit.bib $(BDDS) $(GENERATED)
 	pdflatex thesis.tex
 	bibtex thesis.aux
 	pdflatex thesis.tex > /dev/null

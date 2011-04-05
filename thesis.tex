@@ -10,7 +10,7 @@
 
 \usepackage[bookmarks=true,colorlinks=false]{hyperref} % PDF-Inhaltsverzeichnis und Links
 
-\usepackage[utf8]{inputenc}
+\usepackage[utf8x]{inputenc}
 \usepackage[ngerman]{babel} % Deutsche Silbentrennung
 
 \usepackage[T1]{fontenc}
@@ -29,6 +29,8 @@
 
 \usepackage{setspace}
 \usepackage{relsize}
+
+\usepackage{generated/haddock}
 
 \definecolorset{RGB}{}{}{d1,11,64,12;d2,39,140,41;d3,77,57,153;d4,89,49,16;d5,217,124,49}
 
@@ -146,5 +148,6 @@
 \bibliography{lit}
 \begin{appendix}
   \input{installation}
+  \input{sourcedoc}
 \end{appendix}
 \end{document}

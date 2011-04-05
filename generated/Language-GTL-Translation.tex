@@ -1,0 +1,82 @@
+\haddockmoduleheading{Language.GTL.Translation}
+\label{module:Language.GTL.Translation}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.Translation (
+    GTLAtom(GTLRel, GTLElem, GTLVar),  mapGTLVars,  gtlAtomNot,  gtlToBuchi, 
+    gtlsToBuchi,  getAtomVars,  gtlToLTL
+  ) where\end{verbatim}}
+\haddockendheader
+
+Translates GTL expressions into LTL formula.
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ GTLAtom\ v
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{GTLRel Relation (Expr v Int) (Expr v Int)} & \\
+\haddockdecltt{|} & \haddockdecltt{GTLElem v [Integer] Bool} & \\
+\haddockdecltt{|} & \haddockdecltt{GTLVar v Integer Bool} & \\
+\end{tabulary}\par
+A representation of GTL expressions that can't be further translated into LTL
+   and thus have to be used as atoms.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Eq\ v\ =>\ Eq\ (GTLAtom\ v)\\instance\ Ord\ v\ =>\ Ord\ (GTLAtom\ v)\\instance\ Show\ v\ =>\ Show\ (GTLAtom\ v)\\instance\ Binary\ v\ =>\ Binary\ (GTLAtom\ v)
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+mapGTLVars\ ::\ (v\ ->\ w)\ ->\ GTLAtom\ v\ ->\ GTLAtom\ w
+\end{tabular}]\haddockbegindoc
+Applies a function to every variable in the atom.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+gtlAtomNot\ ::\ GTLAtom\ v\ ->\ GTLAtom\ v
+\end{tabular}]\haddockbegindoc
+Negate a GTL atom.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+gtlToBuchi\ ::\ (Monad\ m,\ Ord\ v,\ Show\ v)\ =>\ ({\char 91}GTLAtom\ v{\char 93}\ ->\ m\ a)\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ Expr\ v\ Bool\ ->\ m\ (Buchi\ a)
+\end{tabular}]\haddockbegindoc
+Translates a GTL expression into a buchi automaton.
+   Needs a user supplied function that converts a list of atoms that have to be
+   true into the variable type of the buchi automaton.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+gtlsToBuchi\ ::\ (Monad\ m,\ Ord\ v,\ Show\ v)\ =>\ ({\char 91}GTLAtom\ v{\char 93}\ ->\ m\ a)\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ {\char 91}Expr\ v\ Bool{\char 93}\ ->\ m\ (Buchi\ a)
+\end{tabular}]\haddockbegindoc
+Like \haddockid{gtlToBuchi} but takes more than one formula.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+getAtomVars\ ::\ GTLAtom\ v\ ->\ {\char 91}(v,\ Integer){\char 93}
+\end{tabular}]\haddockbegindoc
+Extract all variables with their history level from an atom.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+gtlToLTL\ ::\ Expr\ v\ Bool\ ->\ LTL\ (GTLAtom\ v)
+\end{tabular}]\haddockbegindoc
+Translate a GTL expression into a LTL formula.
+\par
+
+\end{haddockdesc}

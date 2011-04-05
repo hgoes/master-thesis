@@ -1,0 +1,143 @@
+\haddockmoduleheading{Language.GTL.Token}
+\label{module:Language.GTL.Token}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.Token (
+    Token(Identifier,
+          Key,
+          Bracket,
+          Dot,
+          Semicolon,
+          Colon,
+          Comma,
+          ConstString,
+          ConstInt,
+          Unary,
+          Binary), 
+    KeyWord(KeyAll,
+            KeyConnect,
+            KeyContract,
+            KeyModel,
+            KeyInit,
+            KeyVerify,
+            KeyExists), 
+    BracketType(Parentheses, Square, Curly), 
+    UnOp(GOpAlways, GOpNext, GOpNot, GOpFinally), 
+    BinOp(GOpAnd,
+          GOpOr,
+          GOpImplies,
+          GOpIn,
+          GOpNotIn,
+          GOpLessThan,
+          GOpLessThanEqual,
+          GOpGreaterThan,
+          GOpGreaterThanEqual,
+          GOpEqual,
+          GOpNEqual,
+          GOpPlus,
+          GOpMinus,
+          GOpMult,
+          GOpDiv)
+  ) where\end{verbatim}}
+\haddockendheader
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ Token
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{Identifier String} & \\
+\haddockdecltt{|} & \haddockdecltt{Key KeyWord} & \\
+\haddockdecltt{|} & \haddockdecltt{Bracket BracketType Bool} & \\
+\haddockdecltt{|} & \haddockdecltt{Dot} & \\
+\haddockdecltt{|} & \haddockdecltt{Semicolon} & \\
+\haddockdecltt{|} & \haddockdecltt{Colon} & \\
+\haddockdecltt{|} & \haddockdecltt{Comma} & \\
+\haddockdecltt{|} & \haddockdecltt{ConstString String} & \\
+\haddockdecltt{|} & \haddockdecltt{ConstInt Integer} & \\
+\haddockdecltt{|} & \haddockdecltt{Unary UnOp} & \\
+\haddockdecltt{|} & \haddockdecltt{Binary BinOp} & \\
+\end{tabulary}\par
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ Token
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ KeyWord
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{KeyAll} & \\
+\haddockdecltt{|} & \haddockdecltt{KeyConnect} & \\
+\haddockdecltt{|} & \haddockdecltt{KeyContract} & \\
+\haddockdecltt{|} & \haddockdecltt{KeyModel} & \\
+\haddockdecltt{|} & \haddockdecltt{KeyInit} & \\
+\haddockdecltt{|} & \haddockdecltt{KeyVerify} & \\
+\haddockdecltt{|} & \haddockdecltt{KeyExists} & \\
+\end{tabulary}\par
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ KeyWord
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ BracketType
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{Parentheses} & \\
+\haddockdecltt{|} & \haddockdecltt{Square} & \\
+\haddockdecltt{|} & \haddockdecltt{Curly} & \\
+\end{tabulary}\par
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ BracketType
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ UnOp
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{GOpAlways} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpNext} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpNot} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpFinally (Maybe Integer)} & \\
+\end{tabulary}\par
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Eq\ UnOp\\instance\ Ord\ UnOp\\instance\ Show\ UnOp
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ BinOp
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{GOpAnd} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpOr} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpImplies} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpIn} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpNotIn} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpLessThan} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpLessThanEqual} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpGreaterThan} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpGreaterThanEqual} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpEqual} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpNEqual} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpPlus} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpMinus} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpMult} & \\
+\haddockdecltt{|} & \haddockdecltt{GOpDiv} & \\
+\end{tabulary}\par
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Eq\ BinOp\\instance\ Ord\ BinOp\\instance\ Show\ BinOp
+\end{tabular}]
+\end{haddockdesc}

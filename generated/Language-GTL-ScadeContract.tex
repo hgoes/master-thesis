@@ -1,0 +1,119 @@
+\haddockmoduleheading{Language.GTL.ScadeContract}
+\label{module:Language.GTL.ScadeContract}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.ScadeContract (
+    translateContracts,  buildTest,  buchiToScade,  startState, 
+    failTransition,  failState,  buchiToStates,  stateToTransition,  litToExpr, 
+    relToExpr,  relsToExpr
+  ) where\end{verbatim}}
+\haddockendheader
+
+Translate a GTL contract into a SCADE testnode.
+ -  The buchi automaton representing the contract is translated into a
+ -  SCADE state automaton.
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+translateContracts
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{[Declaration]} & The SCADE source code
+ \\
+                                                     \haddockdecltt{->} & \haddockdecltt{[Declaration]} & The content of the GTL model
+ \\
+                                                                                                          \haddockdecltt{->} & \haddockdecltt{[Declaration]} & \\
+\end{tabulary}\par
+Convert all contracts of a given GTL model into SCADE testnodes.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+buildTest
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{String} & Name of the SCADE node
+ \\
+                                              \haddockdecltt{->} & \haddockdecltt{[VarDecl]} & Input variables of the node
+ \\
+                                                                                               \haddockdecltt{->} & \haddockdecltt{[VarDecl]} & Output variables of the node
+ \\
+                                                                                                                                                \haddockdecltt{->} & \haddockdecltt{Declaration} & \\
+\end{tabulary}\par
+Constructs a SCADE node that connects the testnode with the actual implementation SCADE node.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+buchiToScade
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{String} & Name of the resulting SCADE node
+ \\
+                                              \haddockdecltt{->} & \haddockdecltt{Map String TypeExpr} & Input variables
+ \\
+                                                                                                         \haddockdecltt{->} & \haddockdecltt{Map String TypeExpr} & Output variables
+ \\
+                                                                                                                                                                    \haddockdecltt{->} & \haddockdecltt{Buchi (Set (GTLAtom String))} & The buchi automaton
+ \\
+                                                                                                                                                                                                                                        \haddockdecltt{->} & \haddockdecltt{Declaration} & \\
+\end{tabulary}\par
+Convert a buchi automaton to SCADE.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+startState\ ::\ Buchi\ (Set\ (GTLAtom\ String))\ ->\ State
+\end{tabular}]\haddockbegindoc
+The starting state for a contract automaton.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+failTransition\ ::\ Transition
+\end{tabular}]\haddockbegindoc
+Constructs a transition into the \haddockid{failState}.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+failState\ ::\ State
+\end{tabular}]\haddockbegindoc
+The state which is entered when a contract is violated.
+   There is no transition out of this state.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+buchiToStates\ ::\ Buchi\ (Set\ (GTLAtom\ String))\ ->\ {\char 91}State{\char 93}
+\end{tabular}]\haddockbegindoc
+Translates a buchi automaton into a list of SCADE automaton states.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+stateToTransition\ ::\ Integer\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ BuchiState\ st\ (Set\ (GTLAtom\ String))\ f\ ->\ Transition
+\end{tabular}]\haddockbegindoc
+Given a state this function creates a transition into the state.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[
+litToExpr\ ::\ Integral\ a\ =>\ Expr\ String\ a\ ->\ Expr
+]
+\item[
+relToExpr\ ::\ GTLAtom\ String\ ->\ Expr
+]
+\item[
+relsToExpr\ ::\ {\char 91}GTLAtom\ String{\char 93}\ ->\ Expr
+]
+\end{haddockdesc}

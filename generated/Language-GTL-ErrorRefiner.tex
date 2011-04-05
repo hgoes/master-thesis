@@ -1,0 +1,138 @@
+\haddockmoduleheading{Language.GTL.ErrorRefiner}
+\label{module:Language.GTL.ErrorRefiner}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.ErrorRefiner (
+    Trace,  CNameGen,  parseTrace,  filterTraces,  writeTraces,  readBDDTraces, 
+    atomToC,  relToC,  exprToC,  intOpToC,  traceToPromela,  traceElemToC, 
+    traceToBuchi
+  ) where\end{verbatim}}
+\haddockendheader
+
+This module helps with the generation, storing, analyzing and processing of
+    trace files.
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ Trace\ =\ {\char 91}{\char 91}GTLAtom\ (String,\ String){\char 93}{\char 93}
+\end{tabular}]\haddockbegindoc
+A trace is a list of requirements.
+   Each requirement corresponds to a step in the model.
+   Each requirement is a list of atoms that have to be true in the corresponding step.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ CNameGen\ =\ String\ ->\ String\ ->\ Integer\ ->\ String
+\end{tabular}]\haddockbegindoc
+Converts GTL variables to C-names.
+   Takes the component name, the variable name and the history level of the variable.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+parseTrace
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{FilePath} & The promela file of the model
+ \\
+                                                \haddockdecltt{->} & \haddockdecltt{FilePath} & The path to the promela trail file
+ \\
+                                                                                                \haddockdecltt{->} & \haddockdecltt{IO [(String, Integer)]} & \\
+\end{tabulary}\par
+Parse a SPIN trace file by calling it with the spin interpreter and parsing the output.
+   Produces a list of tuples where the first component is the name of the component that
+   just performed a step and the second one is the state number that it transitioned into.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+filterTraces\ ::\ String\ ->\ {\char 91}String{\char 93}
+\end{tabular}]\haddockbegindoc
+Given the output of a spin verifier, extract the filenames of traces.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+writeTraces\ ::\ FilePath\ ->\ {\char 91}Trace{\char 93}\ ->\ IO\ ()
+\end{tabular}]\haddockbegindoc
+Write a list of traces into a file.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+readBDDTraces\ ::\ FilePath\ ->\ IO\ {\char 91}Trace{\char 93}
+\end{tabular}]\haddockbegindoc
+Read a list of traces from a file.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+atomToC
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{CNameGen} & Function to generate C-names
+ \\
+                                                \haddockdecltt{->} & \haddockdecltt{GTLAtom (String, String)} & GTL atom to convert
+ \\
+                                                                                                                \haddockdecltt{->} & \haddockdecltt{String} & \\
+\end{tabulary}\par
+Given a function to generate names, this function converts a GTL atom into a C-expression.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+relToC\ ::\ Relation\ ->\ String
+\end{tabular}]\haddockbegindoc
+Convert a GTL relation to a C operator
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+exprToC\ ::\ CNameGen\ ->\ Expr\ (String,\ String)\ Int\ ->\ String
+\end{tabular}]\haddockbegindoc
+Convert a GTL expression to a C-expression
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+intOpToC\ ::\ IntOp\ ->\ String
+\end{tabular}]\haddockbegindoc
+Convert a GTL integer operator to a C-operator
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+traceToPromela\ ::\ CNameGen\ ->\ Trace\ ->\ {\char 91}Step{\char 93}
+\end{tabular}]\haddockbegindoc
+Convert a trace into a promela module that checks if everything conforms to the trace.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+traceElemToC\ ::\ CNameGen\ ->\ {\char 91}GTLAtom\ (String,\ String){\char 93}\ ->\ String
+\end{tabular}]\haddockbegindoc
+Convert a element from a trace into a C-expression.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+traceToBuchi\ ::\ CNameGen\ ->\ Trace\ ->\ Buchi\ (Maybe\ String)
+\end{tabular}]\haddockbegindoc
+Convert a trace into a buchi automaton that checks for conformance to that trace.
+\par
+
+\end{haddockdesc}

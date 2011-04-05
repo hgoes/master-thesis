@@ -1,0 +1,155 @@
+\haddockmoduleheading{Language.GTL.LTL}
+\label{module:Language.GTL.LTL}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.LTL (
+    LTL(Atom, Bin, Un, Ground),  BinOp(And, Or, Until, UntilOp), 
+    UnOp(Not, Next),  GBuchi,  Buchi, 
+    BuchiState(BuchiState, isStart, vars, finalSets, successors),  ltlToBuchi, 
+    ltlToBuchiM,  translateGBA,  buchiProduct
+  ) where\end{verbatim}}
+\haddockendheader
+
+Implements Linear Time Logic and its translation into Buchi-Automaton.
+\par
+
+\haddocksection{Formulas
+}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ LTL\ a
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{Atom a} & \\
+\haddockdecltt{|} & \haddockdecltt{Bin BinOp (LTL a) (LTL a)} & \\
+\haddockdecltt{|} & \haddockdecltt{Un UnOp (LTL a)} & \\
+\haddockdecltt{|} & \haddockdecltt{Ground Bool} & \\
+\end{tabulary}\par
+A LTL formula with atoms of type \emph{a}.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Eq\ a\ =>\ Eq\ (LTL\ a)\\instance\ Ord\ a\ =>\ Ord\ (LTL\ a)\\instance\ Show\ a\ =>\ Show\ (LTL\ a)
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ BinOp
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{And} & \\
+\haddockdecltt{|} & \haddockdecltt{Or} & \\
+\haddockdecltt{|} & \haddockdecltt{Until} & \\
+\haddockdecltt{|} & \haddockdecltt{UntilOp} & \\
+\end{tabulary}\par
+Minimal set of binary operators for LTL.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Eq\ BinOp\\instance\ Ord\ BinOp\\instance\ Show\ BinOp
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ UnOp
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{Not} & \\
+\haddockdecltt{|} & \haddockdecltt{Next} & \\
+\end{tabulary}\par
+Unary operators for LTL.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Eq\ UnOp\\instance\ Ord\ UnOp\\instance\ Show\ UnOp
+\end{tabular}]
+\end{haddockdesc}
+\haddocksection{Buchi translation
+}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ GBuchi\ st\ a\ f\ =\ Map\ st\ (BuchiState\ st\ a\ f)
+\end{tabular}]\haddockbegindoc
+A buchi automaton parametrized over the state identifier \emph{st}, the variable type \emph{a} and the final set type \emph{f}
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ Buchi\ a\ =\ GBuchi\ Integer\ a\ (Set\ Integer)
+\end{tabular}]\haddockbegindoc
+A simple generalized buchi automaton.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ BuchiState\ st\ a\ f
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{BuchiState} & \\
+                    \{ & \haddockdecltt{isStart :: Bool} & Is the state an initial state?
+ \\
+                    , & \haddockdecltt{vars :: a} & The variables that must be true in this state.
+ \\
+                    , & \haddockdecltt{finalSets :: f} & In which final sets is this state a member?
+ \\
+                    , & \haddockdecltt{successors :: Set st} & All following states
+ \\
+                    \} &
+\end{tabulary}\par
+A state representation of a buchi automaton.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ (Show\ st,\ Show\ a,\ Show\ f)\ =>\ Show\ (BuchiState\ st\ a\ f)
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+ltlToBuchi\ ::\ (Ord\ a,\ Show\ a)\ =>\ LTL\ a\ ->\ Buchi\ (Map\ a\ Bool)
+\end{tabular}]\haddockbegindoc
+Converts a LTL formula to a generalized buchi automaton.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+ltlToBuchiM\ ::\ (Ord\ a,\ Monad\ m,\ Show\ a)\ =>\ ({\char 91}(a,\ Bool){\char 93}\ ->\ m\ b)\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ LTL\ a\ ->\ m\ (Buchi\ b)
+\end{tabular}]\haddockbegindoc
+Same as \haddockid{ltlToBuchi} but also allows the user to construct the variable type and runs in a monad.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+translateGBA\ ::\ (Ord\ st,\ Ord\ f)\ =>\ GBuchi\ st\ a\ (Set\ f)\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ GBuchi\ (st,\ Int)\ a\ Bool
+\end{tabular}]\haddockbegindoc
+Transforms a generalized buchi automaton into a regular one.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+buchiProduct
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{(Ord st1, Ord f1, Ord st2, Ord f2)} \\
+                     \haddockdecltt{=>} & \haddockdecltt{GBuchi st1 a (Set f1)} & First buchi automaton
+ \\
+                                                                                  \haddockdecltt{->} & \haddockdecltt{GBuchi st2 b (Set f2)} & Second buchi automaton
+ \\
+                                                                                                                                               \haddockdecltt{->} & \haddockdecltt{GBuchi (st1, st2) (a, b) (Set (Either f1 f2))} & \\
+\end{tabulary}\par
+Calculates the product automaton of two given buchi automatons.
+\par
+
+\end{haddockdesc}
