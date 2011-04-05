@@ -3,15 +3,19 @@
   a4paper,
   twoside,
   %headsepline,
+  titlepage,
+  headings=normal,
   bibliography=totoc]{scrbook}
 
 \usepackage[bookmarks=true,colorlinks=false]{hyperref} % PDF-Inhaltsverzeichnis und Links
 
-\usepackage[utf8]{inputenc} % UTF-8 Kodierung
+\usepackage[utf8]{inputenc}
 \usepackage[ngerman]{babel} % Deutsche Silbentrennung
 
 \usepackage[T1]{fontenc}
 \usepackage[lf]{venturis} % Eine schöne Schriftart
+\usepackage{fontspec}
+
 \usepackage{graphicx} % For includegraphics
 \usepackage[nounderscore]{syntax} % Syntax im BNF-Stil (Niemals das "nounderscore entfernen, das macht alles kaputt!)
 \usepackage{amssymb} % Für \mathbb
@@ -22,6 +26,9 @@
 \usepackage{semantic} % Strukturelle Operationelle Semantik
 \usepackage[all]{xy} % XY-Matrix Umgebung für Diagramme
 \usepackage{clrscode3e} % Für Pseudo-Code im Cormen-Stil
+
+\usepackage{setspace}
+\usepackage{relsize}
 
 \definecolorset{RGB}{}{}{d1,11,64,12;d2,39,140,41;d3,77,57,153;d4,89,49,16;d5,217,124,49}
 
@@ -39,9 +46,76 @@
 
 \newcommand{\bdd}[1]{\vcenter{\hbox{\includegraphics[scale=.4]{#1}}}}
 
+\definecolor{tubsrot}{cmyk}{.1,1,.8,0}
+
+\newcommand{\docAuthor}{Henning Günther}
+\newcommand{\docUni}{Technische Universität Braunschweig}
+\newcommand{\docInstitut}{Institut für Theoretische Informatik}
+\newcommand{\docTitel}{Verifikation von GALS Systemen}
+\newcommand{\docType}{Master-Arbeit}
+\newcommand{\docPruefer}{Prof. Dr. Jirí Adámek}
+\newcommand{\docBetreuer}{Dr. Stefan Milius}
+\newcommand{\docId}{2860185}
+
 \begin{document}
 
-\maketitle
+%\maketitle
+\thispagestyle{empty}
+\begin{titlepage}
+
+% Seitenrand links aufheben
+\begin{addmargin}{\dimexpr -\oddsidemargin-1in\relax}
+
+% Koma-Script Seitenrand + Kopfzeile aufheben
+\vspace*{\dimexpr - 24.75mm - \headheight}
+% TU-BS Corporate Design Seitenrand für A4
+\vskip33.5mm
+
+\includegraphics{TUBraunschweig_4C.pdf}
+\hspace{-2mm}
+\textcolor{tubsrot}{\rule[6.5mm]{\textwidth}{2pt}}
+
+	\vbox{}\vskip-50mm
+	\vbox{
+		\llap{
+			\includegraphics[height=10mm]{iti}\hskip3mm
+			%\parbox{40mm}{\footnotesize\sf Institut für Theoretische Informatik\\[1em]}
+			\hskip-\textwidth\hskip-\oddsidemargin\hskip-1in\hskip5mm
+		}
+	}
+\end{addmargin}
+
+\begin{center}
+% Schriftskalierung
+\large
+
+% Zeilenabstand
+\doublespacing
+
+\vfill
+{\relsize{1}{\docType}}\\[5ex]
+{\relsize{3}{\textbf{\docTitel}}}\\[5ex]
+%{\relsize{3}{\textbf{\textsc{\docUntertitel}}}}}
+{\relsize{1}\docAuthor}\\
+{Matrikelnummer: \docId\\[2ex]
+\today}\\
+
+\vfill
+{
+\begin{tabular}{ll}
+	Prüfer:   & \docPruefer\\
+	Betreuer: & \docBetreuer
+\end{tabular}
+}\\[5ex]
+
+\onehalfspacing
+{\relsize{-1}
+\docUni\\
+\docInstitut
+}
+
+\end{center}
+\end{titlepage}
 
 \tableofcontents
 

@@ -18,6 +18,9 @@ $(BDDS): %.pdf: %.dot
 	inkscape -z -f $*.svg -A $@
 	pdfcrop $@ $@
 
+iti.pdf: iti.svg
+	inkscape -z -f iti.svg -A iti.pdf
+
 overview.pdf: overview.tex grammar.tex
 	pdflatex overview.tex
 
