@@ -9,7 +9,7 @@ BDDS=top.pdf bot.pdf con.pdf example1.pdf example2.pdf example3.pdf example4.pdf
 
 GENERATED=generated/*.tex generated/haddock.sty
 
-thesis.pdf: thesis.tex $(SOURCES) lit.bib $(BDDS) $(GENERATED)
+thesis.pdf: thesis.tex $(SOURCES) lit.bib $(BDDS) $(GENERATED) iti.pdf
 	pdflatex thesis.tex
 	bibtex thesis.aux
 	pdflatex thesis.tex > /dev/null
