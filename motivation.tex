@@ -8,3 +8,17 @@ Die Verifikation von GALS-Systemen steht vor zwei Problemen:
   Automatisch zu überprüfen, ob eine gegebene Abstraktion korrekt ist, ist in keinem in dieser Arbeit untersuchtem Formalismus vorgesehen.
 \end{itemize}
 Diese Arbeit versucht beide Probleme durch die Einführung eines neuen Formalismus zu lösen, der die Vorteile von synchronen und asynchronen Formalismen vereint und zusätzlich die Möglichkeit bietet, sichere Abstraktionen durch Kontrakte einzuführen.
+
+\section{Andere Arbeiten}
+Die Idee, GALS-Systeme durch eine Kombination von synchronen und asynchronen Sprachen zu verifizieren, wird in verschiedenen Arbeiten behandelt:
+\begin{enumerate}
+\item Damien Thivolle und Hubert Garavel erklären die grundsätzliche Herangehensweise und zeigen anhand der Verifikation eines Kommunikationsprotokolls die Vorteile dieses Ansatzes\cite{gals_sam}.
+Es wird erklärt, wie sich synchrone Komponenten als Funktionen ansehen lassen und wie sie sich in ein asynchrones Verifikationstool einbinden lassen.
+Im Gegensatz zu dieser Arbeit wird aber kein neuer Formalismus für die Spezifikation von GALS-Systemen eingeführt.
+Auch Techniken zur Optimierung wie sie in dieser Arbeit behandelt werden fehlen.
+\item Ein Artikel von Doucet et al. beschreibt die Übersetzung des synchronen Formalismus SIGNAL nach Promela\cite{gals_signal}.
+  Die Verifikation wird dann vollständig von SPIN übernommen und nicht wie in dieser Arbeit aufgeteilt in einen synchronen und asynchronen Teil.
+\item "`Multiclock Esterel"' erweitert die Beschreibungssprache von SCADE um die Möglichkeit, mehr als einen Takt für verschiedene Komponenten anzugeben\cite{multiclock_esterel}.
+  Der Formalismus bleibt allerdings vollständig deterministisch und jede Komponente lässt sich in eine äquivalente SCADE Komponente übersetzen.
+\item Der Formalismus "`Communicating Reactive State Machines"' wird in einer Arbeit verwendet, um GALS Systeme zu modelieren und zu verifizieren\cite{gals_crsm}.
+\end{enumerate}
