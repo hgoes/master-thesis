@@ -1,31 +1,52 @@
-\haddockmoduleheading{Language.GTL.ScadeContract}
-\label{module:Language.GTL.ScadeContract}
+\haddockmoduleheading{Language.GTL.Backend.Scade}
+\label{module:Language.GTL.Backend.Scade}
 \haddockbeginheader
 {\haddockverb\begin{verbatim}
-module Language.GTL.ScadeContract (
-    translateContracts,  buildTest,  buchiToScade,  startState, 
-    failTransition,  failState,  buchiToStates,  stateToTransition,  litToExpr, 
-    relToExpr,  relsToExpr
+module Language.GTL.Backend.Scade (
+    Scade(Scade),  scadeTranslateTypeC,  scadeTypeToGTL,  scadeTypeMap, 
+    scadeInterface,  buildTest,  buchiToScade,  startState,  failTransition, 
+    failState,  buchiToStates,  stateToTransition,  litToExpr,  relToExpr, 
+    relsToExpr
   ) where\end{verbatim}}
 \haddockendheader
 
-Translate a GTL contract into a SCADE testnode.
- -  The buchi automaton representing the contract is translated into a
- -  SCADE state automaton.
-\par
-
 \begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
-translateContracts
+data\ Scade
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{Scade} & \\
+\end{tabulary}\par
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ Scade\\instance\ GTLBackend\ Scade
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[
+scadeTranslateTypeC\ ::\ TypeRep\ ->\ String
+]
+\item[
+scadeTypeToGTL\ ::\ TypeExpr\ ->\ Maybe\ TypeRep
+]
+\item[
+scadeTypeMap\ ::\ {\char 91}(String,\ TypeExpr){\char 93}\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ Either\ String\ (Map\ String\ TypeRep)
+]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+scadeInterface
 \end{tabular}]\haddockbegindoc
 \haddockbeginargs
-\haddockdecltt{::} & \haddockdecltt{[Declaration]} & The SCADE source code
+\haddockdecltt{::} & \haddockdecltt{String} & The name of the Scade model to analyze
  \\
-                                                     \haddockdecltt{->} & \haddockdecltt{[Declaration]} & The content of the GTL model
+                                              \haddockdecltt{->} & \haddockdecltt{[Declaration]} & The parsed source code
  \\
-                                                                                                          \haddockdecltt{->} & \haddockdecltt{[Declaration]} & \\
+                                                                                                   \haddockdecltt{->} & \haddockdecltt{([(String, TypeExpr)], [(String, TypeExpr)])} & \\
 \end{tabulary}\par
-Convert all contracts of a given GTL model into SCADE testnodes.
+Extract type information from a SCADE model.
+   Returns two list of variable-type pairs, one for the input variables, one for the outputs.
 \par
 
 \end{haddockdesc}

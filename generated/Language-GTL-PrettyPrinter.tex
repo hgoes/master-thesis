@@ -1,0 +1,95 @@
+\haddockmoduleheading{Language.GTL.PrettyPrinter}
+\label{module:Language.GTL.PrettyPrinter}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.PrettyPrinter (
+    getDotBoundingBox,  buchiToDot,  gtlToTikz,  modelToTikz,  pointToTikz, 
+    dotToTikz,  splinePoints,  atomToLatex,  estimateWidth
+  ) where\end{verbatim}}
+\haddockendheader
+
+This module provides functions to render GTL specifications to Tikz Latex drawing commands.
+    It can thus be used to get a pretty image for a GTL file.
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+getDotBoundingBox\ ::\ DotGraph\ a\ ->\ Rect
+\end{tabular}]\haddockbegindoc
+Get the bounding box of a preprocessed graph.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+buchiToDot\ ::\ GBuchi\ Integer\ (Map\ (GTLAtom\ String)\ Bool)\ f\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ DotGraph\ String
+\end{tabular}]\haddockbegindoc
+Convert a Buchi automaton into a Dot graph.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+gtlToTikz\ ::\ GTLSpec\ ->\ IO\ String
+\end{tabular}]\haddockbegindoc
+Convert a GTL specification to Tikz drawing commands.
+   This needs to be IO because it calls graphviz programs to preprocess the picture.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+modelToTikz\ ::\ GTLModel\ ->\ IO\ (String,\ Double,\ Double)
+\end{tabular}]\haddockbegindoc
+Convert a single model into Tikz drawing commands.
+   Also returns the width and height of the bounding box for the rendered picture.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+pointToTikz\ ::\ Point\ ->\ String
+\end{tabular}]\haddockbegindoc
+Helper function to render a graphviz point in Tikz.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+dotToTikz
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{(Show a, Ord a)} \\
+                     \haddockdecltt{=>} & \haddockdecltt{Maybe (Map a (Map String TypeRep, Map String TypeRep, String, Double, Double))} & Can provide interfaces for the contained models if needed.
+ \\
+                                                                                                                                           \haddockdecltt{->} & \haddockdecltt{DotGraph a} & \\
+                                                                                                                                                                                             \haddockdecltt{->} & \haddockdecltt{String} & \\
+\end{tabulary}\par
+Convert a graphviz graph to Tikz drawing commands.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+splinePoints\ ::\ {\char 91}a{\char 93}\ ->\ {\char 91}(a,\ a,\ a,\ a){\char 93}
+\end{tabular}]\haddockbegindoc
+Convert a list of points into a spline by grouping them.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+atomToLatex\ ::\ GTLAtom\ String\ ->\ String
+\end{tabular}]\haddockbegindoc
+Render a GTL atom to LaTeX.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+estimateWidth\ ::\ GTLAtom\ String\ ->\ Int
+\end{tabular}]\haddockbegindoc
+Estimate the visible width of a LaTeX rendering of a GTL atom in characters.
+\par
+
+\end{haddockdesc}

@@ -1,0 +1,50 @@
+\haddockmoduleheading{Language.GTL.Model}
+\label{module:Language.GTL.Model}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.Model (
+    GTLModel(GTLModel,
+             gtlModelContract,
+             gtlModelBackend,
+             gtlModelInput,
+             gtlModelOutput,
+             gtlModelDefaults), 
+    GTLSpec(GTLSpec, gtlSpecModels, gtlSpecVerify, gtlSpecConnections), 
+    gtlParseModel,  gtlParseSpec
+  ) where\end{verbatim}}
+\haddockendheader
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ GTLModel
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{GTLModel} & \\
+                    \{ & \haddockdecltt{gtlModelContract :: Expr String Bool} & \\
+                    , & \haddockdecltt{gtlModelBackend :: AllBackend} & \\
+                    , & \haddockdecltt{gtlModelInput :: Map String TypeRep} & \\
+                    , & \haddockdecltt{gtlModelOutput :: Map String TypeRep} & \\
+                    , & \haddockdecltt{gtlModelDefaults :: Map String (Maybe Dynamic)} & \\
+                    \} &
+\end{tabulary}\par
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ GTLSpec
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{GTLSpec} & \\
+                    \{ & \haddockdecltt{gtlSpecModels :: Map String GTLModel} & \\
+                    , & \haddockdecltt{gtlSpecVerify :: Expr (String, String) Bool} & \\
+                    , & \haddockdecltt{gtlSpecConnections :: [(String, String, String, String)]} & \\
+                    \} &
+\end{tabulary}\par
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[
+gtlParseModel\ ::\ ModelDecl\ ->\ IO\ (Either\ String\ (String,\ GTLModel))
+]
+\item[
+gtlParseSpec\ ::\ {\char 91}Declaration{\char 93}\ ->\ IO\ (Either\ String\ GTLSpec)
+]
+\end{haddockdesc}

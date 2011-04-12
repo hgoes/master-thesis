@@ -1,0 +1,148 @@
+\haddockmoduleheading{Language.GTL.Backend}
+\label{module:Language.GTL.Backend}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.Backend (
+    ModelInterface, 
+    GTLBackend(GTLBackendModel,
+               backendName,
+               initBackend,
+               typeCheckInterface,
+               cInterface,
+               backendVerify), 
+    CInterface(CInterface,
+               cIFaceIncludes,
+               cIFaceStateType,
+               cIFaceInputType,
+               cIFaceStateInit,
+               cIFaceIterate,
+               cIFaceGetOutputVar,
+               cIFaceGetInputVar,
+               cIFaceTranslateType), 
+    mergeTypes
+  ) where\end{verbatim}}
+\haddockendheader
+
+Provides an abstraction over many different synchronized formalisms.
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ ModelInterface\ =\ (Map\ String\ TypeRep,\ Map\ String\ TypeRep)
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+class\ GTLBackend\ b\ where
+\end{tabular}]\haddockbegindoc
+A GTLBackend is a synchronized formalism that can be used to specify models and perform verification.
+\par
+
+\haddockpremethods{}\textbf{Methods}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+backendName\ ::\ b\ ->\ String
+\end{tabular}]\haddockbegindoc
+The name of the backend. Used to determine which backend to load.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+initBackend\ ::\ b\ ->\ {\char 91}String{\char 93}\ ->\ IO\ (GTLBackendModel\ b)
+\end{tabular}]\haddockbegindoc
+Initialize a backend with a list of parameters
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+typeCheckInterface
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{b} & The backend
+ \\
+                                         \haddockdecltt{->} & \haddockdecltt{GTLBackendModel b} & The backend data
+ \\
+                                                                                                  \haddockdecltt{->} & \haddockdecltt{ModelInterface} & A type mapping for the in- and outputs
+ \\
+                                                                                                                                                        \haddockdecltt{->} & \haddockdecltt{Either String ModelInterface} & \\
+\end{tabulary}\par
+Perform type checking on the synchronized model
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+cInterface
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{b} & The backend
+ \\
+                                         \haddockdecltt{->} & \haddockdecltt{GTLBackendModel b} & The backend data
+ \\
+                                                                                                  \haddockdecltt{->} & \haddockdecltt{CInterface} & \\
+\end{tabulary}\par
+Get the C-interface of a GTL model
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+backendVerify\ ::\ b\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ GTLBackendModel\ b\ ->\ Expr\ String\ Bool\ ->\ IO\ (Maybe\ Bool)
+\end{tabular}]\haddockbegindoc
+Perform a backend-specific model checking algorithm.
+   Returns \haddockid{Nothing} if the result is undecidable and \haddockid{Just} \haddockid{True}, if the verification goal holds.
+\par
+
+\end{haddockdesc}
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ GTLBackend\ Scade
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ CInterface
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{CInterface} & \\
+                    \{ & \haddockdecltt{cIFaceIncludes :: [String]} & A list of C-headers to be included
+ \\
+                    , & \haddockdecltt{cIFaceStateType :: [String]} & A list of C-types that together form the signature of the state of the state machine
+ \\
+                    , & \haddockdecltt{cIFaceInputType :: [String]} & The type signature of the input variables. Input variables aren't considered state.
+ \\
+                    , & \haddockdecltt{cIFaceStateInit :: [String]
+                                                          -> String} & Generate a call to initialize the state machine
+ \\
+                    , & \haddockdecltt{cIFaceIterate :: [String]
+                                                        -> [String]
+                                                           -> String} & Perform one iteration of the state machine
+ \\
+                    , & \haddockdecltt{cIFaceGetOutputVar :: [String]
+                                                             -> String
+                                                                -> String} & Extract an output variable from the machine state
+ \\
+                    , & \haddockdecltt{cIFaceGetInputVar :: [String]
+                                                            -> String
+                                                               -> String} & Extract an input variable from the state machine
+ \\
+                    , & \haddockdecltt{cIFaceTranslateType :: TypeRep
+                                                              -> String} & Translate a haskell type to C
+ \\
+                    \} &
+\end{tabulary}\par
+A C-interface is information that is needed to integrate a C-state machine.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+mergeTypes\ ::\ Map\ String\ TypeRep\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ Map\ String\ TypeRep\ ->\ Either\ String\ (Map\ String\ TypeRep)
+\end{tabular}]\haddockbegindoc
+Merge two type-mappings into one, report conflicting types
+\par
+
+\end{haddockdesc}

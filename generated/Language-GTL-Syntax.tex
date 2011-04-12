@@ -9,14 +9,16 @@ module Language.GTL.Syntax (
               modelType,
               modelArgs,
               modelContract,
-              modelInits), 
+              modelInits,
+              modelInputs,
+              modelOutputs), 
     ConnectDecl(ConnectDecl,
                 connectFromModel,
                 connectFromVariable,
                 connectToModel,
                 connectToVariable), 
     VerifyDecl(VerifyDecl, verifyFormulas), 
-    GExpr(GBin, GUn, GConst, GVar, GSet, GExists), 
+    GExpr(GBin, GUn, GConst, GConstBool, GVar, GSet, GExists), 
     Expr(ExprVar,
          ExprConst,
          ExprBinInt,
@@ -26,8 +28,9 @@ module Language.GTL.Syntax (
          ExprNot,
          ExprAlways,
          ExprNext), 
-    castSer,  toBoolOp,  toRelOp,  toElemOp,  ExistsBinding,  typeCheckBool, 
-    toIntOp,  typeCheckInt,  BoolOp(And, Or, Implies), 
+    parseGTLType,  castSer,  toBoolOp,  toRelOp,  toElemOp,  ExistsBinding, 
+    typeCheckBool,  typeCheckInt,  typeCheck,  typeCheck', 
+    GTLType(typeCheckBin, typeCheckUn),  toIntOp,  BoolOp(And, Or, Implies), 
     IntOp(OpPlus, OpMinus, OpMult, OpDiv), 
     Relation(BinLT, BinLTEq, BinGT, BinGTEq, BinEq, BinNEq), 
     InitExpr(InitAll, InitOne),  relNot,  relTurn,  pushNot,  getVars, 
@@ -71,9 +74,13 @@ data\ ModelDecl
  \\
                     , & \haddockdecltt{modelArgs :: [String]} & Arguments specific to the synchronous formalism, for example in which file the model is specified etc.
  \\
-                    , & \haddockdecltt{modelContract :: [Expr String Bool]} & A list of contracts that this model fulfills.
+                    , & \haddockdecltt{modelContract :: [GExpr]} & A list of contracts that this model fulfills.
  \\
                     , & \haddockdecltt{modelInits :: [(String, InitExpr)]} & A list of initializations for the variables of the model.
+ \\
+                    , & \haddockdecltt{modelInputs :: Map String TypeRep} & Declared inputs of the model with their corresponding type
+ \\
+                    , & \haddockdecltt{modelOutputs :: Map String TypeRep} & Declared outputs of a model
  \\
                     \} &
 \end{tabulary}\par
@@ -117,7 +124,7 @@ data\ VerifyDecl
 \end{tabular}]\haddockbegindoc
 \haddockbeginconstrs
 \haddockdecltt{=} & \haddockdecltt{VerifyDecl} & \\
-                    \{ & \haddockdecltt{verifyFormulas :: [Expr (String, String) Bool]} & The formulas to be verified.
+                    \{ & \haddockdecltt{verifyFormulas :: [GExpr]} & The formulas to be verified.
  \\
                     \} &
 \end{tabulary}\par
@@ -138,6 +145,7 @@ data\ GExpr
 \haddockdecltt{=} & \haddockdecltt{GBin BinOp GExpr GExpr} & \\
 \haddockdecltt{|} & \haddockdecltt{GUn UnOp GExpr} & \\
 \haddockdecltt{|} & \haddockdecltt{GConst Int} & \\
+\haddockdecltt{|} & \haddockdecltt{GConstBool Bool} & \\
 \haddockdecltt{|} & \haddockdecltt{GVar (Maybe String) String} & \\
 \haddockdecltt{|} & \haddockdecltt{GSet [Integer]} & \\
 \haddockdecltt{|} & \haddockdecltt{GExists String (Maybe String) String GExpr} & \\
@@ -182,6 +190,11 @@ instance\ Typeable2\ Expr\\instance\ (Eq\ a,\ Eq\ v)\ =>\ Eq\ (Expr\ v\ a)\\inst
 \end{tabular}]
 \end{haddockdesc}
 \begin{haddockdesc}
+\item[
+parseGTLType\ ::\ String\ ->\ Maybe\ TypeRep
+]
+\end{haddockdesc}
+\begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
 castSer\ ::\ (Typeable\ a,\ Typeable\ b,\ Monad\ m)\ =>\ c\ a\ ->\ m\ (c\ b)
 \end{tabular}]\haddockbegindoc
@@ -215,22 +228,41 @@ Cast a binary operator into an element operator. Returns \haddockid{Nothing} if 
 \end{haddockdesc}
 \begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
-type\ ExistsBinding\ =\ Map\ String\ (Maybe\ String,\ String,\ Integer)
+type\ ExistsBinding\ a\ =\ Map\ String\ (a,\ Integer)
 \end{tabular}]\haddockbegindoc
 Binds variables to other variables from the past.
 \par
 
 \end{haddockdesc}
 \begin{haddockdesc}
+\item[
+typeCheckBool\ ::\ ExistsBinding\ (Maybe\ String,\ String)\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ GExpr\ ->\ Either\ String\ (Expr\ (Maybe\ String,\ String)\ Bool)
+]
+\item[
+typeCheckInt\ ::\ ExistsBinding\ (Maybe\ String,\ String)\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ GExpr\ ->\ Either\ String\ (Expr\ (Maybe\ String,\ String)\ Int)
+]
+\item[
+typeCheck\ ::\ (Ord\ a,\ Show\ a,\ GTLType\ t,\ Show\ t)\ =>\ Map\ a\ TypeRep\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ (Maybe\ String\ ->\ String\ ->\ Either\ String\ a)\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ GExpr\ ->\ Either\ String\ (Expr\ a\ t)
+]
+\end{haddockdesc}
+\begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
-typeCheckBool
+typeCheck'
 \end{tabular}]\haddockbegindoc
 \haddockbeginargs
-\haddockdecltt{::} & \haddockdecltt{ExistsBinding} & A map of bound variables
+\haddockdecltt{::} & \haddockdecltt{(Ord a, Show a, GTLType t, Show t)} \\
+                     \haddockdecltt{=>} & \haddockdecltt{Map a TypeRep} & Type mapping
  \\
-                                                     \haddockdecltt{->} & \haddockdecltt{GExpr} & The expression to convert
+                                                                          \haddockdecltt{->} & \haddockdecltt{(Maybe String
+                                                                                                               -> String
+                                                                                                                  -> Either String a)} & \\
+                                                                                                                                         \haddockdecltt{->} & \haddockdecltt{ExistsBinding a} & A map of bound variables
  \\
-                                                                                                  \haddockdecltt{->} & \haddockdecltt{Either String (Expr (Maybe String, String) Bool)} & \\
+                                                                                                                                                                                                \haddockdecltt{->} & \haddockdecltt{GExpr} & The expression to convert
+ \\
+                                                                                                                                                                                                                                             \haddockdecltt{->} & \haddockdecltt{t} & undefined
+ \\
+                                                                                                                                                                                                                                                                                      \haddockdecltt{->} & \haddockdecltt{Either String (Expr a t)} & \\
 \end{tabulary}\par
 Typecheck an untyped expression. Converts it into the \haddockid{Expr} type which is strongly typed.
    Returns either an error message or the resulting expression of type \haddockid{Bool}.
@@ -239,17 +271,30 @@ Typecheck an untyped expression. Converts it into the \haddockid{Expr} type whic
 \end{haddockdesc}
 \begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
-toIntOp\ ::\ BinOp\ ->\ Maybe\ IntOp
+class\ Typeable\ t\ =>\ GTLType\ t\ where
 \end{tabular}]\haddockbegindoc
-Cast a binary operator into an arithmetic operator. Returns \haddockid{Nothing} if the cast fails.
-\par
-
+\haddockpremethods{}\textbf{Methods}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+typeCheckBin\ ::\ (Ord\ a,\ Show\ a,\ GTLType\ t)\ =>\ Map\ a\ TypeRep\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ (Maybe\ String\ ->\ String\ ->\ Either\ String\ a)\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ ExistsBinding\ a\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ t\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ BinOp\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ GExpr\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ GExpr\ ->\ Either\ String\ (Expr\ a\ t)
+\end{tabular}]
 \end{haddockdesc}
 \begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
-typeCheckInt\ ::\ ExistsBinding\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ GExpr\ ->\ Either\ String\ (Expr\ (Maybe\ String,\ String)\ Int)
+typeCheckUn\ ::\ (Ord\ a,\ Show\ a,\ GTLType\ t)\ =>\ Map\ a\ TypeRep\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ (Maybe\ String\ ->\ String\ ->\ Either\ String\ a)\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ ExistsBinding\ a\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ t\ ->\ UnOp\ ->\ GExpr\ ->\ Either\ String\ (Expr\ a\ t)
+\end{tabular}]
+\end{haddockdesc}
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ GTLType\ Bool\\instance\ GTLType\ Int
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+toIntOp\ ::\ BinOp\ ->\ Maybe\ IntOp
 \end{tabular}]\haddockbegindoc
-Same as \haddockid{typeCheckBool} but returns an expression of type \haddockid{Int}.
+Cast a binary operator into an arithmetic operator. Returns \haddockid{Nothing} if the cast fails.
 \par
 
 \end{haddockdesc}
@@ -370,7 +415,7 @@ Extracts all variables with their level of history from an expression.
 \end{haddockdesc}
 \begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
-maximumHistory\ ::\ Ord\ v\ =>\ {\char 91}Expr\ v\ a{\char 93}\ ->\ Map\ v\ Integer
+maximumHistory\ ::\ Ord\ v\ =>\ Expr\ v\ a\ ->\ Map\ v\ Integer
 \end{tabular}]\haddockbegindoc
 Extracts the maximum level of history for each variable in the expression.
 \par

@@ -1,0 +1,29 @@
+\haddockmoduleheading{Language.GTL.Backend.All}
+\label{module:Language.GTL.Backend.All}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.Backend.All (
+    AllBackend(AllBackend, allTypecheck, allCInterface, allVerifyLocal), 
+    initAllBackend
+  ) where\end{verbatim}}
+\haddockendheader
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ AllBackend
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{AllBackend} & \\
+                    \{ & \haddockdecltt{allTypecheck :: ModelInterface
+                                                        -> Either String ModelInterface} & \\
+                    , & \haddockdecltt{allCInterface :: CInterface} & \\
+                    , & \haddockdecltt{allVerifyLocal :: Expr String Bool
+                                                         -> IO (Maybe Bool)} & \\
+                    \} &
+\end{tabulary}\par
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[
+initAllBackend\ ::\ String\ ->\ {\char 91}String{\char 93}\ ->\ IO\ (Maybe\ AllBackend)
+]
+\end{haddockdesc}

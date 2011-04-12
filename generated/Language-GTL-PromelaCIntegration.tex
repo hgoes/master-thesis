@@ -3,7 +3,8 @@
 \haddockbeginheader
 {\haddockverb\begin{verbatim}
 module Language.GTL.PromelaCIntegration (
-    translateGTL,  varName,  neverClaim,  generatePromelaCode,  connectionMap
+    translateGTL,  varName,  stateVars,  inputVars,  neverClaim, 
+    generatePromelaCode
   ) where\end{verbatim}}
 \haddockendheader
 
@@ -18,11 +19,9 @@ translateGTL
 \haddockbeginargs
 \haddockdecltt{::} & \haddockdecltt{Maybe FilePath} & An optional path to a trace file
  \\
-                                                      \haddockdecltt{->} & \haddockdecltt{[Declaration]} & The GTL code
+                                                      \haddockdecltt{->} & \haddockdecltt{GTLSpec} & The GTL code
  \\
-                                                                                                           \haddockdecltt{->} & \haddockdecltt{[Declaration]} & The SCADE code for the components
- \\
-                                                                                                                                                                \haddockdecltt{->} & \haddockdecltt{IO String} & \\
+                                                                                                     \haddockdecltt{->} & \haddockdecltt{IO String} & \\
 \end{tabulary}\par
 Compile a GTL declaration into a promela module simulating the specified model.
    Optionally takes a trace that is used to restrict the execution.
@@ -35,17 +34,26 @@ Compile a GTL declaration into a promela module simulating the specified model.
 varName
 \end{tabular}]\haddockbegindoc
 \haddockbeginargs
-\haddockdecltt{::} & \haddockdecltt{String} & The component name
+\haddockdecltt{::} & \haddockdecltt{CInterface} & \\
+                                                  \haddockdecltt{->} & \haddockdecltt{String} & The component name
  \\
-                                              \haddockdecltt{->} & \haddockdecltt{String} & The variable name
+                                                                                                \haddockdecltt{->} & \haddockdecltt{String} & The variable name
  \\
-                                                                                            \haddockdecltt{->} & \haddockdecltt{Integer} & The history level of the variable
+                                                                                                                                              \haddockdecltt{->} & \haddockdecltt{Integer} & The history level of the variable
  \\
-                                                                                                                                           \haddockdecltt{->} & \haddockdecltt{String} & \\
+                                                                                                                                                                                             \haddockdecltt{->} & \haddockdecltt{String} & \\
 \end{tabulary}\par
 Convert a GTL name into a C-name.
 \par
 
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[
+stateVars\ ::\ String\ ->\ CInterface\ ->\ {\char 91}String{\char 93}
+]
+\item[
+inputVars\ ::\ String\ ->\ CInterface\ ->\ {\char 91}String{\char 93}
+]
 \end{haddockdesc}
 \begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
@@ -56,7 +64,9 @@ neverClaim
  \\
                                              \haddockdecltt{->} & \haddockdecltt{Expr (String, String) Bool} & The verify expression
  \\
-                                                                                                               \haddockdecltt{->} & \haddockdecltt{Module} & \\
+                                                                                                               \haddockdecltt{->} & \haddockdecltt{Map String GTLModel} & All models
+ \\
+                                                                                                                                                                          \haddockdecltt{->} & \haddockdecltt{Module} & \\
 \end{tabulary}\par
 Convert a trace and a verify expression into a promela never claim.
    If you don't want to include a trace, give an empty one `{\char 91}{\char 93}'.
@@ -65,34 +75,9 @@ Convert a trace and a verify expression into a promela never claim.
 \end{haddockdesc}
 \begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
-generatePromelaCode
+generatePromelaCode\ ::\ GTLSpec\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ Map\ (String,\ String)\ Integer\ ->\ {\char 91}Module{\char 93}
 \end{tabular}]\haddockbegindoc
-\haddockbeginargs
-\haddockdecltt{::} & \haddockdecltt{TypeMap} & Contains type informations extracted from the SCADE specification
- \\
-                                               \haddockdecltt{->} & \haddockdecltt{[((String, String), (String, String))]} & A list of connections between variables
- \\
-                                                                                                                             \haddockdecltt{->} & \haddockdecltt{Map (String, String) Integer} & A mapping that gives the maximum history level for each variable involved
- \\
-                                                                                                                                                                                                 \haddockdecltt{->} & \haddockdecltt{[Module]} & \\
-\end{tabulary}\par
 Create promela processes for each component in a GTL specification.
-\par
-
-\end{haddockdesc}
-\begin{haddockdesc}
-\item[\begin{tabular}{@{}l}
-connectionMap
-\end{tabular}]\haddockbegindoc
-\haddockbeginargs
-\haddockdecltt{::} & \haddockdecltt{[Declaration]} & GTL specification
- \\
-                                                     \haddockdecltt{->} & \haddockdecltt{TypeMap} & Type informations
- \\
-                                                                                                    \haddockdecltt{->} & \haddockdecltt{[((String, String), (String, String))]} & \\
-\end{tabulary}\par
-Get a list of connections between variables for a given GTL specification.
-   Also type-checks the connections.
 \par
 
 \end{haddockdesc}

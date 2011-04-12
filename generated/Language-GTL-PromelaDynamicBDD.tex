@@ -50,7 +50,7 @@ data\ TransProgram
 \haddockbeginconstrs
 \haddockdecltt{=} & \haddockdecltt{TransProgram} & \\
                     \{ & \haddockdecltt{transModels :: Map String TransModel} & \\
-                    , & \haddockdecltt{transClaims :: [Buchi [Integer]]} & \\
+                    , & \haddockdecltt{transClaims :: Buchi [Integer]} & \\
                     , & \haddockdecltt{claimChecks :: [String]} & \\
                     \} &
 \end{tabulary}\par
@@ -81,11 +81,9 @@ verifyModel
  \\
                                             \haddockdecltt{->} & \haddockdecltt{String} & Name of the GTL file without extension
  \\
-                                                                                          \haddockdecltt{->} & \haddockdecltt{[Declaration]} & The SCADE source code
+                                                                                          \haddockdecltt{->} & \haddockdecltt{GTLSpec} & The GTL file contents
  \\
-                                                                                                                                               \haddockdecltt{->} & \haddockdecltt{[Declaration]} & The GTL file contents
- \\
-                                                                                                                                                                                                    \haddockdecltt{->} & \haddockdecltt{IO ()} & \\
+                                                                                                                                         \haddockdecltt{->} & \haddockdecltt{IO ()} & \\
 \end{tabulary}\par
 Do a complete verification of a given GTL file
 \par
@@ -295,17 +293,7 @@ Convert a GTL expression into a C-expression.
 
 \end{haddockdesc}
 \begin{haddockdesc}
-\item[\begin{tabular}{@{}l}
-buildTransProgram
-\end{tabular}]\haddockbegindoc
-\haddockbeginargs
-\haddockdecltt{::} & \haddockdecltt{[Declaration]} & The SCADE file
- \\
-                                                     \haddockdecltt{->} & \haddockdecltt{[Declaration]} & The GTL file
- \\
-                                                                                                          \haddockdecltt{->} & \haddockdecltt{TransProgram} & \\
-\end{tabulary}\par
-Generate a program from a given SCADE- and GTL-file.
-\par
-
+\item[
+buildTransProgram\ ::\ GTLSpec\ ->\ TransProgram
+]
 \end{haddockdesc}
