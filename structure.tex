@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+  \node[tape,draw,tape bend top=none] (gtl) at (0,0) {GTL};
+  \node[rectangle,draw] (parser) at (0,-1) {Parser};
+  \node[rounded rectangle,draw] (gtl ast) at (0,-2) {GTL AST};
+  \node[rectangle,draw] (type checker) at (0,-3) {Type checker};
+  \node[tape,draw,tape bend top=none] (scade) at (4,-3) {SCADE};
+  \node[rounded rectangle,draw] (gtl spec) at (0,-4) {GTL Spec};
+  \node[tape,draw,tape bend top=none] (promela1) at (-3,-5) {Promela};
+  \node[cylinder,draw,shape border rotate=90,aspect=0.25] (cudd) at (-5,-6) {CUDD};
+  \node[cloud,draw,cloud ignores aspect,inner sep=0em] (dyn bdd) at (-3,-8) {\begin{tabular}{c}Dynamic\\BDD\\Verifier\end{tabular}};
+  \node[tape,draw,tape bend top=none] (promela2) at (0,-5) {Promela};
+  \node[rectangle,draw] (kcg) at (4,-4) {KCG};
+  \node[tape,draw,tape bend top=none] (c) at (4,-5) {C};
+  \node[cloud,draw,cloud ignores aspect,inner sep=0em] (native) at (0,-8) {\begin{tabular}{c}Native\\Verifier\end{tabular}};
+  \node[tape,draw,tape bend top=none] (scade2) at (2,-5) {\begin{tabular}{c}SCADE\\Testnode\end{tabular}};
+  \node[cloud,draw,cloud ignores aspect,inner sep=0em] (scade verifier) at (6,-7) {\begin{tabular}{c}SCADE\\Verifier\end{tabular}};
+  \draw[->] (gtl) -- (parser);
+  \draw[->] (parser) -- (gtl ast);
+  \draw[->] (gtl ast) -- (type checker);
+  \draw[->] (scade) -- (type checker);
+  \draw[->] (type checker) -- (gtl spec);
+  \draw[->] (gtl spec) -| (promela1);
+  \draw[->] (gtl spec) -- (promela2);
+  \draw[->] (gtl spec) -| (scade2);
+  \draw[->] (cudd) -| (dyn bdd);
+  \draw[->] (promela1) -- (dyn bdd);
+  \draw[->] (scade) -- (kcg);
+  \draw[->] (kcg) -- (c);
+  \draw[->] (promela2) -- (native);
+  \draw[->] (c) |- (native);
+  \draw[->] (scade) -| (scade verifier);
+  \draw[->] (scade2) |- (scade verifier);
+\end{tikzpicture}
