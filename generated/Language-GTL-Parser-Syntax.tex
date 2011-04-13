@@ -1,0 +1,166 @@
+\haddockmoduleheading{Language.GTL.Parser.Syntax}
+\label{module:Language.GTL.Parser.Syntax}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.Parser.Syntax (
+    Declaration(Model, Connect, Verify), 
+    ModelDecl(ModelDecl,
+              modelName,
+              modelType,
+              modelArgs,
+              modelContract,
+              modelInits,
+              modelInputs,
+              modelOutputs), 
+    ConnectDecl(ConnectDecl,
+                connectFromModel,
+                connectFromVariable,
+                connectToModel,
+                connectToVariable), 
+    VerifyDecl(VerifyDecl, verifyFormulas), 
+    GExpr(GBin, GUn, GConst, GConstBool, GVar, GSet, GExists), 
+    InitExpr(InitAll, InitOne)
+  ) where\end{verbatim}}
+\haddockendheader
+
+Data types representing a parsed GTL file.
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ Declaration
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{Model ModelDecl} & Declares a model.
+ \\
+\haddockdecltt{|} & \haddockdecltt{Connect ConnectDecl} & Declares a connection between two models.
+ \\
+\haddockdecltt{|} & \haddockdecltt{Verify VerifyDecl} & Declares a property that needs to be verified.
+ \\
+\end{tabulary}\par
+A GTL file is a list of declarations.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ Declaration
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ ModelDecl
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{ModelDecl} & \\
+                    \{ & \haddockdecltt{modelName :: String} & The name of the model in the GTL formalism.
+ \\
+                    , & \haddockdecltt{modelType :: String} & The synchronous formalism the model is written in (for example \emph{scade})
+ \\
+                    , & \haddockdecltt{modelArgs :: [String]} & Arguments specific to the synchronous formalism, for example in which file the model is specified etc.
+ \\
+                    , & \haddockdecltt{modelContract :: [GExpr]} & A list of contracts that this model fulfills.
+ \\
+                    , & \haddockdecltt{modelInits :: [(String, InitExpr)]} & A list of initializations for the variables of the model.
+ \\
+                    , & \haddockdecltt{modelInputs :: Map String String} & Declared inputs of the model with their corresponding type
+ \\
+                    , & \haddockdecltt{modelOutputs :: Map String String} & Declared outputs of a model
+ \\
+                    \} &
+\end{tabulary}\par
+Declares a synchronous model.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ ModelDecl
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ ConnectDecl
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{ConnectDecl} & \\
+                    \{ & \haddockdecltt{connectFromModel :: String} & Model of the source variable
+ \\
+                    , & \haddockdecltt{connectFromVariable :: String} & Name of the source variable
+ \\
+                    , & \haddockdecltt{connectToModel :: String} & Model of the target variable
+ \\
+                    , & \haddockdecltt{connectToVariable :: String} & Name of the target variable
+ \\
+                    \} &
+\end{tabulary}\par
+Declares a connection between two variables
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ ConnectDecl
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ VerifyDecl
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{VerifyDecl} & \\
+                    \{ & \haddockdecltt{verifyFormulas :: [GExpr]} & The formulas to be verified.
+ \\
+                    \} &
+\end{tabulary}\par
+A list of formulas to verify.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ VerifyDecl
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ GExpr
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{GBin BinOp GExpr GExpr} & \\
+\haddockdecltt{|} & \haddockdecltt{GUn UnOp GExpr} & \\
+\haddockdecltt{|} & \haddockdecltt{GConst Int} & \\
+\haddockdecltt{|} & \haddockdecltt{GConstBool Bool} & \\
+\haddockdecltt{|} & \haddockdecltt{GVar (Maybe String) String} & \\
+\haddockdecltt{|} & \haddockdecltt{GSet [Integer]} & \\
+\haddockdecltt{|} & \haddockdecltt{GExists String (Maybe String) String GExpr} & \\
+\end{tabulary}\par
+An untyped expression type.
+   Used internally in the parser.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Eq\ GExpr\\instance\ Ord\ GExpr\\instance\ Show\ GExpr
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ InitExpr
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{InitAll} & The variable is initialized with all possible values.
+ \\
+\haddockdecltt{|} & \haddockdecltt{InitOne Integer} & The variable is initialized with a specific value.
+ \\
+\end{tabulary}\par
+Information about the initialization of a variable.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Eq\ InitExpr\\instance\ Show\ InitExpr
+\end{tabular}]
+\end{haddockdesc}
