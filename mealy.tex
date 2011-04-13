@@ -1,0 +1,17 @@
+\begin{tikzpicture}
+  [initial text=,
+  shorten >=1pt,
+  >=stealth',
+  every state/.style={draw=blue!50,very thick,fill=blue!20}
+  ]
+  \node[state,initial] (q0) at (0,2) {$q_0$};
+  \node[state] (q1) at (2,2) {$q_1$};
+  \node[state] (q2) at (1,0) {$q_2$};
+  
+  \path[->] (q0) edge[bend left] node[above] {$a/b$} (q1)
+                 edge node[left] {$b/a$} (q2)
+            (q1) edge node[below] {$a/c$} (q0)
+                 edge[bend left] node[right] {$b/a$} (q2)
+            (q2) edge node[left] {$a/b$} (q1)
+                 edge[loop below] node {$b/c$} (q2);
+\end{tikzpicture}

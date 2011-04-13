@@ -1,4 +1,59 @@
 Ein GALS System -- GALS steht für "`Globally asynchronous, locally synchronous"' -- besteht aus mehreren synchronen Komponenten, die asynchron miteinander kommunizieren.
+Die synchronen Komponenten lassen sich dabei als Mealy-Automaten auffassen.
+In einem Mealy-Automaten hängt die Ausgabe sowohl von der Eingabe als auch dem aktuellen Zustand ab\cite{Mealy}.
+Mealy-Automaten sind so allgemein formuliert, dass sich jedes in einem synchronen Formalismus formulierte Modell in einen bisimularen Mealy-Automaten transformieren lässt.
+Ein Beispiel für einen Mealy-Automaten ist in Abbildung \ref{fig:mealy} dargestellt.
+Transitionen sind hier in der Form $i/o$ angegeben, wobei $i$ die Eingabe und $o$ die Ausgabe bezeichnen.
+\begin{figure}[h]
+  \centering
+  \input{mealy}
+  \caption{Mealy-Automat}
+  \label{fig:mealy}
+\end{figure}
+
+Ein Schritt im Automaten bedeutet, dass das aktuelle Eingabe-Symbol gelesen wird und die Transition gewählt wird, die vom aktuellen Zustand ausgeht und mit dem aktuellen Eingabe-Symbol übereinstimmt.
+Das Ziel der Transition ist der neue aktuelle Zustand des Automaten und das Ausgabe-Symbol der Transition wird zur Ausgabe hinzugefügt.
+Der Beispiel-Automat in Abbildung \ref{fig:mealy} hat also beispielsweise die folgende Ablauf-Sequenz:
+
+\[ \xymatrix {
+     q_0\ar[r]^a &  q_1 \ar[r]^a & q_0 \ar[r]^a & q_1 \ar[r]^b & q_2\ar[r] & \dots
+   } \]
+Der Automat transformiert damit die Eingabe "`$aaab\dots$"' in die Ausgabe "`$bcba\dots$"'.
+Der Beispiel-Automat verwendet als Ein- und Ausgabe-Symbole Zeichen und stellt damit einen Aus- und Eingabekanal zur Verfügung.
+Benutzt man stattdessen $n$-Tupel als Eingabe und $m$-Tupel als Ausgaben, erhält man einen Automaten, der $n$ Eingabe- und $m$ Ausgabe-Kanäle bietet.
+In jedem Schritt wird dann aus jedem Eingabekanal ein Zeichen gelesen und in jeden Ausgabekanal eins geschrieben.
+
+Für die vollständige Beschreibung eines Mealy-Automaten mit Kanälen ist die Repräsentation durch Tupel ausreichend, für eine übersichtliche Notation und Darstellung jedoch nicht geeignet, da die Anzahl der aufzuschreibenden Transitionen exponentiell mit der Anzahl der Eingabe-Kanäle wächst\footnote{Hat man $n$ Eingabe-Kanäle, die jeweils $m$ verschiedene Zeichen enthalten können, so benötigt jeder Zustand $m^n$ ausgehende Transitionen, da der Automat für jede Eingabe eine gültige Transition aufweisen sollte.}.
+Daher ist es sinnvoll, für die Spezifikation von Mealy-Automaten die Tupel-Komponenten mit Variablen zu benennen und Bedingungen (engl. \emph{conditions}) über diese Variablen an die Transitionen zu schreiben.
+Eine Bedingung ist hierbei eine boolesche Formel, die nur die Variablen der Tupelkomponenten enthält.
+Ist die Formel für eine Belegung der Variablen wahr, so gilt die Transition auch für das entsprechende Tupel.
+
+Benennt man beispielsweise die Komponenten der Tupel $\mathbb{N}\times\mathbb{B}\times\mathbb{B}$ mit $\alpha$, $\beta$ und $\gamma$, so beschreibt die Bedingung $\alpha=3\land\gamma=0$ die Tupel $(3,0,0)$ und $(3,1,0)$.
+Eine Transition $\alpha=3\land\gamma=0/(1,2)$ beschreibt also eigentlich die Transitionen $(3,0,0)/(1,2)$ und $(3,1,0)/(1,2)$.
+Diese Art der Notation ist hilfreich, wenn für eine Transition die Werte von bestimmten Kanälen keine Rolle spielen.
+Abbildung \ref{fig:mealy2} zeigt einen Beispiel-Automaten, der Tupel der Form $\mathbb{B}\times\mathbb{N}$ als Eingaben verwendet.
+
+\begin{figure}[h]
+  \centering
+  \input{mealy2}
+  \caption{Mealy-Automat mit Bedingungen}
+  \label{fig:mealy2}
+\end{figure}
+
+Um ein GALS-System zu erstellen, kann man nun die Ausgabekanäle von Automaten mit den Eingabekanälen von anderen Automaten verbinden und so ein Netzwerk aus Mealy-Automaten erhalten.
+Ist die Eingabe eines Automaten mit einer Ausgabe verbunden, so verwendet der Automat immer die letzte produzierte Ausgabe des verbundenen Automaten als Eingabesymbol.
+
+Abbildung \ref{fig:mealy3} zeigt ein solches System.
+Das Gesamtsystem hat sämtliche unverbundenen Aus- und Eingaben als Aus- und Eingaben.
+Ein Schritt des Gesamtsystems wird nun durch einen Schritt eines beliebigen Mealy-Automaten realisiert.
+Durch diese Eigenschaft wird das GALS-System nicht-deterministisch und asynchron.
+\begin{figure}[h]
+  \centering
+  \input{mealy3}
+  \caption{Aus Mealy-Automaten zusammen gesetztes GALS-System}
+  \label{fig:mealy3}
+\end{figure}
+
 Formal kann ein synchrones System $\alpha$ vollständig als ein 4-Tupel
 \[ \alpha = (I,O,S,t,f) \]
 mit den folgenden Komponenten beschrieben werden ($V$ sei hier die Menge aller möglichen Variablen):
