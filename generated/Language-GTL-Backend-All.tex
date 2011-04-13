@@ -8,6 +8,9 @@ module Language.GTL.Backend.All (
   ) where\end{verbatim}}
 \haddockendheader
 
+Provides a common interface for all backend types.
+\par
+
 \begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
 data\ AllBackend
@@ -21,9 +24,23 @@ data\ AllBackend
                                                          -> IO (Maybe Bool)} & \\
                     \} &
 \end{tabulary}\par
+Essentially a \haddockid{GTLBackend} with the parameters instantiated, thus eliminating
+   the type variable.
+\par
+
 \end{haddockdesc}
 \begin{haddockdesc}
-\item[
-initAllBackend\ ::\ String\ ->\ {\char 91}String{\char 93}\ ->\ IO\ (Maybe\ AllBackend)
-]
+\item[\begin{tabular}{@{}l}
+initAllBackend
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{String} & The name of the backend
+ \\
+                                              \haddockdecltt{->} & \haddockdecltt{[String]} & The arguments with which to initialize the backend
+ \\
+                                                                                              \haddockdecltt{->} & \haddockdecltt{IO (Maybe AllBackend)} & \\
+\end{tabulary}\par
+Try to initialize the correct backend for a given backend name and arguments.
+\par
+
 \end{haddockdesc}

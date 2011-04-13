@@ -7,8 +7,15 @@ module Language.GTL.LocalVerification (
   ) where\end{verbatim}}
 \haddockendheader
 
+Provides the formalism-specific verification backend.
+\par
+
 \begin{haddockdesc}
-\item[
+\item[\begin{tabular}{@{}l}
 verifyLocal\ ::\ GTLSpec\ ->\ IO\ ()
-]
+\end{tabular}]\haddockbegindoc
+Performs the formalism-specific verification algorithms for each model
+   in the specification to find out if the contract for the model holds.
+\par
+
 \end{haddockdesc}

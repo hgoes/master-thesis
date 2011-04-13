@@ -14,19 +14,30 @@ module Language.GTL.Model (
   ) where\end{verbatim}}
 \haddockendheader
 
+This module provides a data structure for type-checked GTL specifications.
+\par
+
 \begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
 data\ GTLModel
 \end{tabular}]\haddockbegindoc
 \haddockbeginconstrs
 \haddockdecltt{=} & \haddockdecltt{GTLModel} & \\
-                    \{ & \haddockdecltt{gtlModelContract :: Expr String Bool} & \\
-                    , & \haddockdecltt{gtlModelBackend :: AllBackend} & \\
-                    , & \haddockdecltt{gtlModelInput :: Map String TypeRep} & \\
-                    , & \haddockdecltt{gtlModelOutput :: Map String TypeRep} & \\
-                    , & \haddockdecltt{gtlModelDefaults :: Map String (Maybe Dynamic)} & \\
+                    \{ & \haddockdecltt{gtlModelContract :: Expr String Bool} & The contract of the model as a boolean formula.
+ \\
+                    , & \haddockdecltt{gtlModelBackend :: AllBackend} & An abstract model in a synchronous specification language.
+ \\
+                    , & \haddockdecltt{gtlModelInput :: Map String TypeRep} & The input variables with types of the model.
+ \\
+                    , & \haddockdecltt{gtlModelOutput :: Map String TypeRep} & The output variables with types of the model.
+ \\
+                    , & \haddockdecltt{gtlModelDefaults :: Map String (Maybe Dynamic)} & Default values for inputs. \haddockid{Nothing} means any value.
+ \\
                     \} &
 \end{tabulary}\par
+A parsed and typechecked GTL model.
+\par
+
 \end{haddockdesc}
 \begin{haddockdesc}
 \item[\begin{tabular}{@{}l}
@@ -34,17 +45,31 @@ data\ GTLSpec
 \end{tabular}]\haddockbegindoc
 \haddockbeginconstrs
 \haddockdecltt{=} & \haddockdecltt{GTLSpec} & \\
-                    \{ & \haddockdecltt{gtlSpecModels :: Map String GTLModel} & \\
-                    , & \haddockdecltt{gtlSpecVerify :: Expr (String, String) Bool} & \\
-                    , & \haddockdecltt{gtlSpecConnections :: [(String, String, String, String)]} & \\
+                    \{ & \haddockdecltt{gtlSpecModels :: Map String GTLModel} & All models in the specification.
+ \\
+                    , & \haddockdecltt{gtlSpecVerify :: Expr (String, String) Bool} & A formula to verify.
+ \\
+                    , & \haddockdecltt{gtlSpecConnections :: [(String, String, String, String)]} & Connections between models.
+ \\
                     \} &
 \end{tabulary}\par
+A GTL specification represents a type checked GTL file.
+\par
+
 \end{haddockdesc}
 \begin{haddockdesc}
-\item[
+\item[\begin{tabular}{@{}l}
 gtlParseModel\ ::\ ModelDecl\ ->\ IO\ (Either\ String\ (String,\ GTLModel))
-]
-\item[
+\end{tabular}]\haddockbegindoc
+Parse a GTL model from a unchecked model declaration.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
 gtlParseSpec\ ::\ {\char 91}Declaration{\char 93}\ ->\ IO\ (Either\ String\ GTLSpec)
-]
+\end{tabular}]\haddockbegindoc
+Parse a GTL specification from an unchecked list of declarations.
+\par
+
 \end{haddockdesc}
