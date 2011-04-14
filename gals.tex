@@ -47,12 +47,32 @@ Abbildung \ref{fig:mealy3} zeigt ein solches System.
 Das Gesamtsystem hat sämtliche unverbundenen Aus- und Eingaben als Aus- und Eingaben.
 Ein Schritt des Gesamtsystems wird nun durch einen Schritt eines beliebigen Mealy-Automaten realisiert.
 Durch diese Eigenschaft wird das GALS-System nicht-deterministisch und asynchron.
+Ein Problem ergibt sich nun, wenn die Quelle einer Verbindung noch keinen Schritt durchgeführt hat: in diesem Fall gibt es keinen letzten Wert für die Verbindung und die Eingabe des Ziel-Automaten ist undefiniert.
+Dieser Fall kann durch die Definition von Default-Werten oder durch das Verbot, Schritte mit Automaten durchzuführen, deren Eingaben (teilweise) undefiniert sind gelöst werden.
 \begin{figure}[h]
   \centering
   \input{mealy3}
   \caption{Aus Mealy-Automaten zusammen gesetztes GALS-System}
   \label{fig:mealy3}
 \end{figure}
+
+Das in Abbildung \ref{fig:mealy3} gezeigte System hat also nur die Eingabe $x$ und die Ausgabe $\mathit{res}$.
+Der Gesamtzustand des Systems ist nun durch den Zustand der Verbindungen und den aktuellen Zustand der Prozesse definiert.
+Der Startzustand des abgebildeten Systems kann also beispielsweise durch $(p_0,q_0,\bot)$ dargestellt werden, wobei $\bot$ angibt, dass die Verbindung zwischen $\mathit{out}$ und $\mathit{on}$ undefiniert ist.
+Eine Transition wird dargestellt durch ein Tupel, dass die Ein- und Ausgaben des Systems sowie den Mealy-Automaten, der den aktuellen Schritt durchführt, enthält.
+Die Transition $(4,P_1)/3$ gibt also beispielsweise an, dass die Eingabe $x$ den Wert $4$, die Ausgabe $\mathit{res}$ den Wert $3$ besitzt und der Automat $P_1$ einen Schritt durchführt hat.
+Das resultierende Transitionssystem für das GALS-System aus Abbildung \ref{fig:mealy3} ist beispielsweise in Abbildung \ref{fig:gals_trans} dargestellt.
+
+\begin{figure}[h]
+  \centering
+  \input{mealy4}
+  \caption{Transitionssystem des GALS Systems aus \ref{fig:mealy3}}
+  \label{fig:gals_trans}
+\end{figure}
+
+Möchte man verhindern, dass die Ausgaben des Gesamtsystems häufig einen undefinierten Wert ($\bot$) annehmen, so kann man beispielsweise definieren, dass eine undefinierte Ausgabe bedeutet, dass der letzte Wert der Ausgabe erhalten bleibt.
+Um das zu erreichen nimmt man die Ausgaben des Systems mit in den Zustand des Gesamtsystems.
+Dies vergrößert natürlich den Zustandsraum des resultierenden Systems, aber reduziert undefinierte Ausgaben des Gesamtsystems.
 
 Formal kann ein synchrones System $\alpha$ vollständig als ein 4-Tupel
 \[ \alpha = (I,O,S,t,f) \]

@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+  [initial text=,
+  shorten >=1pt,
+  >=stealth',
+  every state/.style={draw=blue!50,very thick,fill=blue!20}
+  ]
+  \node[state,initial] (q00u) at (0,0) {$p_0,q_0,\bot$};
+  \node[state] (q100) at (3,0) {$p_1,q_0,0$};
+  \node[state] (q001) at (3,-3) {$p_0,q_0,1$};
+  \node[state] (q011) at (6,-3) {$p_0,q_1,1$};
+  \node[state] (q110) at (6,0) {$p_1,q_1,0$};
+
+  \path[->] (q00u) edge node[above] {$P_1/\bot$} (q100)
+            (q100) edge[loop above] node {$P_2/3$} (q100)
+                   edge node[right] {$P_1/\bot$} (q001)
+            (q001) edge[bend left] node[left] {$P_1/\bot$} (q100)
+                   edge[bend left] node[above] {$x<5,P_2/1$} (q011)
+            (q011) edge[loop right] node {$x<5,P_2/2$} (q011)
+                   edge[bend left] node[below] {$x\geq 5,P_2/0$} (q001)
+                   edge node[left] {$P_1/\bot$} (q110)
+            (q110) edge[loop above] node {$x<5,P_2/2$} (q110)
+                   edge[bend right] node[above] {$x\geq 5,P_2/0$} (q100)
+                   edge[bend left] node[right] {$P_1/\bot$} (q011);
+\end{tikzpicture}
