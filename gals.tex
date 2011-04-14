@@ -74,33 +74,46 @@ Möchte man verhindern, dass die Ausgaben des Gesamtsystems häufig einen undefi
 Um das zu erreichen nimmt man die Ausgaben des Systems mit in den Zustand des Gesamtsystems.
 Dies vergrößert natürlich den Zustandsraum des resultierenden Systems, aber reduziert undefinierte Ausgaben des Gesamtsystems.
 
-Formal kann ein synchrones System $\alpha$ vollständig als ein 4-Tupel
-\[ \alpha = (I,O,S,t,f) \]
-mit den folgenden Komponenten beschrieben werden ($V$ sei hier die Menge aller möglichen Variablen):
+\section{Formale Definition}
+Eine synchrone Komponente mit $n$ Eingängen und $m$ Ausgängen lässt sich als ein modifizierter Mealy-Automat $\mathcal{A} = (Q,\Sigma,\Omega,\delta,q_0)$ darstellen:
 \begin{itemize}
-\item Eine Menge von Eingabevariablen $I\subseteq V$, also beispielsweise $I=\{x,y\}$, wenn ein System mit zwei Eingabevariablen spezifiziert werden soll.
-\item Eine Menge von Ausgabevariablen $O\subseteq V$.
-\item Die Zustandsmenge $S$, die alle möglichen internen Zustände des Systems darstellt.
-\item Einer Zuordnungsfunktion $t : I\cup O\rightarrow {Set}$ die jeder Variable einen Typen zuordnet.
-\item Der eigentlichen Auswertungsfunktion $f : S\times \left(\prod_{v\in I} t(v)\right)\rightarrow S\times\left(\prod_{v\in O} t(v)\right)$, die also jeder Kombination aus Eingaben und internen Zuständen eine Ausgabe und einen neuen Zustand zuordnet.
+  \item $Q$ ist eine (endliche) Zustandsmenge.
+  \item $\Sigma = \Sigma_0\times\dots\times\Sigma_n$ ist die Menge der Eingabesymbole.
+    Da der Automat $n$ Eingänge besitzt, ist die Eingabe ein Tupel aus $n$ Symbolen.
+  \item $\Omega = \Omega_0\times\dots\times\Omega_m$ ist die Menge der Ausgabesymbole.
+  \item $\delta : Q\times\Sigma\rightarrow Q\times\Omega$ ist die Übergangsfunktion, die einen Zustand und eine Eingabe auf einen neuen Zustand und eine Ausgabe abbildet.
+    Da es sich um eine Funktion und keine Relation handelt, ist der Automat deterministisch.
+  \item $q_0\in Q$ ist der Startzustand des Automaten.
 \end{itemize}
-Aus dieser Definition ergibt sich, dass synchrone Komponenten deterministisch sind, also bei gleichem internen Zustand und gleicher Eingabe immer die gleiche Ausgabe produzieren.
 
-Mit dieser Definition lässt sich ein GALS-System $\gamma$ als ein Tupel der Form
-\[ \gamma = (\mathcal{A},\mathcal{C}) \]
-darstellen, wobei die Komponenten folgende Bedeutung haben:
-\begin{itemize}
-\item $\mathcal{A}$ ist eine Menge von synchronen Komponenten.
-\item Die Relation $\mathcal{C}\subseteq V\times V$ gibt an, welche Ausgangsvariablen mit welchen Eingangsvariablen verknüpft sind.
-\end{itemize}
+Ein GALS-System ist ein Tripel $\mathcal{G}=(A,p,C)$ mit $A$ als eine Menge von Automatennamen, $p$ als eine Funktion, die Automatennamen einen konkreten Mealy-Automaten zuordnet und $C\subseteq (A\times\mathbb{N})\times(A\times\mathbb{N})$ das die Verbindungen zwischen Ein- und Ausgaben der Automaten definiert.
+Um die Referenzierung von Automatenkomponenten zu ermöglichen sei $p$ wie folgt definiert:
+\[ p(X) = (Q^X,\Sigma^X,\Omega^X,\delta^X,q_0^X) \]
+Eine Aus- oder Eingabe ist spezifiziert duch den Automaten und den Index im Ein- oder Ausgabetupel.
+Für eine Verbindung $((X,i),(Y,j))$ muss immer gelten, dass die Ausgabesymbole den Eingabesymbolen entsprechen, also $\Sigma_i^X = \Omega_j^Y$ gilt.
+
+Die Ein- und Ausgaben des GALS Systems ergeben sich aus den Automaten des Systems sowie den Verbindungen.
+Ist eine Eingabe eines Automaten mit keiner Ausgabe verbunden, so ist sie automatisch eine Eingabe des Gesamtsystems.
+Die Eingaben $I(\mathcal{G})$ des Gesamtsystems sind also
+\[ I(\mathcal{G}) = \prod \{ \Sigma^a_n\ |\ a\in A, n\in \mathbb{N}, \lnot\exists ((X,i),(Y,j))\in C: Y=a\land j=n \} \]
+Für die Ausgaben $O(\mathcal{G})$ gilt entsprechend
+\[ O(\mathcal{G}) = \prod \{ \Omega^a_n\ |\ a\in A, n\in \mathbb{N}, \lnot\exists ((X,i),(Y,j))\in C: X=a\land i=n \} \]
+Der Zustandsraum $S(\mathcal{G})$ des Systems ergibt sich dann aus den Zuständen der einzelnen Automaten sowie dem aktuellen Inhalt der Verbindungen:
+\[ S(\mathcal{G}) = \left(\prod_{a\in A} Q^a\right)\times\left(\prod_{((a,\_),\_)\in C} \Sigma^a\right) \]
+Da die Eingaben für einen konkreten Automaten sich nun entweder im Zustandsraum $S(\mathcal{G})$ oder in den globalen Eingaben $I(\mathcal{G})$ befinden können, definiert man eine Hilfsfunktion $i : S(\mathcal{G})\times I(\mathcal{G})\times A\rightarrow (\prod Q)\times(\prod\Sigma)$, die die Eingaben extrahiert.
+Äquivalent definiert man eine weitere Funktion $o : S(\mathcal{G})\times A\times\prod Q\times\prod\Omega\rightarrow S(\mathcal{G})\times O(\mathcal{G})$ die Ausgaben eines Automaten zurück schreibt.
+Um die Notation zu erleichtern, wird zusätzlich noch eine Zustandsübergangsfunktion $\lambda$ definiert, die den Zustandsübergang des GALS Systems bei Ausführung eines Automatenschritts angibt.
+\[ \lambda : S(\mathcal{G})\times I(\mathcal{G})\times A\rightarrow S(\mathcal{G})\times O(\mathcal{G}) \]
+\[ (\alpha,\beta,a) \mapsto o(\alpha,a,\delta^a(i(\alpha,\beta))) \]
 
 \section{Semantik}
 Diese Defintionen geben natürlich noch keinen Aufschluss über die Interpretationsweise der so spezifizierten GALS-Systeme.
 Sie geben lediglich Aufschluss über die Verknüpfung der einzelnen synchronen Komponenten, nicht aber über deren Ausführung.
 Tatsächlich bieten sich eine Vielzahl von Möglichkeiten an, ein gegebenes GALS-System auszuführen.
 Einige davon sollen hier vorgestellt werden.
+Dazu wird zunächst informell die Ausführungsart beschrieben und danach formal die Herleitung des entsprechenden Transitionssystems erklärt.
 
-\section{Synchrone Ausführung}
+\subsection{Synchrone Ausführung}
 Bei der synchronen Ausführung führen alle Systeme gleichzeitig ihren Berechnungsschritt aus.
 Da eine echte Gleichzeitigkeit aber von SPIN nicht unterstützt wird, muss sie dadurch angenähert werden, dass die Komponenten zwar nacheinander ihre Schritte ausführen, aber dies  immer in der gleichen Reihenfolge tun.
 
@@ -131,7 +144,13 @@ Das zu verifizierende Zustandsmodell des Systems hat also sehr viel weniger Zust
 Der Nachteil ist jedoch, dass es für viele Szenarien sehr unrealistisch ist, perfekte Synchronität zu fordern.
 In Kommunikationsnetzen bedeuten schon minimale Verzögerungen bei der Zustellung von Nachrichten, dass Prozesse nicht mehr echt synchron laufen, selbst wenn ihre Uhren genau gleich gehen.
 
-\section{Vollständig asynchrones System}
+Formal lässt sich das Transitionssystem für die synchrone Ausführung herleiten, indem man den Automaten, der als nächstes ausgeführt werden soll in den Zustand übernimmt.
+Außerdem muss man eine Funktion $f : A\rightarrow A$ angeben, die die Ausführungsreihenfolge festlegt.
+Der Zustandsvektor des Gesamtsystems ist dann $(a,s)$, wobei $a\in A$ ein Automatenname und $s\in S(\mathcal{G})$ der Zustand des Systems ist.
+Die Zustandsübergangsrelation ergibt sich dann wie folgt:
+\[ \xymatrix { (a,s) \ar[r]^{l_i/l_o} & (a',s') } \Leftrightarrow f(a)=a'\land \lambda(s,l_i,a) = (s',l_o) \]
+
+\subsection{Vollständig asynchrones System}
 %In der vollständig asynchronenen Semantik können Komponenten zu jedem Zeitpunkt, unabhängig von dem Ausführungsstand der anderen, einen Schritt ausführen.
 %Das bedeutet also, dass auch Extremfälle wie der, bei dem nur eine Komponente die gesamte Zeit Schritte ausführt, berücksichtigt werden.
 %Diese Semantik deckt zwar jede Ausführungsreihenfolge der Komponenten ab, ist aber nicht unbedingt realistisch.
@@ -169,11 +188,11 @@ In der Verifikation können so Fehlerzustände erkannt werden, die in der Realit
   \caption{Mögliche Ausführungspfade eines asynchronen Systems}
   \label{fig:asynchronous_paths}
 \end{figure}
-\section{Asynchrone Ausführung mit Fairness}
+\subsection{Asynchrone Ausführung mit Fairness}
 Um das Problem zu umgehen, dass einzelne Prozesse "`verhungern"', also nie einen Rechenschritt ausführen dürfen, kann man so genannte \emph{Fairness}-Kriterien definieren:
 Diese besagen, dass nur Ausführungen für die Verifikation in Betracht gezogen werden, in denen jeder Prozess immer mal wieder an die Reihe kommt.
 SPIN unterstützt die Modellierung von Fairness-Kriterien durch die Definition von Labels, die immer mal wieder erreicht werden müssen, damit die Ausführung in Betracht gezogen wird.
-\section{Asynchrone Ausführung mit Schranken}
+\subsection{Asynchrone Ausführung mit Schranken}
 %Um die Probleme der vollständig asynchronen Ausführung zu umgehen kann man die Asynchronität soweit begrenzen, dass die Anzahl der ausgeführten Schritte nie um mehr als einen festen Wert divergiert.
 Obwohl das Hinzufügen von Fairness-Eigenschaften die Fälle entfernt, in denen ein Prozess niemals zur Ausführung kommt, so werden immer noch extrem unrealistische Szenarien betrachtet:
 In der Realität wird es beispielsweise nie vorkommen, dass ein Prozess nur ein mal einen Berechnungsschritt durchführt, während ein anderer im gleichen Zeitraum 1000 ausführt.
