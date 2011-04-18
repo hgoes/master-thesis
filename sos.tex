@@ -7,11 +7,12 @@ Variablen kommen in der operationellen Semantik in zwei Formen vor:
 In der zu verifizierenden Formel kommen sie qualifiziert mit dem Modellnamen vor, die Variablen sind also Element der Menge $\mathit{Id}\times\mathit{Id}\times\mathbb{N}$.
 In Modell-Kontrakten ist der Modellname klar, daher sind die Variablen hier unqualifiziert und damit Element der Menge $\mathit{Id}\times\mathbb{N}$.
 \subsection{Aufbau}
+\label{sec:sos_defs}
 Die Semantik eines GTL-Modells wird durch ein Tripel angegeben, bestehend aus der Menge der Modelle, der Verbindungen zwischen den Variablen, sowie der LTL-Formel, deren Gültigkeit verifiziert werden soll.
 \[ \mathcal{S} = \mathcal{M}\times\mathcal{C}\times\mathit{LTL}(\mathit{Id}\times\mathit{Id}\times\mathbb{N}) \]
 Die LTL-Formel ist über Paare von Namen definiert, wobei der erste den Namen des Modells angibt und der zweite den der Variable im Modell.
 Die Menge aller Modellkonfigurationen $\mathcal{M}$ ist gegeben durch Abbildungen von Modellnamen auf Tupel von Kontrakten in Form von LTL-Formeln über die Variablennamen des entsprechenden Modells und Initialisierungswerten für die Modellvariablen.
-\[ \mathcal{M} = \mathit{Id}\rightarrow \mathit{LTL}(\mathit{Id})\times\mathcal{D} \]
+\[ \mathcal{M} = \mathcal{P}(Id)\times(\mathit{Id}\rightarrow \mathit{LTL}(\mathit{Id})\times\mathcal{D}) \]
 Die Initialisierungswerte werden über eine Abbildung von Variablennamen auf Werte $\mathit{Val}$ dargestellt:
 \[ \mathcal{D} = \mathit{Id}\rightarrow\mathit{Val} \]
 Die Verbindungen zwischen Modellen werden als Viertupel dargestellt, die das Modell und die Variable angibt, von dem die Verbindung ausgeht und Modell und Variable, in dem die Verbindung endet.
