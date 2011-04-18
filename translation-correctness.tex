@@ -56,11 +56,11 @@ Um zu beweisen, dass die angegebene Promela-Übersetzung korrekt ist, muss gezei
 Um dies zu zeigen, wird die Promela-Semantik verwendet, wie sie in \cite{Gallardo04formalaspects} beschrieben ist.
 Da in dieser Semantik gefordert ist, dass jede Anweisung ein implizites Label erhält, werden folgende Labels für die Anweisungen vergeben:
 \begin{itemize}
-\item Die \emph{If}-Anweisung in Zeile 4 erhält das Label \emph{Start}
-\item In diesem Zweig wird der Ausdruck in Zeile 6 mit dem Label \emph{CI\_$n$} versehen
-\item Die folgende Anweisung in Zeile 7 wird mit \emph{AI\_$n$} kenntlich gemacht
-\item Der Ausdruck in diesem Zweig auf Zeile 15 bekommt die Kennzeichnung \emph{C\_$q$\_$q'$}
-\item Die folgende Anweisung in Zeile 16 erhält das Label \emph{A\_$q$\_$q'$}
+\item Die \emph{If}-Anweisung in Zeile 2 erhält das Label \emph{Start}
+\item In diesem Zweig wird der Ausdruck in Zeile 4 mit dem Label \emph{CI\_$n$} versehen
+\item Die folgende Anweisung in Zeile 5 wird mit \emph{AI\_$n$} kenntlich gemacht
+\item Der Ausdruck in diesem Zweig auf Zeile 14 bekommt die Kennzeichnung \emph{C\_$q$\_$q'$}
+\item Die folgende Anweisung in Zeile 15 erhält das Label \emph{A\_$q$\_$q'$}
 \end{itemize}
 
 Mit diesen Kennzeichnungen ergibt sich nun die \emph{next}-Funktion der Semantik wie folgt:
