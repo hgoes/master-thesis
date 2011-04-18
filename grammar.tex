@@ -1,18 +1,51 @@
+Eine globale Deklaration ist entweder eine Modell-Deklaration, eine Verbindungsdeklaration oder eine Formel, die das Gesamtsystem erfüllen muss.
 \begin{grammar}
-  <declaration> ::= `model' `[' <id> `]' <id> `(' (<argument> (`,' <argument>)*)? `)' <model\_contract>
-  \alt `connect' <id> `.' <id> <id> `.' <id> `;'
-  \alt `verify' `{' (<formula> `;')* `}'
-  
-  <model\_contract> ::= `{' (<formula> `;')* `}'
+  <declaration> ::= <model\_decl>
+  \alt <connect\_decl>
+  \alt <verify\_decl>
+\end{grammar}
+Eine Modell Deklaration besteht aus dem Schlüsselwort \emph{model}, gefolgt von dem Namen des synchronen Formalismus, in dem das Modell definiert ist (beispielsweise \emph{scade}).
+Danach folgt der Name der Komponente und eine Liste von Argumenten, die spezifisch für den synchronen Formalismus angeben, wie das Modell zu laden ist.
+Als letztes kommt der Rumpf der Modelldeklaration, der die Kontrakte spezifiziert, die das Modell erfüllt.
+\begin{grammar}
+  <model\_decl> ::= `model' `[' <id> `]' <id> `(' (<argument> (`,' <argument>)*)? `)' <model\_contract>
+\end{grammar}
+Ein Kontrakt ist eine Liste von LTL-Formeln, die die Komponente erfüllt oder Initialisierungswerten für die Variablen der Komponente.
+Erfüllt das Modell keine Formel, so kann die Modell-Deklaration auch mit einem Semikolon beendet werden.
+\begin{grammar}
+  <model\_contract> ::= `{' (<contract\_body> `;')* `}'
   \alt `;'
-  
+
+  <contract\_body> ::= <formula>
+  \alt `init' <id> <int>
+\end{grammar}
+Eine Verbindungsdeklaration besteht aus dem Schlüsselwort \emph{connect} und der Angabe einer Variable der Quellkomponente und der Zielkomponente.
+Die Variable wird dabei durch den Namen der Komponente, einen Punkt und den Namen der Variable spezifiziert.
+\begin{grammar}
+  <connect\_decl> ::= `connect' <id> `.' <id> <id> `.' <id> `;'
+\end{grammar}
+Formeln, die über das Gesamtsystem verifiziert werden sollen, lassen sich in \emph{verify}-Blöcken spezifizieren.
+Diese enthalten eine Liste von Formeln.
+\begin{grammar}
+  <verify\_decl> ::= `verify' `{' (<formula> `;')* `}'
+\end{grammar}
+Eine Formel kann verschiedene Formen annehmen:
+\begin{itemize}
+\item Als atomare Aussage besteht sie aus einer Variable.
+\item Als Relation setzt sie zwei Ausdrücke in eine Beziehung ("`kleiner"', "`größer"', "`gleich"' etc.).
+\item Um anzugeben, dass eine Variable einen Wert aus einer Menge annehmen kann, lässt sich das \emph{in}-Schlüsselwort verwenden.
+\item Formeln können mit den logischen Operatoren \emph{and}, \emph{or}, \emph{implies} sowie \emph{not} wieder zu neuen Formeln zusammen gesetzt werden.
+\item Mithilfe der temporallogischen Operatoren \emph{always}, \emph{next} und \emph{finally} können neue Formeln aus anderen gebildet werden.
+\item Das Konstrukt \emph{exists} erlaubt die Bindung einer Variable an den aktuellen Wert einer anderen und somit die Referenzierung von früheren Werten.
+\end{itemize}
+\begin{grammar}
   <formula> ::= <var>
   \alt <expr> `<' <expr>
   \alt <expr> `>' <expr>
   \alt <expr> `<=' <expr>
   \alt <expr> `>=' <expr>
   \alt <expr> `=' <expr>
-  \alt <id> `in' `{' (<lit> (`,' <lit>)*)? `}'
+  \alt <var> `in' `{' (<lit> (`,' <lit>)*)? `}'
   \alt `not' <formula>
   \alt <formula> `and' <formula>
   \alt <formula> `or' <formula>
@@ -25,18 +58,22 @@
   
   <lit> ::= <int>
   \alt <var>
-  
-  <var> ::= <id>
-  \alt <id> `.' <id>
-  
-  <id> ::= (`a'-`z' `A'-`Z' `0'-`9')+
-  
-  <int> ::= (`0'-`9')+
-  
+\end{grammar}
+Ein Ausdruck ist entweder eine numerische Konstante, eine Variable oder eine arithmetische Operation (Addition, Subtraktion, Multiplikation oder Division werden unterstützt) von zwei Ausdrücken.
+\begin{grammar}
   <expr> ::= <lit>
   \alt <expr> `+' <expr>
   \alt <expr> `-' <expr>
   \alt <expr> `*' <expr>
   \alt <expr> `/' <expr>
   \alt `(' <expr> `)'
+\end{grammar}
+Eine Variable kann unqualifiziert sein und nur ihren Namen angeben, oder zusätzlich noch den Namen der Komponente aus der sie stammt angeben und damit als qualifiziert gelten.
+\begin{grammar}  
+  <var> ::= <id>
+  \alt <id> `.' <id>
+  
+  <id> ::= (`a'-`z' `A'-`Z' `0'-`9')+
+  
+  <int> ::= (`0'-`9')+
 \end{grammar}
