@@ -141,3 +141,5 @@ Um die Aussage "`Variable $v$ hat den Wert $s_1$ oder $s_2$ oder\dots"' abzukür
 \[
 \inference[elem]{\forall i\in\{0,\dots,n\}: s_i,T,\gamma\vdash_V (s_i',t) & T(v)=t}{v\ \textbf{in}\ \textbf{\{}s_0,\dots,s_n\textbf{\}},T,\gamma\vdash_V (\bigvee_{i\in\{0,\dots,n\}} v=s_i',\textrm{bool}) }
 \]
+\subsection{Interpretation als GALS-System}
+Um das in diesem Abschnitt definierte GTL-System als ein GALS System wie in Abschnitt \ref{sec:gals_formal_definition} zu betrachten, müssen die im System enthaltenen Formeln mithilfe des in Abschnitt \ref{sec:ltl-translation} angegebenen Algorithmus in Automaten übersetzt werden.
