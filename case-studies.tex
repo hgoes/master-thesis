@@ -1,0 +1,56 @@
+\section{Quelle-Senke Beispiel}
+Dieses minimalistische Beispiel soll die grundsätzliche Funktionsweise des Verifikationsalgorithmus und der BDD-Optimierung erläutern und demonstrieren, wie durch die Optimierung der Zustandsraum von Modellen reduziert werden kann.
+
+Das System besteht aus zwei Komponenten:
+Die Quelle hat einen Ausgang und produziert gibt die Sequenz der natürlichen Zahlen modulo 10 zurück, also
+\[ 0,1,2,3,4,5,6,7,8,9,0,1,2,\dots \]
+Der Ausgang der Quelle ist mit der Eingabe der Senke verbunden.
+Diese prüft, ob der Wert an ihrem Eingang kleiner als 12 ist und setzt dann den Ausgang auf den Wert 0, andernfalls auf 1.
+Zu verifizieren ist in diesem Beispiel, dass der Ausgabewert der Senke stehts 0 ist.
+
+Für den Kontrakt bietet sich also an zu spezifizieren, dass die Quelle stets Werte produziert, die kleiner als 10 sind.
+Die Senke produziert für Werte kleiner 10 stets die Ausgabe 0, was sich ebenfalls als Kontrakt formulieren lässt.
+Die resultierende GTL-Beschreibung sieht wie folgt aus:
+\begin{lstlisting}[language=gtl]
+model[scade] source("source_sink.scade","Source") {
+  contract always outp < 10;
+  init outp 9;
+}
+
+model[scade] sink("source_sink.scade","Sink") {
+  init outp 0;
+  contract always (inp < 10 => outp=0);
+}
+
+connect source.outp sink.inp;
+
+verify {
+  always sink.outp=0;
+}
+\end{lstlisting}
+Das Kontrakt-Automaten System, dass sich aus dieser Beschreibung ergibt ist in Abbildung \ref{fig:source_sink_automata} gezeigt.
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}
+    \input{gals_pic1}
+  \end{tikzpicture}
+  \caption{Quelle-Senke Kontrakt-Automaten}
+  \label{fig:source_sink_automata}
+\end{figure}
+
+Wenig erstaunlich ist nun das Ergebnis der Verifikation:
+Da die BDD-Abstraktion die Bedingung $\mathit{outp}<10$ als eine Transition betrachtet, ist das resultierende Transitionssystem in der BDD-Verifikation bedeutend kleiner als in der C-Integration (Siehe Tabelle \ref{tab:source_sink_verifikation}).
+
+\begin{table}
+  \begin{tabular}{|l|r|r|r|}
+    \hline
+    \textbf{Modus} & \textbf{Zustände} & \textbf{Transitionen} & \textbf{Speicherverbrauch}\\
+    \hline
+    Native & 25 & 49 & 4,653 MB\\
+    BDD & 6 & 11 & 4,653 MB\\
+    \hline
+  \end{tabular}
+  \caption{Quelle-Senke Verifikationsergebnisse}
+  \label{tab:source_sink_verifikation}
+\end{table}
