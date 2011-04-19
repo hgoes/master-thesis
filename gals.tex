@@ -199,4 +199,30 @@ Obwohl das Hinzufügen von Fairness-Eigenschaften die Fälle entfernt, in denen 
 In der Realität wird es beispielsweise nie vorkommen, dass ein Prozess nur ein mal einen Berechnungsschritt durchführt, während ein anderer im gleichen Zeitraum 1000 ausführt.
 Wesentlich realistischere Ausführungen erreicht man, wenn einzelnen Prozessen nur für einen gewissen Zeitraum erlaubt, mehr oder weniger Schritte als die anderen auszuführen.
 Hierzu zählt man die Berechnungsschritte, die jeder Prozess bereits ausgeführt hat und überprüft, dass zu jedem Zeitpunkt der Verifikation die Bedingung "`Keine zwei Prozesse liegen um mehr als $x$ Berechnungsschritte von einander entfernt"' erfüllt ist.
+\section{Kontrakte}
+Eine Komponente in einem GALS-System besitzt durch ihre Spezifikation eine Menge von Verhaltensweisen.
+Jede Verhaltensweise ist eine Kombination aus Eingaben und Ausgaben.
+Betrachtet man den Raum aller Verhaltensweisen, also aller Kombinationen von Eingaben und Ausgaben, so nimmt jede Komponente einen Teilraum ein.
 
+Formuliert man nun mithilfe von LTL-Formeln Bedingungen an das Gesamtsystem aus Komponenten, so spezifiziert man für jede Komponente einen neuen Raum, nämlich den des \emph{erlaubten} Verhaltens.
+Erfüllt das Gesamtsystem die LTL-Formeln, so ist das Verhalten jeder Komponente ein Teilraum des erlaubten Verhaltens.
+
+Ein Problem in der formalen Verifikation ist, dass der Automat, der eine Komponente repräsentiert, sehr komplex seien kann.
+Die Verifikation benötigt dann sehr viel Speicher, um jeden Zustand der Kompontente zu erfassen.
+Es ist aber häufig möglich, einen ähnlichen Automaten zu finden, der wesentlich kleiner ist und trotzdem jedes Verhalten zeigt, dass die ursprüngliche Komponente besaß.
+Dieser Automat kann auch mehr Verhalten besitzen, vorausgesetzt, dieses Verhalten liegt immer noch innerhalb des erlaubten Verhaltens.
+Ein solcher Automat heißt \emph{Kontrakt} und lässt sich beispielsweise als LTL-Formel darstellen.
+Der erläuterte Zusammenhang zwischen \emph{Verhalten}, \emph{erlaubtem Verhalten} und \emph{Kontrakten} ist in Abbildung \ref{fig:contracts} illustriert.
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}
+    \fill[fill=red!20,draw=red,thick] decorate[decoration={snake}] { (-0.4,-0.6) circle (2.4) };
+    \fill[fill=blue!20,draw=blue,thick] decorate[decoration={random steps,segment length=2mm,amplitude=2mm}] {(0,0) circle (1)};
+    \draw[dash pattern=on 2pt off 2pt,rotate=45] (0,0) ellipse (1.5 and 1.8);
+    \node at (0,0) {Verhalten};
+    \node at (-1,-2.2) {\begin{tabular}{c}Erlaubtes\\Verhalten\end{tabular}};
+    \node at (-0.2,1.4) {Kontrakt};
+  \end{tikzpicture}
+  \caption{Verhalten und Kontrakte}
+  \label{fig:contracts}
+\end{figure}
