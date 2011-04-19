@@ -1,0 +1,293 @@
+\haddockmoduleheading{Language.GTL.Expression}
+\label{module:Language.GTL.Expression}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Language.GTL.Expression (
+    Expr(ExprVar,
+         ExprConst,
+         ExprBinInt,
+         ExprBinBool,
+         ExprRel,
+         ExprElem,
+         ExprNot,
+         ExprAlways,
+         ExprNext), 
+    typeCheck,  GTLType(typeCheckBin, typeCheckUn),  pushNot,  getVars, 
+    maximumHistory,  mapVars,  BoolOp(And, Or, Implies), 
+    IntOp(OpPlus, OpMinus, OpMult, OpDiv), 
+    Relation(BinLT, BinLTEq, BinGT, BinGTEq, BinEq, BinNEq),  parseGTLType, 
+    castSer,  toBoolOp,  toRelOp,  toElemOp,  ExistsBinding,  toIntOp,  relNot, 
+    relTurn
+  ) where\end{verbatim}}
+\haddockendheader
+
+Provides the expression data type as well as the type-checking algorithm.
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ Expr\ v\ a\ where
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+& \haddockdecltt{ExprVar :: v -> Integer -> Expr v a} & \\
+& \haddockdecltt{ExprConst :: a -> Expr v a} & \\
+& \haddockdecltt{ExprBinInt :: IntOp
+                               -> Expr v Int -> Expr v Int -> Expr v Int} & \\
+& \haddockdecltt{ExprBinBool :: BoolOp
+                                -> Expr v Bool
+                                   -> Expr v Bool -> Expr v Bool} & \\
+& \haddockdecltt{ExprRel :: Relation
+                            -> Expr v Int -> Expr v Int -> Expr v Bool} & \\
+& \haddockdecltt{ExprElem :: v -> [Integer] -> Bool -> Expr v Bool} & \\
+& \haddockdecltt{ExprNot :: Expr v Bool -> Expr v Bool} & \\
+& \haddockdecltt{ExprAlways :: Expr v Bool -> Expr v Bool} & \\
+& \haddockdecltt{ExprNext :: Expr v Bool -> Expr v Bool} & \\
+\end{tabulary}\par
+A type-safe expression type.
+   \emph{v} is the type of variables (for example \haddockid{String}) and \emph{a} is the type of the expression.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Typeable2\ Expr\\instance\ (Eq\ a,\ Eq\ v)\ =>\ Eq\ (Expr\ v\ a)\\instance\ (Ord\ a,\ Ord\ v)\ =>\ Ord\ (Expr\ v\ a)\\instance\ (Show\ a,\ Show\ v)\ =>\ Show\ (Expr\ v\ a)\\instance\ (Binary\ a,\ Binary\ v,\ Typeable\ a)\ =>\ Binary\ (Expr\ v\ a)
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+typeCheck
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{(Ord a, Show a, GTLType t, Show t)} \\
+                     \haddockdecltt{=>} & \haddockdecltt{Map a TypeRep} & Type mapping
+ \\
+                                                                          \haddockdecltt{->} & \haddockdecltt{(Maybe String
+                                                                                                               -> String
+                                                                                                                  -> Either String a)} & Function to convert variable names
+ \\
+                                                                                                                                         \haddockdecltt{->} & \haddockdecltt{ExistsBinding a} & \\
+                                                                                                                                                                                                \haddockdecltt{->} & \haddockdecltt{GExpr} & The expression to convert
+ \\
+                                                                                                                                                                                                                                             \haddockdecltt{->} & \haddockdecltt{Either String (Expr a t)} & \\
+\end{tabulary}\par
+Typecheck an untyped expression. Converts it into the \haddockid{Expr} type which is strongly typed.
+   Returns either an error message or the resulting expression of type \haddockid{Bool}.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+class\ Typeable\ t\ =>\ GTLType\ t\ where
+\end{tabular}]\haddockbegindoc
+A GTL type can provide means to parse unary and binary operators of its type.
+   The default is to fail the parsing.
+\par
+
+\haddockpremethods{}\textbf{Methods}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+typeCheckBin
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{(Ord a, Show a, GTLType t)} \\
+                     \haddockdecltt{=>} & \haddockdecltt{Map a TypeRep} & The type mapping
+ \\
+                                                                          \haddockdecltt{->} & \haddockdecltt{(Maybe String
+                                                                                                               -> String
+                                                                                                                  -> Either String a)} & A function to convert variable names
+ \\
+                                                                                                                                         \haddockdecltt{->} & \haddockdecltt{ExistsBinding a} & All existentially bound variables
+ \\
+                                                                                                                                                                                                \haddockdecltt{->} & \haddockdecltt{t} & An instance of the type (can be \haddockid{undefined})
+ \\
+                                                                                                                                                                                                                                         \haddockdecltt{->} & \haddockdecltt{BinOp} & The operator to type check
+ \\
+                                                                                                                                                                                                                                                                                      \haddockdecltt{->} & \haddockdecltt{GExpr} & The left hand side of the operator
+ \\
+                                                                                                                                                                                                                                                                                                                                   \haddockdecltt{->} & \haddockdecltt{GExpr} & The right hand side of the operator
+ \\
+                                                                                                                                                                                                                                                                                                                                                                                \haddockdecltt{->} & \haddockdecltt{Either String (Expr a t)} & \\
+\end{tabulary}\par
+Type checks a binary operator of the given type.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+typeCheckUn\ ::\ (Ord\ a,\ Show\ a,\ GTLType\ t)\ =>\ Map\ a\ TypeRep\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ (Maybe\ String\ ->\ String\ ->\ Either\ String\ a)\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ ExistsBinding\ a\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ t\ ->\ UnOp\ ->\ GExpr\ ->\ Either\ String\ (Expr\ a\ t)
+\end{tabular}]
+\end{haddockdesc}
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ GTLType\ Bool\\instance\ GTLType\ Int
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+pushNot\ ::\ Expr\ v\ Bool\ ->\ Expr\ v\ Bool
+\end{tabular}]\haddockbegindoc
+Pushes a negation as far into the formula as possible by applying simplification rules.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+getVars\ ::\ Expr\ v\ a\ ->\ {\char 91}(v,\ Integer){\char 93}
+\end{tabular}]\haddockbegindoc
+Extracts all variables with their level of history from an expression.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+maximumHistory\ ::\ Ord\ v\ =>\ Expr\ v\ a\ ->\ Map\ v\ Integer
+\end{tabular}]\haddockbegindoc
+Extracts the maximum level of history for each variable in the expression.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+mapVars\ ::\ (v\ ->\ w)\ ->\ Expr\ v\ a\ ->\ Expr\ w\ a
+\end{tabular}]\haddockbegindoc
+Change the type of the variables in an expression.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ BoolOp
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{And} & ⋀ \\
+\haddockdecltt{|} & \haddockdecltt{Or} & ⋁ \\
+\haddockdecltt{|} & \haddockdecltt{Implies} & ⇒ \\
+\end{tabulary}\par
+Binary boolean operators with the traditional semantics.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Enum\ BoolOp\\instance\ Eq\ BoolOp\\instance\ Ord\ BoolOp\\instance\ Show\ BoolOp\\instance\ Binary\ BoolOp
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ IntOp
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{OpPlus} & +
+ \\
+\haddockdecltt{|} & \haddockdecltt{OpMinus} & - \\
+\haddockdecltt{|} & \haddockdecltt{OpMult} & * \\
+\haddockdecltt{|} & \haddockdecltt{OpDiv} & / \\
+\end{tabulary}\par
+Arithmetik binary operators.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Enum\ IntOp\\instance\ Eq\ IntOp\\instance\ Ord\ IntOp\\instance\ Show\ IntOp\\instance\ Binary\ IntOp
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ Relation
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{BinLT} & < \\
+\haddockdecltt{|} & \haddockdecltt{BinLTEq} & <=
+ \\
+\haddockdecltt{|} & \haddockdecltt{BinGT} & > \\
+\haddockdecltt{|} & \haddockdecltt{BinGTEq} & >=
+ \\
+\haddockdecltt{|} & \haddockdecltt{BinEq} & =
+ \\
+\haddockdecltt{|} & \haddockdecltt{BinNEq} & !=
+ \\
+\end{tabulary}\par
+Integer relations.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Enum\ Relation\\instance\ Eq\ Relation\\instance\ Ord\ Relation\\instance\ Show\ Relation\\instance\ Binary\ Relation
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+parseGTLType\ ::\ String\ ->\ Maybe\ TypeRep
+\end{tabular}]\haddockbegindoc
+Convert a \haddockid{String} into a type representation. Only covers types which are allowed in the GTL.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+castSer\ ::\ (Typeable\ a,\ Typeable\ b,\ Monad\ m)\ =>\ c\ a\ ->\ m\ (c\ b)
+\end{tabular}]\haddockbegindoc
+Lift \haddockid{gcast} in a monad and fail with an error if the cast fails
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+toBoolOp\ ::\ BinOp\ ->\ Maybe\ BoolOp
+\end{tabular}]\haddockbegindoc
+Cast a binary operator into a boolean operator. Returns \haddockid{Nothing} if the cast fails.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+toRelOp\ ::\ BinOp\ ->\ Maybe\ Relation
+\end{tabular}]\haddockbegindoc
+Cast a binary operator into a relation. Returns \haddockid{Nothing} if the cast fails.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+toElemOp\ ::\ BinOp\ ->\ Maybe\ Bool
+\end{tabular}]\haddockbegindoc
+Cast a binary operator into an element operator. Returns \haddockid{Nothing} if the cast fails.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ ExistsBinding\ a\ =\ Map\ String\ (a,\ Integer)
+\end{tabular}]\haddockbegindoc
+Binds variables to other variables from the past.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+toIntOp\ ::\ BinOp\ ->\ Maybe\ IntOp
+\end{tabular}]\haddockbegindoc
+Cast a binary operator into an arithmetic operator. Returns \haddockid{Nothing} if the cast fails.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+relNot\ ::\ Relation\ ->\ Relation
+\end{tabular}]\haddockbegindoc
+Negates a relation
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+relTurn\ ::\ Relation\ ->\ Relation
+\end{tabular}]\haddockbegindoc
+Switches the operands of a relation.
+   Turns x \url{ y into y } x.
+\par
+
+\end{haddockdesc}
