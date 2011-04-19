@@ -226,3 +226,16 @@ Der erläuterte Zusammenhang zwischen \emph{Verhalten}, \emph{erlaubtem Verhalte
   \caption{Verhalten und Kontrakte}
   \label{fig:contracts}
 \end{figure}
+
+Ist ein vereinfachender Kontrakt-Automat gefunden, so muss die formelle Verifikation zunächst beweisen, dass der Kontrakt von der ursprünglichen Komponente eingehalten wird.
+Dies kann beispielsweise festgestellt werden, indem der Kontrakt in den Formalismus der Komponente übersetzt wird und dort verifiziert wird.
+Ist gesichert, dass alle Kontrakte von den Komponenten erfüllt werden, so werden die Kontrakte verwendet, um das Gesamtsystem zu verifizieren.
+Sind die Kontrakte allerdings zu locker formuliert, spezifizieren also mehr Verhalten als die zu verifizierende Formel erlaubt, so werden bei der Verifikation Fehler gefunden, die bei einer normalen Verifikation ohne Kontrakte nicht auftreten würden.
+Eine Lösung für dieses Problem wird in Abschnitt \ref{sec:error-refinement} vorgestellt.
+
+Die Formulierung von Kontrakten stellt einen Balance-Akt dar:
+Formuliert man die Kontrakte zu scharf, so hat der resultierende Automat ähnlich viele Zustände wie die ursprüngliche Komponente und es gibt keinen Gewinn durch die Verwendung von Kontrakten.
+Wird der Kontrakt jedoch zu lose formuliert so bekommt der Kontrakt-Automat viele Transitionen und zeigt Verhalten, dass die Verifikation der Systemeigenschaft unmöglich machen.
+
+Um gute Kontrakte zu formulieren, muss der Anwender zwischen relevanten und irrelevanten Verhaltensweisen unterscheiden.
+Ist beispielsweise für die zu verifizierende Eigenschaft unerheblich, welchen konkreten Wert eine Variable aufweist, sondern nur wichtig, dass der Wert eine bestimmte Eigenschaft erfüllt, so lässt sich häufig ein Kontrakt finden, der den Wert der Variable nicht-deterministisch auf einen Wert setzt.
