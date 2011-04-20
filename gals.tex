@@ -107,7 +107,24 @@ Um die Notation zu erleichtern, wird zusätzlich noch eine Zustandsübergangsfun
 \[ \lambda : S(\mathcal{G})\times I(\mathcal{G})\times A\rightarrow S(\mathcal{G})\times O(\mathcal{G}) \]
 \[ (\alpha,\beta,a) \mapsto o(\alpha,a,\delta^a(i(\alpha,\beta))) \]
 
+Das System in Abbildung \ref{fig:mealy3} wird formal beispielsweise so dargestellt:
+\[ (\{a_1,a_2\},p,\{ (a_1,0),(a_2,0) \}) \]
+Wobei die Funktion $p$ definiert ist als:
+\begin{eqnarray*}
+  p : a_1&\mapsto& (\{p_0,p_1\},\emptyset,\mathbb{B},\delta^1,p_0)\\
+      a_2&\mapsto& (\{q_0,q_1\},\mathbb{B}\times\mathbb{N},\mathbb{N},\delta^2,q_0)
+\end{eqnarray*}
+Wobei $\delta^1$ und $\delta^2$ wie folgt definiert sind:
+\begin{eqnarray*}
+  \delta^1 : p_0 &\mapsto& (p_1,0)\\
+             p_1 &\mapsto& (p_0,1)\\
+  \delta^2 : (q_0,\lnot\mathit{on}\lor x\geq 5) &\mapsto& (q_0,3)\\
+             (q_0,\mathit{on}\land x<5) &\mapsto& (q_1,1)\\
+             (q_1,x<5) &\mapsto& (q_1,2)\\
+             (q_1,x\geq 5) &\mapsto& (q_0,0)
+\end{eqnarray*}
 \section{Semantik}
+\label{sec:semantic}
 Man kann nun das maximale Transitionssystem des GALS-Systems wie folgt über die Transitionsrelation $T$ definieren:
 \[ \xymatrix { s \ar[r]^{i/o}_>T & s' } \Leftrightarrow \exists a\in A: \lambda(s,i,a) = (s',o) \]
 Je nach dem, was man für Systeme betrachtet ist dieses Transitionssystem aber nicht unbedingt realistisch:
