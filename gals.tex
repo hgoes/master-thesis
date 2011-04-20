@@ -109,12 +109,11 @@ Um die Notation zu erleichtern, wird zusätzlich noch eine Zustandsübergangsfun
 
 \section{Semantik}
 Man kann nun das maximale Transitionssystem des GALS-Systems wie folgt über die Transitionsrelation $T$ definieren:
-\[ \xymatrix { s \ar[r]^{i/o} & _T s' } \Leftrightarrow \exists a\in A: \lambda(s,i,a) = (s',o) \]
+\[ \xymatrix { s \ar[r]^{i/o}_>T & s' } \Leftrightarrow \exists a\in A: \lambda(s,i,a) = (s',o) \]
 Je nach dem, was man für Systeme betrachtet ist dieses Transitionssystem aber nicht unbedingt realistisch:
 Es schließt beispielsweise nicht aus, dass immer nur Schritte von einer Komponente durchgeführt werden, während die anderen "`verhungern"'.
 Viele Formeln, die bei einer realistischen Ausführung des Systems erfüllt sind können so Fehler produzieren und eine formale Verifikation unmöglich machen.
 Daher werden in diesem Abschnitt verschiedene Ausführungsarten mit ihren Vor- und Nachteilen vorgestellt.
-
 Dazu wird zunächst informell die Ausführungsart beschrieben und danach formal die Herleitung des entsprechenden Transitionssystems erklärt.
 
 \subsection{Synchrone Ausführung}
