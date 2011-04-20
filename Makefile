@@ -2,7 +2,7 @@ SOURCES=gals.tex language.tex translation-c.tex translation-scade.tex ltl-transl
         error-refinement.tex translation-correctness.tex implementation.tex bdd.tex spin.tex\
         scade.tex motivation.tex ltl.tex buchi.tex translation-static-bdd.tex\
 	translation-dynamic-bdd.tex sos.tex grammar.tex installation.tex sourcedoc.tex\
-        structure.tex mealy.tex mealy2.tex mealy3.tex mealy4.tex case-studies.tex
+        structure.tex mealy.tex mealy2.tex mealy3.tex mealy4.tex case-studies.tex conclusion.tex
 
 BDDS=top.pdf bot.pdf con.pdf example1.pdf example2.pdf example3.pdf example4.pdf\
      example_set1.pdf plus1_lhs.pdf plus1_rhs.pdf plus1_res.pdf plus2_res.pdf plus3_rhs.pdf\
