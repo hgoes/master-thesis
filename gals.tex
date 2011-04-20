@@ -108,7 +108,7 @@ Um die Notation zu erleichtern, wird zusätzlich noch eine Zustandsübergangsfun
 \[ (\alpha,\beta,a) \mapsto o(\alpha,a,\delta^a(i(\alpha,\beta))) \]
 
 Das System in Abbildung \ref{fig:mealy3} wird formal beispielsweise so dargestellt:
-\[ (\{a_1,a_2\},p,\{ (a_1,0),(a_2,0) \}) \]
+\[ \mathcal{G} = (\{a_1,a_2\},p,\{ (a_1,0),(a_2,0) \}) \]
 Wobei die Funktion $p$ definiert ist als:
 \begin{eqnarray*}
   p : a_1&\mapsto& (\{p_0,p_1\},\emptyset,\mathbb{B},\delta^1,p_0)\\
@@ -123,6 +123,13 @@ Wobei $\delta^1$ und $\delta^2$ wie folgt definiert sind:
              (q_1,x<5) &\mapsto& (q_1,2)\\
              (q_1,x\geq 5) &\mapsto& (q_0,0)
 \end{eqnarray*}
+Daraus ergeben sich die abgeleitetenden Eingaben, Ausgaben und Zustandsmengen zu:
+\begin{eqnarray*}
+  I(\mathcal{G}) &=& \mathbb{N}\\
+  O(\mathcal{G}) &=& \mathbb{N}\\
+  S(\mathcal{G}) &=& \{p_0,p_1\}\times\{q_0,q_1\}\times\mathbb{B}
+\end{eqnarray*}
+
 \section{Semantik}
 \label{sec:semantic}
 Man kann nun das maximale Transitionssystem des GALS-Systems wie folgt über die Transitionsrelation $T$ definieren:
