@@ -100,7 +100,7 @@ Die Eingaben $I(\mathcal{G})$ des Gesamtsystems sind also
 Für die Ausgaben $O(\mathcal{G})$ gilt entsprechend
 \[ O(\mathcal{G}) = \prod \{ \Omega^a_n\ |\ a\in A, n\in \mathbb{N}, \lnot\exists ((X,i),(Y,j))\in C: X=a\land i=n \} \]
 Der Zustandsraum $S(\mathcal{G})$ des Systems ergibt sich dann aus den Zuständen der einzelnen Automaten sowie dem aktuellen Inhalt der Verbindungen:
-\[ S(\mathcal{G}) = \left(\prod_{a\in A} Q^a\right)\times\left(\prod_{((a,\_),\_)\in C} \Sigma^a\right) \]
+\[ S(\mathcal{G}) = \left(\prod_{a\in A} Q^a\right)\times\left(\prod_{((a,i),\_)\in C} \Sigma^a_i\right) \]
 Da die Eingaben für einen konkreten Automaten sich nun entweder im Zustandsraum $S(\mathcal{G})$ oder in den globalen Eingaben $I(\mathcal{G})$ befinden können, definiert man eine Hilfsfunktion $i : S(\mathcal{G})\times I(\mathcal{G})\times A\rightarrow (\prod Q)\times(\prod\Sigma)$, die die Eingaben extrahiert.
 Äquivalent definiert man eine weitere Funktion $o : S(\mathcal{G})\times A\times\prod Q\times\prod\Omega\rightarrow S(\mathcal{G})\times O(\mathcal{G})$ die Ausgaben eines Automaten zurück schreibt.
 Um die Notation zu erleichtern, wird zusätzlich noch eine Zustandsübergangsfunktion $\lambda$ definiert, die den Zustandsübergang des GALS Systems bei Ausführung eines Automatenschritts angibt.
