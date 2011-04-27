@@ -75,13 +75,13 @@ Um das zu erreichen nimmt man die Ausgaben des Systems mit in den Zustand des Ge
 Dies vergrößert natürlich den Zustandsraum des resultierenden Systems, aber reduziert undefinierte Ausgaben des Gesamtsystems.
 
 \section{Formale Definition}
-\begin{description}
-\item[Notation:] Die Projektion, die gegeben einer Indexmenge $I$ die entsprechenden Elemente aus einem Tupel $X$ auswählt, ohne die Reihenfolge zu verändern wird mit
+\begin{notation}
+  Die Projektion, die für eine gegebene Indexmenge $I$ die entsprechenden Elemente aus einem Tupel $X$ auswählt, ohne die Reihenfolge zu verändern wird mit
   \[ X |_I \]
   abgekürzt.
   Es gilt also beispielsweise:
   \[ (a,b,c,d) |_{\{0,2\}} = (a,c) \]
-\end{description}
+\end{notation}
 \label{sec:gals_formal_definition}
 Eine synchrone Komponente mit $n$ Eingängen und $m$ Ausgängen lässt sich als ein modifizierter Mealy-Automat $\mathcal{A} = (Q,\Sigma,\Omega,\delta,q_0)$ darstellen:
 \begin{itemize}
@@ -94,23 +94,26 @@ Eine synchrone Komponente mit $n$ Eingängen und $m$ Ausgängen lässt sich als 
   \item $q_0\in Q$ ist der Startzustand des Automaten.
 \end{itemize}
 
-Ein GALS-System ist ein Tripel $\mathcal{G}=(A,p,C)$ mit $A$ als eine Menge von Automatennamen, $p$ als eine Funktion, die Automatennamen einen konkreten Mealy-Automaten zuordnet und $C\subseteq (A\times\mathbb{N})\times(A\times\mathbb{N})$ das die Verbindungen zwischen Ein- und Ausgaben der Automaten definiert.
-\begin{description}
-\item[Notation:] Es kann ohne Beschränkung der Allgemeinheit davon ausgegangen werden, dass eine Ordnung auf den Automatennamen existiert, die bei der Erstellung von Eingabe- und Ausgabetupeln eingehalten wird.
+Ein GALS-System ist ein Tripel $\mathcal{G}=(A,p,C)$ mit $A$ als einer Menge von Automatennamen, $p$ als eine Funktion, die Automatennamen einen konkreten Mealy-Automaten zuordnet und $C\subseteq (A\times\mathbb{N})\times(A\times\mathbb{N})$ das die Verbindungen zwischen Ein- und Ausgaben der Automaten definiert.
+Ein Tupel $(a,n,b,m)\in C$ bezeichnet also eine Verbindung der $n$-ten Ausgabe des Mealy-Automaten $p(a)$ mit der $m$-ten Eingabe des Mealy-Automaten $p(b)$.
+
+Um die Referenzierung von Automatenkomponenten zu ermöglichen sei $p$ wie folgt definiert:
+\[ p(a) = (Q^a,\Sigma^a,\Omega^a,\delta^a,q_0^a) \]
+Eine Aus- oder Eingabe ist spezifiziert duch den Automaten und den Index im Ein- oder Ausgabetupel.
+Für eine Verbindung $((a,i),(b,j))\in C$ muss immer gelten, dass die Ausgabesymbole den Eingabesymbolen entsprechen, also $\Omega_i^a = \Sigma_j^b$ gilt.
+
+\begin{notation}
+  Es kann ohne Beschränkung der Allgemeinheit davon ausgegangen werden, dass eine Ordnung auf den Automatennamen existiert, die bei der Erstellung von Eingabe- und Ausgabetupeln eingehalten wird.
   Dann wird die Projektion, die aus einem solchen Tupel $X$ alle Elemente selektiert, die mit dem Automatennamen $a$ indiziert sind, mit
   \[ X|^a \]
   notiert.
-  Es gilt dann also Beispielsweise:
+  Es gilt dann also beispielsweise:
   \begin{eqnarray*}
     s &:& \Sigma^a_0\times\Sigma^a_2\times\Sigma^b_1\times\Sigma^b_2\\
     s &=& (a,b,c,d)\\
     s|^b &=& (c,d)
   \end{eqnarray*}
-\end{description}
-Um die Referenzierung von Automatenkomponenten zu ermöglichen sei $p$ wie folgt definiert:
-\[ p(a) = (Q^a,\Sigma^a,\Omega^a,\delta^a,q_0^a) \]
-Eine Aus- oder Eingabe ist spezifiziert duch den Automaten und den Index im Ein- oder Ausgabetupel.
-Für eine Verbindung $((X,i),(Y,j))$ muss immer gelten, dass die Ausgabesymbole den Eingabesymbolen entsprechen, also $\Omega_i^X = \Sigma_j^Y$ gilt.
+\end{notation}
 
 Die Ein- und Ausgaben des GALS Systems ergeben sich aus den Automaten des Systems sowie den Verbindungen.
 Ist eine Eingabe eines Automaten mit keiner Ausgabe verbunden, so ist sie automatisch eine Eingabe des Gesamtsystems.
@@ -125,19 +128,32 @@ Der Zustandsraum $S(\mathcal{G})$ des Systems ergibt sich dann aus den Zustände
 Da die Eingaben für einen konkreten Automaten sich nun entweder im Zustandsraum $S(\mathcal{G})$ oder in den globalen Eingaben $I(\mathcal{G})$ befinden können, definiert man eine Hilfsfunktion 
 \begin{eqnarray*}
   \pi_I^a &:& S(\mathcal{G})\times I(\mathcal{G})\rightarrow Q^a\times\Sigma^a\\
-  \pi_I^a(q,s,i) &=& q|^a\times s|^a\times i|^a
+  \pi_I^a((q,s),i) &=& ((q|^a,s|^a),i|^a)
 \end{eqnarray*}
 die die benötigten Parameter für einen gegebenen Automaten $a$ extrahieren.
-Äquivalent definiert man eine weitere Funktion 
+\begin{notation}
+  Um alle zum Automaten $a$ gehörigen Komponenten eines Tupels $X$ unter berücksichtigung der Reihenfolge durch alle Komponenten aus dem Tupel $Y$ zu ersetzen, wird die folgende Notation verwendet:
+  \[ X[a\mapsto Y] \]
+  Es gilt:
+  \[ \left.X[a\mapsto Y]\right|_a = Y \]
+  und
+  \[ \forall b\in A,b\neq a: \left.X[a\mapsto Y]\right|_b = X|_b \]
+\end{notation}
+Analog definiert man eine weitere Funktion 
 \begin{eqnarray*}
   \pi_O^a &:& S(\mathcal{G})\times Q^a\times\Omega^a\rightarrow S(\mathcal{G})\times O(\mathcal{G})\\
-  \pi_O^a (q,s,q',o) &=& q[a/q']\times s\times (\bot,\dots,\bot)[a/o]
+  \pi_O^a ((q,s),q',o) &=& ((q[a\mapsto q'],s'),(\bot,\dots,\bot)[a\mapsto o])
 \end{eqnarray*}
 die Ausgaben und Zustand eines Automaten zurück in den Zustandsvektor des Gesamtsystems sowie die Gesamtausgaben schreibt.
+Dabei gilt
+\[ s'|_{\{n\}}^b = \left\{\begin{array}{lr}
+    o|_{\{m\}} & \exists ((a,m),(b,n))\in C\\[10pt]
+    s|_{\{n\}}^b & \textrm{sonst}
+  \end{array}\right. \]
 Um die Notation zu erleichtern, wird zusätzlich noch eine Zustandsübergangsfunktion $\lambda$ definiert, die den Zustandsübergang des GALS Systems bei Ausführung eines Automatenschritts angibt.
 \begin{eqnarray*}
   \lambda &:& S(\mathcal{G})\times I(\mathcal{G})\times A\rightarrow S(\mathcal{G})\times O(\mathcal{G})\\
-  (q,s,i,a) &\mapsto& \pi_O^a(q,s,\delta^a(\pi_I^a(q,s,i)))
+  (q,i,a) &\mapsto& \pi_O^a(q,\delta^a(\pi_I^a(q,i)))
 \end{eqnarray*}
 
 Das System in Abbildung \ref{fig:mealy3} wird formal beispielsweise so dargestellt:
