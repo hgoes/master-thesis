@@ -155,6 +155,8 @@ Um die Notation zu erleichtern, wird zusätzlich noch eine Zustandsübergangsfun
   \lambda &:& S(\mathcal{G})\times I(\mathcal{G})\times A\rightarrow S(\mathcal{G})\times O(\mathcal{G})\\
   (q,i,a) &\mapsto& \pi_O^a(q,\delta^a(\pi_I^a(q,i)))
 \end{eqnarray*}
+Der Initialzustand $i\in\mathcal{S}(\mathcal{G})$ ergibt sich als Kombination aller Initialzustände der Komponenten und den undefinierten Verbindungen
+\[ i = (<q_0^a>_{a\in A},(\bot,\dots,\bot)) \]
 
 Das System in Abbildung \ref{fig:mealy3} wird formal beispielsweise so dargestellt:
 \[ \mathcal{G} = (\{a_1,a_2\},p,\{ (a_1,0),(a_2,0) \}) \]
