@@ -1,24 +1,27 @@
 \section{Übersetzungskonstruktion}
 Gegeben ein wie in Abschnitt \ref{sec:sos_defs} spezifiziertes System $s\in \mathcal{S}$ mit $s=(ms,c,vs)$ muss nun eine Übersetzung in ein äquivalentes Promela-Modell gefunden werden, die die Semantik des Systems erhält.
-Für jede Komponente $(m,(\mathit{contr},\mathit{init}))\in ms$ mit dem Namen $m$, dem Kontrakt $\mathit{contr}$ und der Initialisierung $\mathit{init}$ wird nun der Kontrakt in einen äquivalenten Büchi-Automaten $(Q,\Sigma,\delta,q_0,\emptyset)$ übersetzt (Siehe Abschnitt \ref{sec:ltl-translation}).
+Für jede Komponente $(m,(\mathit{contr},\mathit{init}))\in ms$ mit dem Namen $m$, dem Kontrakt $\mathit{contr}$ und der Initialisierung $\mathit{init}$ wird nun der Kontrakt in einen äquivalenten Büchi-Automaten $(Q,\Sigma,\delta,\mu,q_0,\emptyset)$ übersetzt (Siehe Abschnitt \ref{sec:ltl-translation}).
+Hierbei ist zu beachten, dass die generierten Automaten Bedingungen auf den Variablen als Ein- und Ausgabesymbole verwenden, da Relationen wie $x\leq y$ von dem LTL-Übersetzungsalgorithmus als atomare Aussagen betrachtet werden.
+
+
 Anschließend wird ein neuer Prozess wie folgt definiert:
 \begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small]
   active proctype $m$() {
-    if $[ \forall i\in q_0, e\in\Sigma:$
+    if $[ \forall i\in q_0:$
     :: atomic {
-      $\llbracket e \rrbracket_C$;
-      $\llbracket e \rrbracket_A$;
-      goto st_$\delta(i,e)$
+      $\llbracket \mu(i) \rrbracket_C$;
+      $\llbracket \mu(i) \rrbracket_A$;
+      goto st_$i$
     }
     $]$
     fi;
     $[ \forall q\in Q:$
     st_$q$:
-      if $[ \forall e\in\Sigma:$
+      if $[ \forall q'\in Q, q\delta q':$
       :: atomic {
-        $\llbracket e \rrbracket_C$;
-        $\llbracket e \rrbracket_A$;
-        goto st_$\delta(q,e)$
+        $\llbracket \mu(q') \rrbracket_C$;
+        $\llbracket \mu(q') \rrbracket_A$;
+        goto st_$q'$
       }
       $]$
     $]$
@@ -29,30 +32,30 @@ Die Anweisung muss blockieren, bis die Bedingungen erfüllt sind und darf den gl
 Ähnlich dazu generiert die Funktion $\llbracket\rrbracket_A$ eine Anweisung, die den globalen Zustand anhand der übergebenen Atome transformiert.
 Die generierte Anweisung darf nicht blockieren.
 
-Die zu verifizierende Formel $v$ wird negiert ebenfalls in einen Büchi-Automaten $(Q,\Sigma,\delta,q_0,F)$ übersetzt und in eine äquivalente Promela \emph{never}-Deklaration übersetzt:
+Die zu verifizierende Formel $v$ wird negiert ebenfalls in einen Büchi-Automaten $(Q,\Sigma,\delta,\mu,q_0,F)$ übersetzt und in eine äquivalente Promela \emph{never}-Deklaration übersetzt:
 \begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small]
   never {
-    if $[ \forall i\in q_0, e\in\Sigma:$
+    if $[ \forall i\in q_0:$
     :: atomic {
-      $\llbracket e \rrbracket_C$;
-      goto st_$\delta(i,e)$
+      $\llbracket \mu(i) \rrbracket_C$;
+      goto st_$i$
     }
     $]$
     fi;
     $[ \forall q\in Q:$
     $[ q\in F:$ accept_$q$: $]$
     st_$q$:
-      if $[ \forall e\in\Sigma:$
+      if $[ \forall q'\in Q,q\delta q':$
       :: atomic {
-        $\llbracket e \rrbracket_C$;
-        goto st_$\delta(q,e)$
+        $\llbracket \mu(q') \rrbracket_C$;
+        goto st_$q'$
       }
       $]$
     $]$
   }
 \end{lstlisting}
 \subsection{Richtigkeit der Übersetzung}
-Um zu beweisen, dass die angegebene Promela-Übersetzung korrekt ist, muss gezeigt werden, dass die eben definierte Semantik des Modells mit der Semantik des übersetzten Promela-Modells übereinstimmt.
+Um zu beweisen, dass die angegebene Promela-Übersetzung korrekt ist, muss gezeigt werden, dass eine Semantik des Systems, repräsentiert durch eine Untermenge des vollständigen Transitionssystems $T'\subseteq T$ (Siehe Abschnitt \ref{sec:semantic}), mit der Semantik des übersetzten Promela-Modells übereinstimmt.
 Um dies zu zeigen, wird die Promela-Semantik verwendet, wie sie in \cite{Gallardo04formalaspects} beschrieben ist.
 Da in dieser Semantik gefordert ist, dass jede Anweisung ein implizites Label erhält, werden folgende Labels für die Anweisungen vergeben:
 \begin{itemize}
