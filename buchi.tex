@@ -3,13 +3,33 @@ Büchi-Automaten stellen eine Erweiterung von endlichen Automaten auf unendliche
 Anders als endliche Automaten, die eine Eingabe akzeptieren, wenn die Ausführung in einem finalen Zustand endet, akzeptiert ein Büchi-Automat eine Eingabe genau dann, wenn die Ausführung unendlich oft einen finalen Zustand erreicht.
 
 Formal ist ein Büchi-Automat ein Tupel
-\[ A = (Q,\Sigma,\delta,q_0,F) \]
+\[ A = (Q,\Sigma,\delta,\mu,q_0,F) \]
 wobei die Symbole folgende Bedeutung haben:
 \begin{itemize}
   \item $Q$ ist die Menge der Zustände des Automaten.
-  \item Das Alphabet $\Sigma$, über dem der Automat definiert ist.
-  \item $\delta : Q\times\Sigma\rightarrow Q$ ist die Übergangsfunktion des Automaten.
+  \item Die Menge von atomaren Aussagen $\Sigma$, die gültig oder ungültig sein können.
+  \item $\delta\subseteq Q\times Q$ ist die Übergangsrelation des Automaten.
+  \item $\mu : Q\rightarrow\Sigma$ gibt an, welche Aussagen in einem Zustand gelten müssen.
   \item $q_0\subseteq Q$ ist die Startzustandsmenge.
   \item $F\subseteq Q$ ist die Finalzustandsmenge.
 \end{itemize}
-Ein Wort $a_0a_1a_2\dots$ wird nun also genau dann akzeptiert, wenn es eine Folge von Zuständen $q_0q_1q_2\dots$ gibt, wobei stets gilt $\delta(q_n,a_n)=q_{n+1}$ und in der mindestens ein Zustand aus $F$ unendlich oft vorkommt.
+Eine Folge von Aussagen $a_0a_1a_2\dots$ wird nun also genau dann akzeptiert, wenn es eine Folge von Zuständen $q_0q_1q_2\dots$ gibt, wobei stets gilt $q_n\delta q_{n+1}$ und in der mindestens ein Zustand aus $F$ unendlich oft vorkommt.
+Außerdem muss jede Aussage $a_n$ mit der Menge von Aussagen $\mu(q_n)$ kompatibel sein.
+
+\subsection{Verallgemeinerter Büchi-Automat}
+Ein Verallgemeinerter Büchi-Automat\footnote{Im englischen als "`generalized buchi automaton"' bezeichnet und als \emph{GBA} abgekürzt.} unterscheidet sich von einem normalen Büchi-Automaten durch die Definition des Akzeptanzverhaltens.
+Während ein Büchi-Automat akzeptiert, wenn unendlich oft ein Finalzustand betreten wird, ist $F$ hier eine Menge von Finalzustandsmengen ($F\subseteq\mathcal{P}(Q)$).
+Der Automat akzeptiert nun, wenn aus jeder Finalzustandsmenge mindestens ein Zustand unendlich oft betreten wird.
+
+Ein verallgemeinerter Büchi-Automat lässt sich in einen normalen Büchi-Automaten übersetzen, indem man für jede Finalzustandsmenge eine "`Ebene"' einführt.
+Jede Ebene enthält die gleichen Zustände und Transitionen wie der ursprüngliche Automat, nur dass beim Verlassen von den Finalzuständen der aktuellen Finalzustandsmenge die nächste Ebene betreten wird.
+Dadurch wird erreicht, dass ein Zyklus nur dann zustande kommt, wenn ein Zustand aus allen Finalzustandsmengen betreten wird.
+
+Für einen verallgemeinerten Büchi-Automaten $(Q,\Sigma,\delta,\mu,q_0,F)$ konstruiert man also einen Büchi-Automaten $(Q',\Sigma,\delta',\mu',q_0',F')$.
+Dazu benötigt man zunächst eine Hilfsfunktion $i : F\rightarrow F$, die zyklisch durch alle Finalzustandsmengen geht.
+\begin{align*}
+  Q' &= \{ (q,f)\ |\ q\in Q, f\in F \}\\
+  \delta' &= \{ ((q_1,f_1),(q_2,f_2))\ |\ (q_1,q_2)\in\delta, (q_1\in f_1\land i(f_1)=f_2)\lor f_1=f_2\}\\
+  \mu'((q,f)) &= \mu(q)\\
+  F' &= \{ (q,f)\ |\ f\in F, q\in f \}
+\end{align*}
