@@ -8,11 +8,11 @@ In der zu verifizierenden Formel kommen sie qualifiziert mit dem Modellnamen vor
 In Modell-Kontrakten ist der Modellname klar, daher sind die Variablen hier unqualifiziert und damit Element der Menge $\mathit{Id}\times\mathbb{N}$.
 \subsection{Aufbau}
 \label{sec:sos_defs}
-Die Semantik eines GTL-Modells wird durch ein Tripel angegeben, bestehend aus der Menge der Modelle, der Verbindungen zwischen den Variablen, sowie der LTL-Formel, deren Gültigkeit verifiziert werden soll.
-\[ \mathcal{S} = \mathcal{M}\times\mathcal{C}\times\mathit{LTL}(\mathit{Id}\times\mathit{Id}\times\mathbb{N}) \]
+Die Semantik eines GTL-Modells wird durch ein Tripel angegeben, bestehend aus der Menge der Modelle, der Menge der Verbindungen zwischen den Variablen, sowie der LTL-Formel, deren Gültigkeit verifiziert werden soll.
+\[ \mathit{GTL} = \mathcal{P}(\mathcal{M})\times\mathcal{P}(\mathcal{C})\times\mathit{LTL}(\mathit{Id}\times\mathit{Id}\times\mathbb{N}) \]
 Die LTL-Formel ist über Paare von Namen definiert, wobei der erste den Namen des Modells angibt und der zweite den der Variable im Modell.
-Die Menge aller Modellkonfigurationen $\mathcal{M}$ ist gegeben durch Abbildungen von Modellnamen auf Tupel von Kontrakten in Form von LTL-Formeln über die Variablennamen des entsprechenden Modells und Initialisierungswerten für die Modellvariablen.
-\[ \mathcal{M} = \mathcal{P}(Id)\times(\mathit{Id}\rightarrow \mathit{LTL}(\mathit{Id})\times\mathcal{D}) \]
+Eine Modellkonfiguration $\mathcal{M}$ ist gegeben durch einen Namen, den synchronen Automaten, den Kontrakt und Initialisierungswerten für die Variablen.
+\[ \mathcal{M} = \mathit{Id}\times\mathcal{A}\times\mathit{LTL}(\mathit{Id})\times\mathcal{P}(\mathcal{D}) \]
 Die Initialisierungswerte werden über eine Abbildung von Variablennamen auf Werte $\mathit{Val}$ dargestellt:
 \[ \mathcal{D} = \mathit{Id}\rightarrow\mathit{Val} \]
 Die Verbindungen zwischen Modellen werden als Viertupel dargestellt, die das Modell und die Variable angibt, von dem die Verbindung ausgeht und Modell und Variable, in dem die Verbindung endet.
@@ -21,7 +21,7 @@ Die Verbindungen zwischen Modellen werden als Viertupel dargestellt, die das Mod
 Um nun die Ableitungsregeln zu formulieren zu können, die angeben, wie ein gegebenes Textmodell in ein GTL-Modell übersetzt wird, müssen zuerst die Ableitungsarten eingeführt werden.
 Zunächst gibt es die globale Ableitungsrelation $\vdash$.
 Die Aussage $\gamma,T\vdash m$ sagt also aus:
-Gegeben ein Textmodell $\gamma$ und eine Typenbindung $T : \mathit{Id}\times\mathit{Id}\rightarrow\mathit{Type}\times\{\mathit{Inp},\mathit{Outp}\}$ lässt sich das GTL-Modell $m : \mathcal{M}$ ableiten.
+Gegeben ein Textmodell $\gamma$ und eine Typenbindung $T : \mathit{Id}\times\mathit{Id}\rightarrow\mathit{Type}\times\{\mathit{Inp},\mathit{Outp}\}$ lässt sich das GTL-Modell $m : \mathit{GTL}$ ableiten.
 
 Die Ableitung $\vdash_C$ leitet den Kontrakt von Modellen sowie die Initialisierungswerte ihrer Variablen her.
 Die Aussage $\gamma,T\vdash_C (c,d)$ gibt also an: Gegeben eine textuelle Repräsentation $\gamma$ und eine Typbindung $T$ lässt sich der Kontrakt(LTL-Formel) $c$ und die Initialisierung $d : \mathit{Id}\rightarrow \mathit{Val}$ ableiten.
@@ -31,7 +31,10 @@ Diese Relation gibt an, ob sich ein Ausdruck zu einer Formel eines bestimmten Ty
 Die Aussage $e,T\vdash_V (f,t)$ sagt also aus, dass gegeben die Typisierung $T$ und den Ausdruck $e$ sich die LTL-Formel $f$ vom Typ $t$ herleiten lässt.
 
 Um die korrekte Typisierung von Modellen sicher stellen zu können, benötigt man noch eine weitere Ableitungsart:
-$\vdash_T$ gibt an, ob ein synchrones Modell, dass durch die übergebenen Parameter spezifiziert wird, eine gegebene Typisierung erfüllt.
+$\vdash_T$ gibt an, ob ein synchrones Modell, dass durch die übergebenen Parameter spezifiziert wird, eine gegebene Typisierung erfüllt und einem gegebenen Automaten entspricht.
+Die Aussage
+\[ \textrm{scade},(\textrm{"`model.scade"'})\vdash_T T,a \]
+bedeutet also: Das Scade-Modell "`model.scade"' erfüllt die Typenbindung $T$ und entspricht dem synchronen Automaten $a$.
 Da diese Ableitung abhängig vom synchronen Formalismus ist, wird sie hier nicht explizit angegeben.
 
 Zunächst wird definiert, wie sich ein leeres Textmodell herleiten lässt; die Modelle und Verbindungen sind leer, die zu verifizierende Formel ist $\top$, also immer wahr.
@@ -40,7 +43,7 @@ Zunächst wird definiert, wie sich ein leeres Textmodell herleiten lässt; die M
 \]
 Damit eine Modelldeklaration gültig ist, muss sich der Inhalt des Kontraktes $c$ mit $\vdash_C$ ableiten lassen und das referenzierte synchrone Modell wohlgetypt im Verhältnis zum restlichen Modell sein:
 \[
-\inference[model]{\alpha,T \vdash(ms,cs,vs) & c,\{ (v,t,d)\ |\ (n,v,t,d)\in T \}\vdash_C f & \beta,\mathit{args}\vdash_T T}{\textbf{model[}\beta\textbf{]}\ n\textbf{(}\mathit{args}\textbf{)}\ \textbf{\{} c\textbf{\}}\ \alpha,T\vdash(ms\cup\{(n,f)\},cs,vs)}
+\inference[model]{\alpha,T \vdash(ms,cs,vs) & c,\{ (v,t,d)\ |\ (n,v,t,d)\in T \}\vdash_C f,d & \beta,\mathit{args}\vdash_T T,a}{\textbf{model[}\beta\textbf{]}\ n\textbf{(}\mathit{args}\textbf{)}\ \textbf{\{} c\textbf{\}}\ \alpha,T\vdash(ms\cup\{(n,a,f,d)\},cs,vs)}
 \]
 Eine Deklaration einer Verbindung ist gültig, wenn beide Variablen den gleichen Typ besitzen.
 Außerdem muss die erste Variable eine Ausgabe-, die andere eine Eingabe-Variable sein.
