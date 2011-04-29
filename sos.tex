@@ -146,4 +146,14 @@ Um die Aussage "`Variable $v$ hat den Wert $s_1$ oder $s_2$ oder\dots"' abzukür
 \inference[elem]{\forall i\in\{0,\dots,n\}: s_i,T,\gamma\vdash_V (s_i',t) & T(v)=t}{v\ \textbf{in}\ \textbf{\{}s_0,\dots,s_n\textbf{\}},T,\gamma\vdash_V (\bigvee_{i\in\{0,\dots,n\}} v=s_i',\textrm{bool}) }
 \]
 \subsection{Interpretation als GALS-System}
-Um das in diesem Abschnitt definierte GTL-System als ein GALS System wie in Abschnitt \ref{sec:gals_formal_definition} zu betrachten, müssen die im System enthaltenen Formeln mithilfe des in Abschnitt \ref{sec:ltl-translation} angegebenen Algorithmus in Automaten übersetzt werden.
+%Um das in diesem Abschnitt definierte GTL-System als ein GALS System wie in Abschnitt \ref{sec:gals_formal_definition} zu betrachten, müssen die im System enthaltenen Formeln mithilfe des in Abschnitt \ref{sec:ltl-translation} angegebenen Algorithmus in Automaten übersetzt werden.
+Gegeben ein GTL-Modell $(m,c,v)$ kann man ein GALS-System $(A,p,C)$ konstruieren, das die synchronen Komponenten enthält.
+Die Automatenmenge enthält die Namen aller Komponenten des GTL-Modells.
+\[ A = \{ \mathit{name}\ |\ (\mathit{name},\_,\_,\_)\in m \} \]
+Die Abbildung der Automatennamen auf Automaten ordnet den synchronen Automaten zu.
+\[ p(n) = \left\{\begin{array}{lr}
+    a & (n,a,\_,\_)\in m\\
+    \bot & \textrm{sonst}
+  \end{array}\right. \]
+Für die Verbindungen benötigt man eine Hilfsfunktion $r : \mathit{Id}\times\mathit{Id}\rightarrow \mathbb{N}$, die einer Komponentenvariable die entsprechende Position im Eingabe-/Ausgabe-Tupel zuordnet.
+\[ C = \{(a_f,r(a_f,v_f),a_t,r(a_t,v_t)\ |\ (a_f,v_f,a_t,v_t)\in c\} \]
