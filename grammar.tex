@@ -31,21 +31,13 @@ Diese enthalten eine Liste von Formeln.
 \end{grammar}
 Eine Formel kann verschiedene Formen annehmen:
 \begin{itemize}
-\item Als atomare Aussage besteht sie aus einer Variable.
-\item Als Relation setzt sie zwei Ausdrücke in eine Beziehung ("`kleiner"', "`größer"', "`gleich"' etc.).
-\item Um anzugeben, dass eine Variable einen Wert aus einer Menge annehmen kann, lässt sich das \emph{in}-Schlüsselwort verwenden.
+\item Als atomare Aussage besteht sie aus einer Variable, Konstante oder Relation zwischen zwei Ausdrücken.
 \item Formeln können mit den logischen Operatoren \emph{and}, \emph{or}, \emph{implies} sowie \emph{not} wieder zu neuen Formeln zusammen gesetzt werden.
 \item Mithilfe der temporallogischen Operatoren \emph{always}, \emph{next} und \emph{finally} können neue Formeln aus anderen gebildet werden.
 \item Das Konstrukt \emph{exists} erlaubt die Bindung einer Variable an den aktuellen Wert einer anderen und somit die Referenzierung von früheren Werten.
 \end{itemize}
 \begin{grammar}
-  <formula> ::= <var>
-  \alt <expr> `<' <expr>
-  \alt <expr> `>' <expr>
-  \alt <expr> `<=' <expr>
-  \alt <expr> `>=' <expr>
-  \alt <expr> `=' <expr>
-  \alt <var> `in' `{' (<lit> (`,' <lit>)*)? `}'
+  <formula> ::= <atom>
   \alt `not' <formula>
   \alt <formula> `and' <formula>
   \alt <formula> `or' <formula>
@@ -58,6 +50,20 @@ Eine Formel kann verschiedene Formen annehmen:
   
   <lit> ::= <int>
   \alt <var>
+\end{grammar}
+Atomare Aussagen stellen Formelteile dar, die nicht durch LTL darstellbar sind (siehe Abschnitt \ref{sec:formula}) und daher im LTL-Übersetzungsalgorithmus als Atome behandelt werden müssen.
+Eine atomare Aussage kann entweder eine boolesche Variable, eine boolesche Konstante oder eine Relation zwischen zwei numerischen Ausdrücken sein.
+Außerdem kann mit dem Schlüsselwort "`in"' angegeben werden, dass der Wert einer Variable aus einer festen Menge stammen muss.
+\begin{grammar}
+  <atom> ::= <var>
+  \alt `true'
+  \alt `false'
+  \alt <expr> `<' <expr>
+  \alt <expr> `>' <expr>
+  \alt <expr> `<=' <expr>
+  \alt <expr> `>=' <expr>
+  \alt <expr> `=' <expr>
+  \alt <var> `in' `{' (<lit> (`,' <lit>)*)? `}'
 \end{grammar}
 Ein Ausdruck ist entweder eine numerische Konstante, eine Variable oder eine arithmetische Operation (Addition, Subtraktion, Multiplikation oder Division werden unterstützt) von zwei Ausdrücken.
 \begin{grammar}

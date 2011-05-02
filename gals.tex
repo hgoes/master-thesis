@@ -155,8 +155,8 @@ Um die Notation zu erleichtern, wird zusätzlich noch eine Zustandsübergangsfun
   \lambda &:& S(\mathcal{G})\times I(\mathcal{G})\times A\rightarrow S(\mathcal{G})\times O(\mathcal{G})\\
   (q,i,a) &\mapsto& \pi_O^a(q,\delta^a(\pi_I^a(q,i)))
 \end{eqnarray*}
-Der Initialzustand $i\in\mathcal{S}(\mathcal{G})$ ergibt sich als Kombination aller Initialzustände der Komponenten und den undefinierten Verbindungen
-\[ i = (<q_0^a>_{a\in A},(\bot,\dots,\bot)) \]
+Der Initialzustand $\alpha(\mathcal{G})\in\mathcal{S}(\mathcal{G})$ ergibt sich als Kombination aller Initialzustände der Komponenten und den undefinierten Verbindungen
+\[ \alpha(\mathcal{G}) = (<q_0^a>_{a\in A},(\bot,\dots,\bot)) \]
 
 Das System in Abbildung \ref{fig:mealy3} wird formal beispielsweise so dargestellt:
 \[ \mathcal{G} = (\{a_1,a_2\},p,\{ (a_1,0),(a_2,0) \}) \]
@@ -277,6 +277,7 @@ In der Realität wird es beispielsweise nie vorkommen, dass ein Prozess nur ein 
 Wesentlich realistischere Ausführungen erreicht man, wenn einzelnen Prozessen nur für einen gewissen Zeitraum erlaubt, mehr oder weniger Schritte als die anderen auszuführen.
 Hierzu zählt man die Berechnungsschritte, die jeder Prozess bereits ausgeführt hat und überprüft, dass zu jedem Zeitpunkt der Verifikation die Bedingung "`Keine zwei Prozesse liegen um mehr als $x$ Berechnungsschritte von einander entfernt"' erfüllt ist.
 \section{Kontrakte}
+\label{sec:contracts}
 Eine Komponente in einem GALS-System besitzt durch ihre Spezifikation eine Menge von Verhaltensweisen.
 Jede Verhaltensweise ist eine Kombination aus Eingaben und Ausgaben.
 Betrachtet man den Raum aller Verhaltensweisen, also aller Kombinationen von Eingaben und Ausgaben, so nimmt jede Komponente einen Teilraum ein.

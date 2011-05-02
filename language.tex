@@ -50,7 +50,10 @@ Die gesamte Grammatik der GTL-Sprache ist im nächsten Abschnitt \ref{sec:gramma
 \input{grammar}
 
 \section{Formeln}
+\label{sec:formula}
 Die Ausdrücke, die zur Spezifikation von Kontrakten sowie zur Formulierung von einzuhaltenden Bedingungen verwendet werden, stellen eine Untermenge der so genannten LTL-Formeln (LTL steht für "`linear temporal logic"') dar.
+Allerdings sind die Atome der LTL-Formel nicht nur boolesche Variablen und Konstanten, sondern auch Relationen zwischen numerischen Variablen, Ausdrücken und/oder Konstanten.
+
 Da der SCADE Design Verifier nicht in der Lage ist, Liveness-Eigenschaften zu verifizieren, können in den Formeln allerdings keine \emph{until}-Konstrukte verwendet werden.
 
 \input{sos}
