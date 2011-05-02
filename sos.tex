@@ -166,6 +166,14 @@ Für eine Menge von Variablen $V$ und die Typzuordnung $T : V\rightarrow \mathit
 Für die atomare Aussage $x\leq y$ ergibt sich mit der Variablenmenge $\{x,y\}$ und der Typzuordnung $T = \{ (x,\mathbb{N}),(y,\mathbb{N}) \}$ die Zuordnungen
 \[ \{ \{ (x,0), (y,0) \}, \{ (x,0), (y,1) \}, \{ (x,0), (y,2) \},\dots,\{ (x,1), (y,1) \}, \{ (x,1), (y,2) \},\dots \} \]
 
-Gegeben ein Büchi-Automat $(Q,\Sigma,\delta,\mu,q_0,\emptyset)$ lässt sich ein äquivalenter nicht-deterministischer Mealy Automat $(Q,\Sigma',\Omega,\delta',q_0)$ erzeugen mit:
-\[ \forall q,q'\in Q: (q\delta q'\land \mu(q') = p) \Leftrightarrow (\forall a\in l(p): \delta'(q,\mathit{inp}(a)) = (q',\mathit{outp}(a))) \]
+Gegeben ein Büchi-Automat $(Q,\Sigma,\delta,\mu,q_0,\emptyset)$ lässt sich ein äquivalenter nicht-deterministischer Mealy Automat $(Q\cup\{\const{init}\},\Sigma',\Omega,\delta',\{\const{init}\})$ erzeugen mit:
+\[
+\begin{array}{c}
+  \forall q,q'\in Q: q\neq \const{init}\Rightarrow\\
+  (q\delta q'\land \mu(q') = p) \Leftrightarrow (\forall a\in l(p): (q,\mathit{inp}(a))\delta'(q',\mathit{outp}(a)))
+\end{array}
+\]
+\[
+\forall q\in q_0: \mu(q) = p \Leftrightarrow (\forall a\in l(p): (\const{init},\mathit{inp}(a))\delta'(q,\mathit{outp}(a)))
+\]
 wobei $\mathit{inp}$ den Vektor von Eingaben aus einer Belegung extrahiert und $\mathit{outp}$ den Vektor von Ausgaben.
