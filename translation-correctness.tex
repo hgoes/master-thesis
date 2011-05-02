@@ -1,12 +1,12 @@
 \section{Übersetzungskonstruktion}
-Gegeben ein wie in Abschnitt \ref{sec:sos_defs} spezifiziertes System $s\in \mathcal{S}$ mit $s=(ms,c,vs)$ muss nun eine Übersetzung in ein äquivalentes Promela-Modell gefunden werden, die die Semantik des Systems erhält.
+Gegeben ein wie in Abschnitt \ref{sec:sos_defs} spezifiziertes System $s\in \mathcal{S}$ mit $s=(ms,cs,vs)$ muss nun eine Übersetzung in ein äquivalentes Promela-Modell gefunden werden, die die Semantik des Systems erhält.
 Für jede Komponente $(m,(\mathit{contr},\mathit{init}))\in ms$ mit dem Namen $m$, dem Kontrakt $\mathit{contr}$ und der Initialisierung $\mathit{init}$ wird nun der Kontrakt in einen äquivalenten Büchi-Automaten $(Q,\Sigma,\delta,\mu,q_0,\emptyset)$ übersetzt (Siehe Abschnitt \ref{sec:ltl-translation}).
 Hierbei ist zu beachten, dass die generierten Automaten Bedingungen auf den Variablen als Ein- und Ausgabesymbole verwenden, da Relationen wie $x\leq y$ von dem LTL-Übersetzungsalgorithmus als atomare Aussagen betrachtet werden.
 
 
 Anschließend wird ein neuer Prozess wie folgt definiert:
 \begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small]
-  active proctype $m$() {
+  proctype $m$() {
     if $[ \forall i\in q_0:$
     :: atomic {
       $\llbracket \mu(i) \rrbracket_C$;
@@ -54,6 +54,23 @@ Die zu verifizierende Formel $v$ wird negiert ebenfalls in einen Büchi-Automate
     $]$
   }
 \end{lstlisting}
+
+Um den Initialzustand zu erreichen, wird vor dem starten aller Prozesse noch eine Initialisierung durchgeführt:
+\begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small]
+  init {
+    $[ \forall (m,a,f,d)\in ms:$
+      $[ \forall (v,val)\in d:$
+      $\llbracket m,v,val\rrbracket_D$
+      $]$
+    $]$
+    atomic {
+    $[ \forall (m,a,f,d)\in ms:$
+      run $m$();
+    $]$
+    }
+  }
+\end{lstlisting}
+
 \subsection{Richtigkeit der Übersetzung}
 Um zu beweisen, dass die angegebene Promela-Übersetzung korrekt ist, muss gezeigt werden, dass eine Semantik des Systems, repräsentiert durch eine Untermenge des vollständigen Transitionssystems $T'\subseteq T$ (Siehe Abschnitt \ref{sec:semantic}), mit der Semantik des übersetzten Promela-Modells übereinstimmt.
 Um dies zu zeigen, wird die Promela-Semantik verwendet, wie sie in \cite{Gallardo04formalaspects} beschrieben ist.
@@ -110,7 +127,7 @@ Zunächst ist es nützlich ein paar allgemeine Aussagen aufzustellen, die die Ve
 \item Es ist leicht einzusehen, dass für alle Prozesse die Umgebung $\phi_e$ gleich ist, da die Prozesse keine lokalen Variablen deklarieren.
 \end{enumerate}
 
-Um nun zeigen zu können, dass das definierte GTL-System $(m,c,v)$ bisimular zum übersetzten Promela Modell $tr(m,c,v)$ ist, müssen folgende Anforderungen an die Semantik gestellt werden:
+Um nun zeigen zu können, dass das definierte GTL-System $(ms,cs,vs)$ bisimular zum übersetzten Promela Modell $tr(ms,cs,vs)$ ist, müssen folgende Anforderungen an die Semantik gestellt werden:
 \begin{enumerate}
 \item Es muss eine Bijektion $i$ zwischen Zuständen der Verbindungen $s\in\left(\prod_{((a,i),\_)\in C} \Sigma^a_i\right)$ und der Promela-Umgebung $\sigma_e$ existieren.
 \item Die Definitionen $\llbracket \alpha \rrbracket_D$ müssen eine initiale Umgebung $\sigma_e^0$ definieren, die isomorph zum Initialzustand $\alpha$ ist: 
