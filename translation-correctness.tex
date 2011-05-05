@@ -6,26 +6,24 @@ Hierbei ist zu beachten, dass die generierten Automaten Bedingungen auf den Vari
 
 Anschließend wird ein neuer Prozess wie folgt definiert:
 \begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small]
-  proctype $m$() {
+proctype $m$() {
+  atomic {
     if $[ \forall i\in q_0:$
-    :: atomic {
-      $\llbracket \mu(i) \rrbracket_C$;
-      $\llbracket \mu(i) \rrbracket_A$;
-      goto st_$i$
-    }
+    :: $\llbracket \mu(i) \rrbracket_C$;
+       goto st_$i$
     $]$
     fi;
-    $[ \forall q\in Q:$
-    st_$q$:
-      if $[ \forall q'\in Q, q\delta q':$
-      :: atomic {
-        $\llbracket \mu(q') \rrbracket_C$;
-        $\llbracket \mu(q') \rrbracket_A$;
-        goto st_$q'$
-      }
-      $]$
+  }
+  $[ \forall q\in Q:$
+  st_$q$: atomic {
+    $\llbracket \mu(q) \rrbracket_A$;
+    if $[ \forall q'\in Q, q\delta q':$
+    :: $\llbracket \mu(q') \rrbracket_C$;
+       goto st_$q'$
     $]$
   }
+  $]$
+}
 \end{lstlisting}
 Hierbei gibt $\llbracket\rrbracket_C$ einen Promela-Ausdruck an, der abhängig vom globalen Zustand testet, ob alle Bedingungen, die durch die übergebenen Atome spezifiziert sind, erfüllt sind.
 Die Anweisung muss blockieren, bis die Bedingungen erfüllt sind und darf den globalen Zustand nicht verändern.
@@ -76,11 +74,10 @@ Um zu beweisen, dass die angegebene Promela-Übersetzung korrekt ist, muss gezei
 Um dies zu zeigen, wird die Promela-Semantik verwendet, wie sie in \cite{Gallardo04formalaspects} beschrieben ist.
 Da in dieser Semantik gefordert ist, dass jede Anweisung ein implizites Label erhält, werden folgende Labels für die Anweisungen vergeben:
 \begin{itemize}
-\item Die \emph{If}-Anweisung in Zeile 2 erhält das Label \emph{Start}
-\item In diesem Zweig wird der Ausdruck in Zeile 4 mit dem Label \emph{CI\_$n$} versehen
-\item Die folgende Anweisung in Zeile 5 wird mit \emph{AI\_$n$} kenntlich gemacht
-\item Der Ausdruck in diesem Zweig auf Zeile 14 bekommt die Kennzeichnung \emph{C\_$q$\_$q'$}
-\item Die folgende Anweisung in Zeile 15 erhält das Label \emph{A\_$q$\_$q'$}
+\item Die \emph{If}-Anweisung in Zeile 3 erhält das Label \emph{Start}
+\item In diesem Zweig wird der Ausdruck in Zeile 4 mit dem Label \emph{CI\_$i$} versehen
+\item Für die \emph{If}-Anweisung in Zeile 12 wird das Label \emph{C\_$q$} verwendet
+\item Die Zweige dieser Anweisung (Zeile 13) erhalten die Label \emph{C\_$q$\_$q'$}
 \end{itemize}
 
 Mit diesen Kennzeichnungen ergibt sich nun die \emph{next}-Funktion der Semantik wie folgt:
@@ -89,10 +86,9 @@ Mit diesen Kennzeichnungen ergibt sich nun die \emph{next}-Funktion der Semantik
   \hline
   $L$ & $\textrm{next}(L)$\\
   \hline
-  CI\_$n$ & AI\_$n$\\
-  AI\_$n$ & st\_$i$\\
-  C\_$q$\_$q'$ & A\_$q$\_$q'$\\
-  A\_$q$\_$q'$ & st\_$q'$\\
+  CI\_$q$ & st\_$q$\\
+  st\_$q$ & C\_$q$\\
+  C\_$q$\_$q'$ & st\_$q'$\\
   \hline
 \end{tabular}
 
@@ -102,8 +98,8 @@ Auch die erforderliche $g$-Funktion, die die Zweige einer \emph{If}-Anweisung an
   \hline
   $L$ & $g(L)$\\
   \hline
-  Start & $\{ \textrm{CI\_}0,\textrm{CI\_}1,\dots \}$\\
-  st\_$q$ & $\{ \textrm{C\_}q\textrm{\_}0,\textrm{C\_}q\textrm{\_}1,\dots \}$\\
+  Start & $\{ \textrm{CI\_}i\ |\ i\in q_0 \}$\\
+  C\_$q$ & $\{ \textrm{C\_}q\textrm{\_}q'\ |\ q'\in Q, q\delta q' \}$\\
   \hline
 \end{tabular}
 
@@ -113,12 +109,11 @@ Für den Ausführungsmodus(\emph{mode}) ergibt sich:
   \hline
   $L$ & $\textrm{mode}(L)$\\
   \hline
-  Start & ilv\\
-  CI\_$n$ & atm\\
-  AI\_$n$ & atm\\
+  Start & atm\\
+  CI\_$i$ & atm\\
   st\_$q$ & ilv\\
+  C\_$q$ & atm\\
   C\_$q$\_$q'$ & atm\\
-  A\_$q$\_$q'$ & atm\\
   \hline
 \end{tabular}
 
@@ -261,3 +256,9 @@ Außerdem gilt dann $i(c') = \sigma_e'$ und die Bisimularität ist für diesen F
 \end{array}
 \]
 Der Beweis für den Fall, dass sich der Prozess am Label \emph{Start} befindet ist, bis auf Änderung der Label-Namen äquivalent und daher ausgelassen.
+\subsection{Übersetzung durch BDD}
+Bei der Übersetzung durch BDD wird jede Verbindung zwischen zwei Komponenten durch eine Variable, die BDD-Bäume speichern kann repräsentiert.
+Dadurch wird angegeben, welche möglichen Werte eine Verbindung zum jetzigen Zeitpunkt besitzen kann.
+Hieraus ergibt sich die Einschränkung, dass atomare Aussagen nicht zwei Ausgabevariablen auf einmal determinieren dürfen, da sich ansonsten Abhängigkeiten zwischen den Variablen ergeben, die nicht durch getrennt gespeicherte BDD ausgedrückt werden können.
+
+Für die Semantik $\llbracket\rrbracket_C$ 

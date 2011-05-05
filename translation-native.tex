@@ -1,0 +1,77 @@
+\section{Native Promela Übersetzung}
+Diese Übersetzung verwendet die Kontrakte, um die Komponenten zu repräsentieren, aber führt keinerlei Optimierungen durch.
+
+Jedes Atom in einem Zustand, dass eine Ausgabevariable $o$ determiniert, wird in ein Tupel $(l_u,l_l,v_a,v_f,e_{eq},e_{neq})$ übersetzt, wobei die Variablen folgende Bedeutung haben:
+\begin{itemize}
+\item $l_u$ enthält alle Ausdrücke, die eine obere Schranke für die Variable angeben.
+  Es gilt:
+  \[ \forall l\in l_u: o < l \]
+\item Analog enthält $l_l$ alle Ausdrücke, die eine untere Schranke darstellen.
+\item $v_a$ enthält eine Menge von Werten, die von der Variable angenommen werden dürfen.
+  Es gilt:
+  \[ o\in v_a \]
+\item Werte, die nicht angenommen werden dürfen, werden in $v_f$ gesammelt.
+  \[ o\not\in v_f \]
+\item $e_{eq}$ gibt eine Menge von Ausdrücken an, die gleich der Variable seien müssen:
+  \[ \forall e\in e_{eq}: o=e \]
+\item Genauso gibt $e_{neq}$ eine Menge von Ausdrücken an, die ungleich zu der Variable sein müssen:
+  \[ \forall e\in e_{neq}: o\neq e \]
+\end{itemize}
+Wird eine Ausgabevariable von mehreren Atomen determiniert, so müssen die resultierenden Tupel zusammen geführt werden.
+Gegeben zwei Tupel
+\begin{align*}
+  T_1 &= (l_u,l_l,v_a,v_f,e_{eq},e_{neq})\\
+  T_2 &= (l_u',l_l',v_a',v_f',e_{eq}',e_{neq}')
+\end{align*}
+ergibt sich das Tupel, dass beide Einschränkungen erfasst als
+\[ T_1\oplus T_2 = (l_u\cup l_u',l_l\cup l_l',v_a\cap v_a',v_f\cup v_f',e_{eq}\cup e_{eq}',e_{neq}\cup e_{neq}') \]
+Für eine Ausgabevariable $o$ ergibt sich die Funktion $t$, die das entsprechende Einschränkungstupel berechnet durch
+\begin{align*}
+  t(o < e) &= (\{e\},\emptyset,\emptyset,\emptyset,\emptyset,\emptyset)\\
+  t(o\leq e) &= (\{e+1\},\emptyset,\emptyset,\emptyset,\emptyset,\emptyset)\\
+  t(o > e) &= (\emptyset,\{e\},\emptyset,\emptyset,\emptyset,\emptyset)\\
+  t(o \geq e) &= (\emptyset,\{e-1\},\emptyset,\emptyset,\emptyset,\emptyset)\\
+  t(o = e) &= (\emptyset,\emptyset,\emptyset,\emptyset,\{e\},\emptyset)\\
+  t(o\neq e) &= (\emptyset,\emptyset,\emptyset,\emptyset,\emptyset,\{e\})\\
+  t(o\in i) &= (\emptyset,\emptyset,i,\emptyset,\emptyset,\emptyset)\\
+  t(o\not\in i) &= (\emptyset,\emptyset,\emptyset,i,\emptyset,\emptyset)\\
+\end{align*}
+Enthält ein Atom keine Ausgabevariable, so wird es in einen äquivalenten Promela-Ausdruck übersetzt.
+Enthalten mehrere Atome keine Ausgabevariable, so werden die resultierenden Ausdrücke per Konjunktion verknüpft.
+
+Eine Menge von Atomen $a$ wird also in ein Tupel $(p,e)$ aus einer Abbildung von Ausgabe-Variablen auf Einschränkungstupel $p$ und einem Promela-Ausdruck $e$ übersetzt.
+Für die Übersetzung $\llbracket \rrbracket_C$ gilt also
+\[ \llbracket a\rrbracket_C = e \]
+Die Übersetzung der Einschränkungen gemäß der Semantik $\llbracket\rrbracket_A$ ist etwas komplizierter, da nicht-deterministisch alle möglichen Belegungen für die Ausgabevariable generiert werden müssen.
+Dazu wird zunächst die Ausgabevariable $o$ auf die größte untere Schranke gesetzt, indem die Schranken miteinander verglichen werden.
+Existiert keine untere Schranke, so wird der kleinste Wert des Wertebereichs der Variable gewählt.
+Ansonsten wird mit Promela \emph{If}-Anweisungen ein Entscheidungsbaum aufgebaut.
+Existieren also beispielsweise die drei unteren Schranken $l_l = \{ e1,e2,e3\}$, so sieht die Übersetzung wie folgt aus:
+\begin{lstlisting}[language=promela,numbers=left]
+if :: e1 < e2;
+      if :: e1 < e3;
+            o = e1
+         :: else;
+            o = e3
+      fi
+   :: else;
+      if :: e2 < e3;
+            o = e2
+         :: else;
+            o = e3
+      fi
+fi
+\end{lstlisting}
+Danach wird in einer \emph{Do}-Schleife die Ausgabevariable so lange hoch gezählt, bis eine der oberen Schranken erreicht wird.
+Für jeden Wert muss nun noch geprüft werden, ob er die restlichen Bedingungen des Einschränkungstupels erfüllt.
+Gilt also beispielsweise $l_u = \{ u1,u2 \}$ sowie $v_f=\{ f1, f2 \}$, so ergibt sich der folgende Code:
+\begin{lstlisting}[language=promela,numbers=left,firstnumber=last]
+do :: o<u1 && o<u2;
+      o = o+1
+   :: o==f1 || o==f2;
+      skip
+   :: else;
+      break
+od
+\end{lstlisting}
+Da sich der gesamte Code-Block zur Ausgabe-Erzeugung innerhalb eines \emph{atomic}-Blocks befindet und der Ablauf an keiner Stelle blockieren kann, läuft der gesamte Code in einem Schritt ab.
