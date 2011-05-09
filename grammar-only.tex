@@ -1,0 +1,64 @@
+\begin{grammar}
+  <declaration> ::= <model\_decl>
+  \alt <connect\_decl>
+  \alt <verify\_decl>
+
+  <model\_decl> ::= `model' `[' <id> `]' <id> `(' (<string> (`,' <string>)*)? `)' <model\_contract>
+
+  <model\_contract> ::= `{' (<contract\_body> `;')* `}'
+  \alt `;'
+
+  <contract\_body> ::= <formula>
+  \alt `contract' <formula>
+  \alt `init' <id> <int>
+
+  <connect\_decl> ::= `connect' <id> `.' <id> <id> `.' <id> `;'
+
+  <verify\_decl> ::= `verify' `{' (<formula> `;')* `}'
+
+  <formula> ::= <atom>
+  \alt `not' <formula>
+  \alt <formula> `and' <formula>
+  \alt <formula> `or' <formula>
+  \alt <formula> `implies' <formula>
+  \alt `always' <formula>
+  \alt `next' <formula>
+  \alt `finally' <int> <formula>
+  \alt `exists' <id> `=' <lit> `:' <formula>
+  \alt `(' <formula> `)'
+  \alt `automaton' `{' (<state>)* `}'
+  
+  <state> ::= `state' <id> `{' (<state\_content> `;')* `}'
+
+  <state\_content> ::= <formula>
+  \alt `transition' (`[' <formula> `]')? <id>
+
+  <lit> ::= <int>
+  \alt <var>
+
+  <atom> ::= <var>
+  \alt `true'
+  \alt `false'
+  \alt <expr> `<' <expr>
+  \alt <expr> `>' <expr>
+  \alt <expr> `<=' <expr>
+  \alt <expr> `>=' <expr>
+  \alt <expr> `=' <expr>
+  \alt <var> `in' `{' (<lit> (`,' <lit>)*)? `}'
+
+  <expr> ::= <lit>
+  \alt <expr> `+' <expr>
+  \alt <expr> `-' <expr>
+  \alt <expr> `*' <expr>
+  \alt <expr> `/' <expr>
+  \alt `(' <expr> `)'
+
+  <var> ::= <id>
+  \alt <id> `.' <id>
+  
+  <id> ::= (`a'-`z' `A'-`Z' `0'-`9')+
+  
+  <int> ::= (`0'-`9')+
+
+  <string> ::= `"' (`a'-`z' `A'-`Z' `0'-`9')* `"'
+\end{grammar}

@@ -28,7 +28,7 @@ $(BDDS): %.pdf: %.dot
 iti.pdf: iti.svg
 	inkscape -z -f iti.svg -A iti.pdf
 
-overview.pdf: overview.tex grammar.tex
+overview.pdf: overview.tex grammar-only.tex
 	pdflatex overview.tex
 
 clean:
