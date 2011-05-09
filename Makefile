@@ -11,6 +11,9 @@ BDDS=top.pdf bot.pdf con.pdf example1.pdf example2.pdf example3.pdf example4.pdf
 
 GENERATED=generated/*.tex generated/haddock.sty
 
+thesis-opt.pdf: thesis.pdf
+	pdfopt thesis.pdf thesis-opt.pdf
+
 thesis.pdf: thesis.tex $(SOURCES) lit.bib $(BDDS) $(GENERATED) iti.pdf
 	pdflatex thesis.tex
 	bibtex thesis.aux
