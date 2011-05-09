@@ -71,12 +71,12 @@ Das Diagramm in Abbildung \ref{fig:example3_bdd} hat also die Ordnung $\alpha > 
 Die so eingeführten \emph{geordneten}, \emph{reduzierten} binären Entscheidungsdiagramme haben damit eine Reihe von Vorteilen gegenüber anderen Funktionskodierungen:
 \begin{itemize}
 \item Sie sind eindeutig, jede Funktion hat genau ein Entscheidungsdiagramm.
-  Außerdem sind sie schon eindeutig über ihren Anfangsknoten definiert, so dass ein Test auf Gleichheit in konstanter Zeit möglich ist (Zum Vergleich: Bei der Kodierung als Wertetabelle benötigt man $2^n$ Vergleiche wobei $n$ die Anzahl der Variablen ist und bei der Kodierung als Quelltext ist ein Test auf Äquivalenz in vielen Fällen prinzipiell unmöglich\footnote{Gezeigt durch die Unentscheidbarkeit des Halteproblems\cite{halteproblem}}).
+  Außerdem sind sie schon eindeutig über ihren Anfangsknoten definiert, so dass ein Test auf Gleichheit in konstanter Zeit möglich ist (Zum Vergleich: Bei der Kodierung als Wertetabelle benötigt man $2^n$ Vergleiche wobei $n$ die Anzahl der Variablen ist und bei der Kodierung als Quelltext ist ein Test auf Äquivalenz in vielen Fällen prinzipiell unmöglich\footnote{Gezeigt durch die Unentscheidbarkeit des Halteproblems~\cite{halteproblem}}).
 \item Eine Auswertung der Funktion ist effizient möglich:
   An jedem Knoten wird entschieden, ob die entsprechende Variable wahr oder falsch ist und der entsprechende Ast verfolgt.
   Endet man bei dem Knoten $\top$, so ist das Ergebnis der Funktion wahr, endet man bei $\bot$, so ist es falsch.
 \item Für viele Funktionen ist das entsprechende Entscheidungsdiagramm sehr klein.
-  Allerdings lässt sich zeigen, dass es Funktionen gibt, für die keine effiziente Repräsentation als Entscheidungsdiagramm existiert, wie zum Beispiel die Multiplikationsfunktion\cite{Bryant98onthe}.
+  Allerdings lässt sich zeigen, dass es Funktionen gibt, für die keine effiziente Repräsentation als Entscheidungsdiagramm existiert, wie zum Beispiel die Multiplikationsfunktion~\cite{Bryant98onthe}.
 \item Speichert man mehrere Entscheidungsdiagramme, so kann man den Speicherbedarf enorm verringern, indem man gleiche Knoten zwischen Diagrammen teilt.
 \end{itemize}
 

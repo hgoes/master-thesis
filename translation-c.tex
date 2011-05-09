@@ -24,7 +24,7 @@ Eine direkte Übersetzung ist zwar prinzipiell möglich, aber aufgrund der Mäch
 Einfacher ist es, die von SCADE angebotene C-Übersetzung zu verwenden und den generierten C-Code in Promela einzubinden, was SPIN seit Version 4 erlaubt.
 
 Zunächst wird jede synchrone Komponente mit Hilfe des SCADE-Compilers nach C übersetzt.
-Da der Übersetzungsprozess für jede Komponente einzeln durchgeführt werden muss, muss darauf geachtet werden, dass die Modelle keine Namenskonflikte aufweisen oder die gleichen Sub-Komponenten enthalten\cite{scade_c_integration}.
+Da der Übersetzungsprozess für jede Komponente einzeln durchgeführt werden muss, muss darauf geachtet werden, dass die Modelle keine Namenskonflikte aufweisen oder die gleichen Sub-Komponenten enthalten~\cite{scade_c_integration}.
 
 Der Compiler generiert nun für jede Komponente zwei Datenstrukturen, die erste enthält die Eingabevariablen und erhält das Namensprefix "`inC\_"', die zweite enthält die Ausgabevariablen sowie den internen Zustand der Komponente und ist mit dem Prefix "`outC\_"' versehen.
 Außerdem werden zwei Funktionen erstellt:

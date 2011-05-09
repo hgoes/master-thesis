@@ -1,6 +1,6 @@
 Ein GALS System -- GALS steht für "`Globally asynchronous, locally synchronous"' -- besteht aus mehreren synchronen Komponenten, die asynchron miteinander kommunizieren.
 Die synchronen Komponenten lassen sich dabei als Mealy-Automaten auffassen.
-In einem Mealy-Automaten hängt die Ausgabe sowohl von der Eingabe als auch dem aktuellen Zustand ab\cite{Mealy}.
+In einem Mealy-Automaten hängt die Ausgabe sowohl von der Eingabe als auch dem aktuellen Zustand ab~\cite{Mealy}.
 Mealy-Automaten sind so allgemein formuliert, dass sich jedes in einem synchronen Formalismus formulierte Modell in einen bisimularen Mealy-Automaten transformieren lässt.
 Ein Beispiel für einen Mealy-Automaten ist in Abbildung \ref{fig:mealy} dargestellt.
 Transitionen sind hier in der Form $i/o$ angegeben, wobei $i$ die Eingabe und $o$ die Ausgabe bezeichnen.
@@ -255,7 +255,7 @@ Eine Mögliche asynchrone Ausführung von drei Prozessen ist in Abbildung \ref{f
 Eine asynchrone Architektur löst das Problem der synchronen Architektur, indem sie sämtliche theoretisch mögliche Verschachtelungen der Ausführungen der Prozesse bei der Verifikation berücksichtigt.
 Dies führt aber zu zwei neuen Problemen:
 Zum einen nimmt die Zustandsgröße des Systems eventuell gewaltig zu; $n$ Prozesse haben nach $m$ Ausführungsschritten bereits $n^m$ mögliche Ausführungen.
-Zwar führen meist viele unterschiedliche Verschachtelungen zu den selben Zuständen, in diesem Fall kann die Technik der "`partial order reduction"'\cite{partial_order_reduction} verwendet werden, aber im schlimmsten Fall führt eine vollständig asynchrone Architektur zu einer gewaltigen Zustandsexplosion.
+Zwar führen meist viele unterschiedliche Verschachtelungen zu den selben Zuständen, in diesem Fall kann die Technik der "`partial order reduction"'~\cite{partial_order_reduction} verwendet werden, aber im schlimmsten Fall führt eine vollständig asynchrone Architektur zu einer gewaltigen Zustandsexplosion.
 Das zweite Problem ist, dass diese Architektur auch extrem unrealistische Ausführungen in Erwägung zieht:
 Ein Prozess kann zum Beispiel immer rechnen, während ein anderer nie zum Zuge kommt.
 In der Verifikation können so Fehlerzustände erkannt werden, die in der Realität nie vorkommen.
