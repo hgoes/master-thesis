@@ -55,14 +55,35 @@
 
 \newtheorem{notation}{Notation}
 
-\newcommand{\docAuthor}{Henning Günther}
 \newcommand{\docUni}{Technische Universität Braunschweig}
 \newcommand{\docInstitut}{Institut für Theoretische Informatik}
-\newcommand{\docTitel}{Verifikation von GALS Systemen}
 \newcommand{\docType}{Master-Arbeit}
 \newcommand{\docPruefer}{Prof. Dr. Jiří Adámek}
 \newcommand{\docBetreuer}{Dr. Stefan Milius}
 \newcommand{\docId}{2860185}
+
+\newcommand{\erklaerungname}{Eidesstattliche Erklärung}
+\newcommand{\erklaerung}[1]{%
+  \cleardoublepage
+  \pdfbookmark[0]{\erklaerungname}{erklaerungname}
+  \thispagestyle{empty}
+  \hskip 0mm
+  \vfill
+  \begin{center}\sffamily\bfseries\large
+    \erklaerungname
+  \end{center}
+  \bigskip\noindent Hiermit erkläre ich an Eides statt, dass
+  ich die vorliegende Arbeit selbstständig verfasst und keine
+  anderen als die angegebenen Hilfsmittel verwendet habe.\par
+  \bigskip\noindent Braunschweig,~\today\par
+  \vskip 10mm
+  \hfill
+  \begin{tabular}{c}
+    \hline
+    \makebox[6cm]{(#1)}
+  \end{tabular}
+  % \hfill\hrulefill
+}
 
 \begin{document}
 
@@ -101,9 +122,9 @@
 
 \vfill
 {\relsize{1}{\docType}}\\[5ex]
-{\relsize{3}{\textbf{\docTitel}}}\\[5ex]
+{\relsize{3}{\makeatletter\textbf{\@title}\makeatother}}\\[5ex]
 %{\relsize{3}{\textbf{\textsc{\docUntertitel}}}}}
-{\relsize{1}\docAuthor}\\
+{\relsize{1}\makeatletter\@author\makeatother}\\
 {Matrikelnummer: \docId\\[2ex]
 \today}\\
 
@@ -123,6 +144,10 @@
 
 \end{center}
 \end{titlepage}
+
+\makeatletter
+\erklaerung{\@author}
+\makeatother
 
 \tableofcontents
 
