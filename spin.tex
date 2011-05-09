@@ -3,9 +3,9 @@ SPIN ist ein Model-Checker für asynchrone Software-Modelle, die in der Sprache 
 Das Werkzeug verwendet "`Explicit-State Model Checking"'-Techniken, berechnet also jeden möglichen Zustand des Systems und überprüft, ob die zu verifizierenden Eigenschaften erfüllt sind.
 SPIN unterstützt eine Reihe von Optimierungstechniken, darunter
 \begin{itemize}
-\item "`Partial order reduction"' um den Zustandsraum von Modellen zu verkleinern.
-\item Zustandskompressionstechniken, die den Speicherbedarf von Verifikationen senken können.
-\item Nutzung von Multi-Prozessor-Systemen zur Geschwindigkeitsverbesserung.
+\item "`Partial order reduction"' um den Zustandsraum von Modellen zu verkleinern~\cite{partial_order_reduction}.
+\item Zustandskompressionstechniken, die den Speicherbedarf von Verifikationen senken können~\cite{spin_state_compression}.
+\item Nutzung von Multi-Prozessor-Systemen zur Geschwindigkeitsverbesserung~\cite{spin_multi_core}.
 \end{itemize}
 Es werden sowohl die Verifikation von \emph{Safety}-Eigenschaften ("`Es passiert nie etwas schlimmes"') als auch von \emph{Liveness}-Eigenschaften ("`Es passiert immer mal wieder etwas gutes"') unterstützt.
 Die Verifikation von Modellen erfolgt nicht direkt durch SPIN selbst, sondern es wird Code für einen domänenspezifischen Modell-Checker generiert.
