@@ -6,11 +6,13 @@
   %headsepline,
   titlepage,
   headings=normal,
-  bibliography=totoc]{scrbook}
+  bibliography=totoc,
+  openright,
+  abstracton]{scrreprt}
 
 \usepackage[bookmarks=true,colorlinks=false]{hyperref} % PDF-Inhaltsverzeichnis und Links
 
-\usepackage[utf8x]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[ngerman]{babel} % Deutsche Silbentrennung
 
 \usepackage[T1]{fontenc}
@@ -61,6 +63,15 @@
 \newcommand{\docPruefer}{Prof. Dr. Jiří Adámek}
 \newcommand{\docBetreuer}{Dr. Stefan Milius}
 \newcommand{\docId}{2860185}
+
+\makeatletter
+\hypersetup{%
+  pdftitle=\@title,
+  pdfsubject=\docType,
+  pdfauthor=\@author,
+}
+\makeatother
+
 
 \newcommand{\erklaerungname}{Eidesstattliche Erklärung}
 \newcommand{\erklaerung}[1]{%
