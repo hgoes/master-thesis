@@ -44,8 +44,15 @@
 
 \bibliographystyle{alphadin}
 
+\makeatletter
+\newcommand{\@keywords}{}
+\newcommand{\keywords}[1]{\renewcommand{\@keywords}{#1}}
+\newcommand{\keywordsname}{Schlüsselwörter}
+\makeatother
+
 \title{Verifikation von GALS Systemen}
 \author{Henning Günther}
+\keywords{GALS, verification, SPIN, modeling}
 
 \lstdefinelanguage{gtl}{
   morekeywords={model,and,or,next,not,connect,verify,always,contract,init},
@@ -72,6 +79,7 @@
   pdftitle=\@title,
   pdfsubject=\docType,
   pdfauthor=\@author,
+  pdfkeywords=\@keywords
 }
 \makeatother
 
@@ -163,6 +171,12 @@
 \erklaerung{\@author}
 \makeatother
 
+\begin{abstract}
+  \thispagestyle{headings}
+  \input{abstract}
+  \\[5pt]
+  {\bf \keywordsname :} \makeatletter\@keywords\makeatother
+\end{abstract}
 \cleardoublepage
 \pdfbookmark[0]{\contentsname}{content}
 \tableofcontents
