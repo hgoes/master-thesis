@@ -77,7 +77,6 @@
 \newcommand{\erklaerung}[1]{%
   \cleardoublepage
   \pdfbookmark[0]{\erklaerungname}{erklaerungname}
-  \thispagestyle{empty}
   \hskip 0mm
   \vfill
   \begin{center}\sffamily\bfseries\large
@@ -97,11 +96,11 @@
 }
 
 \begin{document}
-
+\pagenumbering{roman}
 %\maketitle
 \thispagestyle{empty}
 \begin{titlepage}
-
+\pdfbookmark[0]{Titelseite}{titlepage}
 % Seitenrand links aufheben
 \begin{addmargin}{\dimexpr -\oddsidemargin-1in\relax}
 
@@ -156,12 +155,16 @@
 \end{center}
 \end{titlepage}
 
+\pagestyle{headings}
 \makeatletter
 \erklaerung{\@author}
 \makeatother
 
+\cleardoublepage
+\pdfbookmark[0]{\contentsname}{content}
 \tableofcontents
-
+\cleardoublepage
+\pagenumbering{arabic}
 \chapter{Einleitung}
 \input{motivation}
 \chapter{GALS-Architekturen}
