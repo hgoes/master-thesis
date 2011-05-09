@@ -84,8 +84,8 @@ Die Regeln für die logischen Konnektoren \emph{not}, \emph{true}, \emph{false},
   \inference[and]{e_1,T,\gamma\vdash_V (e_1',\textrm{bool}) & e_2,T,\gamma\vdash_V (e_2',\textrm{bool})}{e_1\ \textbf{and}\ e_2,T,\gamma\vdash_V (e_1'\land e_2',\textrm{bool})}\\[20pt]
   \inference[true]{}{\textbf{true},T,\gamma\vdash_V(\top,\textrm{bool})} &
   \inference[or]{e_1,T,\gamma\vdash_V (e_1',\textrm{bool}) & e_2,T,\gamma\vdash_V (e_2',\textrm{bool})}{e_1\ \textbf{or}\ e_2,T,\gamma\vdash_V (e_1'\lor e_2',\textrm{bool})}\\[20pt]
-  \inference[false]{}{\textbf{false},T,\gamma\vdash_V(\top,\textrm{bool})} &
-  \inference[implies]{e_1,T,\gamma\vdash_V (e_1',\textrm{bool}) & e_2,T,\gamma\vdash_V (e_2',\textrm{bool})}{e_1\ \textbf{implies}\ e_2,T,\gamma\vdash_V (\lnot e_1'\lor e_2',\textrm{bool})}
+  \inference[false]{}{\textbf{false},T,\gamma\vdash_V(\bot,\textrm{bool})} &
+  \inference[impl]{e_1,T,\gamma\vdash_V (e_1',\textrm{bool}) & e_2,T,\gamma\vdash_V (e_2',\textrm{bool})}{e_1\ \textbf{implies}\ e_2,T,\gamma\vdash_V (\lnot e_1'\lor e_2',\textrm{bool})}
 \end{array}
 \]
 Der $\exists$-Quantor bindet eine neue Variable an die aktuelle Version einer existierenden.
@@ -166,7 +166,7 @@ Für eine Menge von Variablen $V$ und die Typzuordnung $T : V\rightarrow \mathit
 Für die atomare Aussage $x\leq y$ ergibt sich mit der Variablenmenge $\{x,y\}$ und der Typzuordnung $T = \{ (x,\mathbb{N}),(y,\mathbb{N}) \}$ die Zuordnungen
 \[ \{ \{ (x,0), (y,0) \}, \{ (x,0), (y,1) \}, \{ (x,0), (y,2) \},\dots,\{ (x,1), (y,1) \}, \{ (x,1), (y,2) \},\dots \} \]
 
-Gegeben ein Büchi-Automat $(Q,\Sigma,\delta,\mu,q_0,\emptyset)$ lässt sich ein äquivalenter nicht-deterministischer Mealy Automat $(Q\cup\{\const{init}\},\Sigma',\Omega,\delta',\{\const{init}\})$ erzeugen mit:
+Gegeben ein Büchi-Automat $(Q,\Sigma,\delta,\mu,q_0,\emptyset)$ lässt sich ein äquivalenter nicht-de\-ter\-mi\-nis\-tischer Mealy Automat $(Q\cup\{\const{init}\},\Sigma',\Omega,\delta',\{\const{init}\})$ erzeugen mit:
 \[
 \begin{array}{c}
   \forall q,q'\in Q: q\neq \const{init}\Rightarrow\\

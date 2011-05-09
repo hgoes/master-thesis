@@ -97,7 +97,13 @@ Die Hilfsfunktionen \proc{New1}, \proc{New2} und \proc{Next1} sind hierbei über
 \end{table}
 
 Um eine gegebene Formel $\varphi$ zu übersetzen, ruft man die Funktion also wie folgt auf:
-\[ \proc{Expand}([\id{Name}\gets\proc{NewName}(),\id{Incoming}\gets\const{Init},\id{New}\gets\{\varphi\},\id{Old}\gets\emptyset,\id{Next}\gets\emptyset],\emptyset) = ns \]
+\begin{align*}
+  \proc{Expand}([&\id{Name}\gets\proc{NewName}(),\\
+                 &\id{Incoming}\gets\const{Init},\\
+                 &\id{New}\gets\{\varphi\},\\
+                 &\id{Old}\gets\emptyset,\\
+                 &\id{Next}\gets\emptyset],\emptyset) = ns
+\end{align*}
 Per Konstruktion ist am Ende des Durchlaufs das \id{New}-Feld aller Knoten leer.
 Die atomaren Aussagen in den \id{Old}-Feldern der Knoten stellen die Aussagen dar, die in dem entsprechenden Zustand des Büchi-Automaten wahr sein müssen.
 Um den Graphen zu konstruieren, müssen noch die die Informationen der \id{Incoming}-Felder verwendet werden, um die Folgezustände von jedem Zustand zu berechnen.
