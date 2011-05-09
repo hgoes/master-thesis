@@ -8,7 +8,10 @@
   headings=normal,
   bibliography=totoc,
   openright,
-  abstracton]{scrreprt}
+  abstract=on,
+  cleardoublepage=current, % mit "empty" werden leere Seiten nicht nummeriert
+  toc=listof
+  ]{scrreprt}
 
 \usepackage[bookmarks=true,colorlinks=false]{hyperref} % PDF-Inhaltsverzeichnis und Links
 
@@ -163,6 +166,8 @@
 \cleardoublepage
 \pdfbookmark[0]{\contentsname}{content}
 \tableofcontents
+\listoffigures
+\listoftables
 \cleardoublepage
 \pagenumbering{arabic}
 \chapter{Einleitung}
