@@ -1,3 +1,13 @@
+Ein GALS\footnote{englisch für "`globally asynchronous, locally synchronous"', also "`Global asynchron, lokal synchron"'} System besteht aus vielen synchronen, also deterministisch und getakteten Komponenten.
+Diese können innerhalb des GALS-Systems nun asynchron miteinander kommunizieren, was bedeutet, dass der Nachrichtenaustausch zwischen einzelnen Komponenten verzögert sein kann und Komponenten mit verschiedenen Taktraten laufen können.
+Beispiele für GALS-Systeme sind:
+\begin{itemize}
+\item Computernetzwerke: Die Kommunikation der Rechner miteinander ist mit nicht genau vorhersehbaren Verzögerungen verbunden.
+  Jeder Rechner besitzt außerdem seinen eigenen Prozessor und damit seinen eigenen Takt.
+\item \emph{System-on-a-chip} Designs, die mehrere Zeitgeber für verschiedene Komponenten verwenden.
+\item Sicherheitskritische physische Systeme, die über größere Gebiete verteilt sind (Eisenbahnübergänge, Ampelschaltungen, Kontrollsysteme für Kraftwerke, etc.) bestehen meistens aus mehreren unabhängigen Komponenten.
+\end{itemize}
+
 Die Verifikation von GALS-Systemen steht vor zwei Problemen:
 \begin{itemize}
 \item Zum einen fehlen Werkzeuge, die sowohl synchrone wie auch asynchrone Systeme unterstützen.
