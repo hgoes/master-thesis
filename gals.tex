@@ -123,8 +123,12 @@ Die Eingaben $I(\mathcal{G})$ des Gesamtsystems sind also
 \[ I(\mathcal{G}) = \prod \{ \Sigma^a_n\ |\ a\in A, n\in \mathbb{N}, \lnot\exists ((X,i),(Y,j))\in C: Y=a\land j=n \} \]
 Für die Ausgaben $O(\mathcal{G})$ gilt entsprechend
 \[ O(\mathcal{G}) = \prod \{ \Omega^a_n\ |\ a\in A, n\in \mathbb{N}, \lnot\exists ((X,i),(Y,j))\in C: X=a\land i=n \} \]
-Der Zustandsraum $S(\mathcal{G})$ des Systems ergibt sich dann aus den Zuständen der einzelnen Automaten sowie dem aktuellen Inhalt der Verbindungen:
-\[ S(\mathcal{G}) = \left(\prod_{a\in A} Q^a\right)\times\left(\prod_{((a,i),\_)\in C} \Sigma^a_i\right) \]
+Der Zustandsraum $S(\mathcal{G})$ des Systems ergibt sich dann aus den Zuständen der einzelnen Automaten ($S_Q(\mathcal{G})$) sowie dem aktuellen Inhalt der Verbindungen ($S_C(\mathcal{G})$):
+\begin{align*}
+  S_Q(\mathcal{G}) &= \prod_{a\in A} Q^a\\
+  S_C(\mathcal{G}) &= \prod_{((a,i),\_)\in C} \Sigma^a_i\\
+  S(\mathcal{G}) &= S_Q(\mathcal{G})\times S_C(\mathcal{G})
+\end{align*}
 Da die Eingaben für einen konkreten Automaten sich nun entweder im Zustandsraum $S(\mathcal{G})$ oder in den globalen Eingaben $I(\mathcal{G})$ befinden können, definiert man eine Hilfsfunktion 
 \begin{eqnarray*}
   \pi_I^a &:& S(\mathcal{G})\times I(\mathcal{G})\rightarrow Q^a\times\Sigma^a\\
@@ -140,10 +144,10 @@ die die benötigten Parameter für einen gegebenen Automaten $a$ extrahieren.
   \[ \forall b\in A,b\neq a: \left.X[a\mapsto Y]\right|_b = X|_b \]
 \end{notation}
 Analog definiert man eine weitere Funktion 
-\begin{eqnarray*}
-  \pi_O^a &:& S(\mathcal{G})\times Q^a\times\Omega^a\rightarrow S(\mathcal{G})\times O(\mathcal{G})\\
-  \pi_O^a ((q,s),q',o) &=& ((q[a\mapsto q'],s'),(\bot,\dots,\bot)[a\mapsto o])
-\end{eqnarray*}
+\begin{align*}
+  \pi_O^a &: S(\mathcal{G})\times Q^a\times\Omega^a\rightarrow S(\mathcal{G})\times O(\mathcal{G})\\
+  \pi_O^a ((q,s),q',o) &= ((q[a\mapsto q'],s[a\mapsto o]),(\bot,\dots,\bot)[a\mapsto o])
+\end{align*}
 die Ausgaben und Zustand eines Automaten zurück in den Zustandsvektor des Gesamtsystems sowie die Gesamtausgaben schreibt.
 Dabei gilt
 \[ s'|_{\{n\}}^b = \left\{\begin{array}{lr}

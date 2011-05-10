@@ -7,21 +7,21 @@ Hierbei ist zu beachten, dass die generierten Automaten Bedingungen auf den Vari
 Anschließend wird ein neuer Prozess wie folgt definiert:
 \begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small]
 proctype $m$() {
-  atomic {
-    if $[ \forall i\in q_0:$
-    :: $\llbracket \mu(i) \rrbracket_C$;
+  if $[ \forall i\in q_0:$
+  :: atomic {
+       $\llbracket\mu(i)\rrbracket_C$;
+       $\llbracket\mu(i)\rrbracket_A$;
        goto st_$i$
-    $]$
-    fi;
-  }
+     }
+  $]$ fi;
   $[ \forall q\in Q:$
-  st_$q$: atomic {
-    $\llbracket \mu(q) \rrbracket_A$;
-    if $[ \forall q'\in Q, q\delta q':$
-    :: $\llbracket \mu(q') \rrbracket_C$;
+  st_$q$: if $[\forall q'\in Q,q\delta q':$
+  :: atomic {
+       $\llbracket\mu(i)\rrbracket_C$;
+       $\llbracket\mu(i)\rrbracket_A$;
        goto st_$q'$
-    $]$
-  }
+     }
+  $]$ fi;
   $]$
 }
 \end{lstlisting}
@@ -74,10 +74,11 @@ Um zu beweisen, dass die angegebene Promela-Übersetzung korrekt ist, muss gezei
 Um dies zu zeigen, wird die Promela-Semantik verwendet, wie sie in \cite{Gallardo04formalaspects} beschrieben ist.
 Da in dieser Semantik gefordert ist, dass jede Anweisung ein implizites Label erhält, werden folgende Labels für die Anweisungen vergeben:
 \begin{itemize}
-\item Die \emph{If}-Anweisung in Zeile 3 erhält das Label \emph{Start}
+\item Die \emph{If}-Anweisung in Zeile 2 erhält das Label \emph{Start}
 \item In diesem Zweig wird der Ausdruck in Zeile 4 mit dem Label \emph{CI\_$i$} versehen
-\item Für die \emph{If}-Anweisung in Zeile 12 wird das Label \emph{C\_$q$} verwendet
-\item Die Zweige dieser Anweisung (Zeile 13) erhalten die Label \emph{C\_$q$\_$q'$}
+\item Die nachfolgende Zuweisung in Zeile 5 wird mit dem Label \emph{AI\_$i$} gekennzeichnet
+\item Der If-Zweig in Zeile 12 kann über das Label \emph{C\_$q$\_$q'$} angesprungen werden
+\item Die darauf folgende Anweisung in Zeile 13 bekommt das Label \emph{A\_$q$\_$q'$} zugewiesen
 \end{itemize}
 
 Mit diesen Kennzeichnungen ergibt sich nun die \emph{next}-Funktion der Semantik wie folgt:
@@ -86,9 +87,10 @@ Mit diesen Kennzeichnungen ergibt sich nun die \emph{next}-Funktion der Semantik
   \hline
   $L$ & $\textrm{next}(L)$\\
   \hline
-  CI\_$q$ & st\_$q$\\
-  st\_$q$ & C\_$q$\\
-  C\_$q$\_$q'$ & st\_$q'$\\
+  CI\_$q$ & A\_$q$\\
+  A\_$q$ & st\_$q$\\
+  C\_$q$\_$q'$ & A\_$q$\_$q'$\\
+  A\_$q$\_$q'$ & st\_$q'$\\
   \hline
 \end{tabular}
 
@@ -99,7 +101,7 @@ Auch die erforderliche $g$-Funktion, die die Zweige einer \emph{If}-Anweisung an
   $L$ & $g(L)$\\
   \hline
   Start & $\{ \textrm{CI\_}i\ |\ i\in q_0 \}$\\
-  C\_$q$ & $\{ \textrm{C\_}q\textrm{\_}q'\ |\ q'\in Q, q\delta q' \}$\\
+  st\_$q$ & $\{ \textrm{C\_}q\textrm{\_}q'\ |\ q'\in Q, q\delta q' \}$\\
   \hline
 \end{tabular}
 
@@ -109,11 +111,12 @@ Für den Ausführungsmodus(\emph{mode}) ergibt sich:
   \hline
   $L$ & $\textrm{mode}(L)$\\
   \hline
-  Start & atm\\
+  Start & ilv\\
   CI\_$i$ & atm\\
+  AI\_$i$ & atm\\
   st\_$q$ & ilv\\
-  C\_$q$ & atm\\
   C\_$q$\_$q'$ & atm\\
+  A\_$q$\_$q'$ & atm\\
   \hline
 \end{tabular}
 
@@ -124,26 +127,31 @@ Zunächst ist es nützlich ein paar allgemeine Aussagen aufzustellen, die die Ve
 
 Um nun zeigen zu können, dass das definierte GTL-System $(ms,cs,vs)$ bisimular zum übersetzten Promela Modell $tr(ms,cs,vs)$ ist, müssen folgende Anforderungen an die Semantik gestellt werden:
 \begin{enumerate}
-\item Es muss eine Bijektion $i$ zwischen Zuständen der Verbindungen $s\in\left(\prod_{((a,i),\_)\in C} \Sigma^a_i\right)$ und der Promela-Umgebung $\sigma_e$ existieren.
+\item Es muss eine Bijektion $i$ zwischen Zuständen der Verbindungen sowie Eingaben $s\in S_C(\mathcal{G})\times I(\mathcal{G})$ und der Promela-Umgebung $\sigma_e$ existieren.
 \item Die Definitionen $\llbracket \alpha \rrbracket_D$ müssen eine initiale Umgebung $\sigma_e^0$ definieren, die isomorph zum Initialzustand $\alpha$ ist: 
   \[ i(\alpha) = \sigma_e^0 \]
 \item Befinden sich beide Systeme in isomorphen Zuständen, so wird der von $\llbracket \rrbracket_C$ erzeugte Ausdruck genau dann wahr, wenn es im abstrakten Modell einen entsprechenden Übergang zwischen den Zuständen gibt:
-  \[ \begin{array}{rc}
-    i(s) = \sigma_e \Rightarrow &
-    (\forall a\in A,\beta\in\mathcal{I}(\mathcal{G}),o\in\mathcal{O}(\mathcal{G}),s'\in\mathcal{S}(\mathcal{G}): \lambda(s,\beta,a)=(s',o)\\
-    & \Leftrightarrow\\
-    & \mathit{exec}(\llbracket \mu(s')\rrbracket_C,\sigma_e))
-  \end{array} \]
+  \begin{equation}
+    \begin{array}{rc}
+      i(s,\beta) = \sigma_e \Rightarrow \forall q'\in Q^a: &
+      \mathit{exec}(\llbracket \mu(q')\rrbracket_C,\sigma_e)) \\
+      & \Leftrightarrow\\
+      & (\forall q\in Q^a: \delta^a(q,(s|^a,\beta|^a))=(q',o))
+    \end{array}
+    \label{eq:assert1}
+  \end{equation}
 \item Die Anweisung, die von $\llbracket \rrbracket_A$ generiert wird, darf nie blockieren und muss isomorphe Zustände beibehalten:
-  \[ \begin{array}{rc}
-    i(c) = \sigma_e \Rightarrow &
-    %(s,(p_1,\dots,p_i,\dots,p_N))\rightarrow (s',(p_1,\dots,p_i',\dots,p_N))\\
-    \forall a\in A,\beta\in\mathcal{I}(\mathcal{G}),o\in\mathcal{O}(\mathcal{G}),\\
-    & (s,c)\in\mathcal{S}(\mathcal{G}),(s',c')\in\mathcal{S}(\mathcal{G}):\\
-    & \lambda((s,c),\beta,a)=((s',c'),o)\\
-    & \Leftrightarrow\\
-    & \xymatrix { \left<\sigma_e,L\right> \ar[r]^-{\llbracket \mu(s'|^a)\rrbracket_A} & \left<\sigma_e',L'\right> } \land i(c') = \sigma_e'
-  \end{array} \]
+  \begin{equation}
+    \begin{array}{rc}
+      i(s,\beta) = \sigma_e \Rightarrow \forall q'\in Q^a: &
+      \xymatrix { \left<\sigma_e,L\right> \ar[rr]^-{\llbracket \mu(q')\rrbracket_A} & & \left<\sigma_e',L'\right> } \\
+      & \Leftrightarrow\\
+      & (\forall q\in Q^a: \delta^a(q,(s|^a,\beta|^a)) = (q',o)\\
+      & \land\\
+      & i(s[a\mapsto o],\beta[a\mapsto o]) = \sigma_e')
+    \end{array}
+    \label{eq:assert2}
+  \end{equation}
 \end{enumerate}
 Nun kann man die Relation $\cong$ angeben, die Zustände des abstrakten Modells mit Zuständen des übersetzten Promela-Modells in Relation setzt.
 Diese wird wie folgt definiert:
@@ -152,7 +160,9 @@ Zwei Zustände stehen genau dann in Relation, wenn ihre globalen Zustände isomo
 \begin{array}{c}
   (q_0,\dots,q_N,c_0,\dots)\cong \gamma\\
   \Leftrightarrow\\
-  i(s)=\gamma(0).\sigma_e \land \forall j\in\{1\dots N\}: (\gamma(j).\sigma_l = \textrm{st\_}q_j \lor (\gamma(j).\sigma_l = \textrm{Start}\land q_i=\const{init}))
+  i((c_0,\dots))=\gamma(0).\sigma_e\\
+  \land\\
+  \forall j\in\{1\dots N\}: (\gamma(j).\sigma_l = \textrm{st\_}q_j \lor (\gamma(j).\sigma_l = \textrm{Start}\land q_j=\const{init}))
 \end{array}
 \]
 Nun muss gezeigt werden, dass es sich bei der eben definierten Relation tatsächlich um eine Bisimulationsrelation handelt.
@@ -160,14 +170,14 @@ Hierfür muss nachgewiesen werden, dass es für jede Transition, die ein bisimul
 
 Betrachten wir also einen Zustand des abstrakten Modells $s=(q_0,\dots,q_N,c_0,\dots)$ und einen Zustand des Promela-Modells $\gamma$.
 Sind diese Zustände bisimular, so gilt nach Konstruktion
-\[ i(s) = \gamma(0).\sigma_e \]
+\[ i((c_0,\dots)) = \gamma(0).\sigma_e \]
 und für jeden Prozesszustand $q_j$ entweder
 \[ \gamma(j).\sigma_l = \textrm{st\_}q_j \]
 oder
 \[ \gamma(j).\sigma_l = \textrm{Start} \land q_j = \const{init} \]
 Gilt der erste Fall, so lässt sich herleiten
 \[ \inference[IfDo-proc]{
-  \inference[Basic-proc]{\mathit{exec}(\textrm{C\_}q_i\textrm{\_}q_i',\gamma(j).\sigma_e) & \mathit{next}(\textrm{C\_}q_j\textrm{\_}q_j') = \textrm{A\_}q_j\textrm{\_}q_j'}{
+  \inference[Basic-proc]{\mathit{exec}(\textrm{C\_}q_j\textrm{\_}q_j',\gamma(j).\sigma_e) & \mathit{next}(\textrm{C\_}q_j\textrm{\_}q_j') = \textrm{A\_}q_j\textrm{\_}q_j'}{
   \xymatrix{ \left<\gamma(j).\sigma_e,\textrm{C\_}q_j\textrm{\_}q_j'\right>\ar@{|->}[r]^-{\llbracket \mu(q_j')\rrbracket_C} & _{proc}
     \left<\gamma(j).\sigma_e,\textrm{A\_}q_j\textrm{\_}q_j'\right>}
   }
@@ -244,21 +254,21 @@ Fasst man nun alle hier angegebenen Ableitungsschritte zusammen, so ergibt sich
   }
 }
 \]
-Diese zwei Vorbedingungen sind genau dann erfüllt, wenn
-\[ \lambda(((q_0,\dots,q_j,\dots,q_N),c),\beta,j) = (((q_0,\dots,q_j',\dots,q_N),c'),o) \]
+Diese zwei Vorbedingungen sind nach Gleichung \ref{eq:assert1} und \ref{eq:assert2} genau dann erfüllt, wenn
+\[ \delta^a(q_j,((c_0,\dots)|^a,\beta|^a)) = (q_j',o) \]
 gilt.
-Außerdem gilt dann $i(c') = \sigma_e'$ und die Bisimularität ist für diesen Fall gezeigt, denn
+Dies ist äquivalent dazu dass
+\[ \lambda(((q_0,\dots,q_j,\dots,q_N),c),\beta,j) = (((q_0,\dots,q_j',\dots,q_N),c[a\mapsto o]),(\bot,\dots,\bot)[a\mapsto o]) \]
+gilt.
+Nach Gleichung \ref{eq:assert2} gilt außerdem
+\[ i(c[a\mapsto o],\beta) = \sigma_e' \]
+wobit die Bisimularität für diesen Fall gezeigt ist, denn
 \[
 \begin{array}{c}
-  i(c') = \sigma_e' \land ((q_0,\dots,q_j,\dots,q_N),c)\cong\gamma\\
+  i(c[a\mapsto o],\beta) = \sigma_e' \land ((q_0,\dots,q_j,\dots,q_N),c)\cong\gamma\\
   \Rightarrow\\
-  ((q_0,\dots,q_j',\dots,q_N),c')\cong \gamma[\left<\sigma_e',\textrm{st\_}q_j'\right>/j]
+  ((q_0,\dots,q_j',\dots,q_N),c[a\mapsto o])\cong \gamma[\left<\sigma_e',\textrm{st\_}q_j'\right>/j]
 \end{array}
 \]
-Der Beweis für den Fall, dass sich der Prozess am Label \emph{Start} befindet ist, bis auf Änderung der Label-Namen äquivalent und daher ausgelassen.
-\subsection{Übersetzung durch BDD}
-Bei der Übersetzung durch BDD wird jede Verbindung zwischen zwei Komponenten durch eine Variable, die BDD-Bäume speichern kann repräsentiert.
-Dadurch wird angegeben, welche möglichen Werte eine Verbindung zum jetzigen Zeitpunkt besitzen kann.
-Hieraus ergibt sich die Einschränkung, dass atomare Aussagen nicht zwei Ausgabevariablen auf einmal determinieren dürfen, da sich ansonsten Abhängigkeiten zwischen den Variablen ergeben, die nicht durch getrennt gespeicherte BDD ausgedrückt werden können.
 
-Für die Semantik $\llbracket\rrbracket_C$ 
+Der Beweis für den Fall, dass sich der Prozess am Label \emph{Start} befindet ist, bis auf Änderung der Label-Namen äquivalent und daher ausgelassen.
