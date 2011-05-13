@@ -1,17 +1,17 @@
 digraph {
 	n[label="start"];
-	n1[label="",style=filled,fillcolor="#0b 40 0c"];
-	n2[label="",style=filled,fillcolor="#27 8c 29"];
-	n3[label="",style=filled,fillcolor="#4d 39 99"];
-	n11[label="",style=filled,fillcolor="#0b 40 0c"];
-	n12[label="",style=filled,fillcolor="#27 8c 29"];
-	n13[label="",style=filled,fillcolor="#4d 39 99"];
-	n21[label="",style=filled,fillcolor="#0b 40 0c"];
-	n22[label="",style=filled,fillcolor="#27 8c 29"];
-	n23[label="",style=filled,fillcolor="#4d 39 99"];
-	n31[label="",style=filled,fillcolor="#0b 40 0c"];
-	n32[label="",style=filled,fillcolor="#27 8c 29"];
-	n33[label="",style=filled,fillcolor="#4d 39 99"];
+	n1[label="",style=filled,fillcolor="#cc 66 22"];
+	n2[label="",style=filled,fillcolor="#2e 2e 33"];
+	n3[label="",style=filled,fillcolor="#93 99 8a"];
+	n11[label="",style=filled,fillcolor="#cc 66 22"];
+	n12[label="",style=filled,fillcolor="#2e 2e 33"];
+	n13[label="",style=filled,fillcolor="#93 99 8a"];
+	n21[label="",style=filled,fillcolor="#cc 66 22"];
+	n22[label="",style=filled,fillcolor="#2e 2e 33"];
+	n23[label="",style=filled,fillcolor="#93 99 8a"];
+	n31[label="",style=filled,fillcolor="#cc 66 22"];
+	n32[label="",style=filled,fillcolor="#2e 2e 33"];
+	n33[label="",style=filled,fillcolor="#93 99 8a"];
 
 	n -> n1[label="P1"];
 	n -> n2[label="P2"];

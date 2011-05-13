@@ -22,7 +22,7 @@ Soll die aktuellste Version der Quelltexte bezogen werden, so benötigt man auß
 Für den Quelltext zu der Anwendung entpackt man entweder die mitgelieferten Archive, oder lädt den aktuellsten Entwicklungsstand der Pakete per \emph{git} herunter.
 Der entsprechende Befehl lautet
 \begin{lstlisting}[language=bash,mathescape=true]
-git checkout https://github.com/hguenther/$name$
+git checkout https://github.com/hguenther/$name$.git
 \end{lstlisting}
 Wobei $name$ den Namen des Paketes bezeichnet.
 Die zu herunterladenen Pakete sind:
@@ -39,3 +39,35 @@ cabal install
 \end{lstlisting}
 ausgeführt werden.
 Hierbei ist zu beachten, dass das Paket "`gtl"' als letztes installiert werden muss, da es von allen anderen abhängt.
+\section{Verwendung}
+Das Resultat der oben angegebenen Installationsschritte ist die Anwendung "`gtl"', die im Plattform-abhängigen Anwendungsverzeichnis zu finden ist.
+Um die Optionen und Parameter der Anwendung zu begutachten lässt sich die Anwendung mit dem Parameter "`\verb|--help|"' starten:
+\begin{verbatim}
+gtl --help
+\end{verbatim}
+Liegt eine GTL-Spezifikation im in Abschnitt \ref{sec:grammar} beschriebenen Format vor, so lassen sich die verschiedenen Verifikationsmodi wie folgt ausführen ("`\verb|spec.gtl| ist hier immer die GTL-Spezifikationsdatei):
+\begin{itemize}
+\item Die SCADE-Verifikation der einzelnen Komponenten wird mit
+\begin{verbatim}
+gtl -m local spec.gtl
+\end{verbatim}
+ausgeführt.
+\item Um ein Promela-Modell zu erhalten, dass die Kontrakte nativ übersetzt zu erhalten kann man
+\begin{verbatim}
+gtl -m native spec.gtl
+\end{verbatim}
+verwenden.
+\item Die dynamische BDD-Optimierung lässt sich wie folgt aufrufen
+\begin{verbatim}
+gtl -m promela-buddy spec.gtl
+\end{verbatim}
+\item Die C-Integration der Komponenten wird durchgeführt mit
+\begin{verbatim}
+gtl -m native-c spec.gtl
+\end{verbatim}
+Hat man durch die Verifikation einer Spezifikation eine Fehlerspur "`\verb|error.gtltrace|"' erhalten, so kann man diese in der C-Integration verwenden, um zu überprüfen, ob es sich um einen echten Fehler oder eine Unterspezifikation der Kontrakte handelt, indem man
+\begin{verbatim}
+gtl -m native-c spec.gtl -t error.gtltrace
+\end{verbatim}
+verwendet.
+\end{itemize}

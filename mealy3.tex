@@ -2,13 +2,13 @@
   [initial text=,
   shorten >=1pt,
   >=stealth',
-  every state/.style={draw=blue!50,very thick,fill=blue!20}
+  every state/.style={draw=d1,very thick,fill=d1!40}
   ]
   %\node[draw,red!50,fill=red!20,very thick,minimum height=1cm,minimum width=4cm] (c1) at (0.25,0.5) {};
   
   %\draw[color=red!50,fill=red!20,very thick] (-1,1) -- (-1,-1) -- (3,-1) -- (3,1) -- (-1,1);
-  \path[draw,red!50,fill=red!20,very thick] (-1,1) rectangle (2.6,-1);
-  \path[draw,red!50,fill=red!20,very thick] (2.6,-1) rectangle (3.3,1);
+  \path[draw=d3,fill=d3!40,very thick] (-1,1) rectangle (2.6,-1);
+  \path[draw=d3,fill=d3!40,very thick] (2.6,-1) rectangle (3.3,1);
   \node[state,initial] (p0) at (0,0) {$p_0$};
   \node[state] (p1) at (2,0) {$p_1$};
   \path[->] (p0) edge[bend left] node[above] {$/0$} (p1)
@@ -16,10 +16,10 @@
   \node at (2.3,0.7) {$P_1$};
   \node (tout) at (2.95,0) {out};
   \begin{scope}[shift={(5.5,-0.15)}]
-    \path[draw,red!50,fill=red!20,very thick] (-1.2,-1.8) rectangle (4,0.8);
-    \path[draw,red!50,fill=red!20,very thick] (-1.2,-1.8) rectangle (-1.8,-0.5);
-    \path[draw,red!50,fill=red!20,very thick] (-1.2,-0.5) rectangle (-1.8,0.8);
-    \path[draw,red!50,fill=red!20,very thick] (4,-1.8) rectangle (4.7,0.8);
+    \path[draw=d3,fill=d3!40,very thick] (-1.2,-1.8) rectangle (4,0.8);
+    \path[draw=d3,fill=d3!40,very thick] (-1.2,-1.8) rectangle (-1.8,-0.5);
+    \path[draw=d3,fill=d3!40,very thick] (-1.2,-0.5) rectangle (-1.8,0.8);
+    \path[draw=d3,fill=d3!40,very thick] (4,-1.8) rectangle (4.7,0.8);
     \node[state,initial] (q0) at (0,0) {$q_0$};
     \node[state] (q1) at (3,0) {$q_1$};
   
