@@ -1,3 +1,5 @@
+
+
 Die Implementierung besteht zum einen aus der eigentlichen Anwengung -- \emph{gtl} -- und zum anderen aus verschiedenen Bibliotheken, die zusätzlich entwickelt werden mussten.
 Diese sind:
 \begin{itemize}
@@ -10,4 +12,23 @@ Diese sind:
   \centering
   \input{structure}
   \caption{GTL Implementierung}
+  \label{fig:gtl_implementation}
 \end{figure}
+
+Abbildung \ref{fig:gtl_implementation} zeigt den Datenfluss der \emph{gtl}-Anwendung.
+Zunächst wird mithilfe des Parsers eine textuelle GTL-Repräsentation in einen abstrakten Syntax-Baum\footnote{englisch: abstract syntax tree, AST} transformiert.
+Der Parser wird im Abschnitt \ref{module:Language.GTL.Parser} beschrieben, der Syntax-Baum in \ref{module:Language.GTL.Parser.Syntax}.
+Daraufhin wird der Syntax-Baum an die Typüberprüfung weiter gereicht.
+Diese extrahiert die Typinformationen aus den verwendeten synchronen Komponenten und überprüft, ob alle Kontrakte und Verifikationsformeln wohl-getypt sind (Siehe Abschnitt \ref{sec:sos}).
+Für das SCADE-Backend müssen also die definierenden Dateien geparst werden, die Modelle in dem entstandenen Syntax-Baum gefunden werden und die SCADE-Typen in GTL-Typen umgewandelt werden.
+Daraufhin wird der Syntax-Baum in eine Instanz des \emph{GTLSpec}-Datentyps umgewandelt (Beschrieben in Abschnitt \ref{module:Language.GTL.Model}).
+
+Ab hier entscheidet sich nun, welche Transformation vom Benutzer gewählt wurde.
+Für die SCADE-Verifikation der Komponenten wird für jede Komponente ein SCADE-Testknoten erzeugt, der dann zusammen mit dem Quelltext der Modelle mit dem SCADE Design-Verifier geprüft wird (Beschrieben in Abschnitt \ref{module:Language.GTL.Backend.Scade}).
+
+Für die C-Übersetzung wird der SCADE Code-Generator KCG aufgerufen, der wie in Abschnitt \ref{sec:c_integration} beschrieben C-Code für alle Modelle liefert.
+Es wird dann Promela-Code generiert, der die einzelnen C-Code-Modelle vereint.
+Die Implementierung dieses Verfahrens wird in Abschnitt \ref{module:Language.GTL.PromelaCIntegration} genauer beschrieben.
+
+Für die Übersetzung der Kontrakte mithilfe von binären Entscheidungsdiagrammen, wie in Abschnitt \ref{sec:bdd} beschrieben, wird Promela-Code generiert und dann gegen die CUDD-Bibliothek gelinkt.
+Genauere Details des Verfahrens sind in Abschnitt \ref{module:Language.GTL.PromelaDynamicBDD} angegeben.

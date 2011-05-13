@@ -18,8 +18,19 @@ Die Verifikation von GALS-Systemen steht vor zwei Problemen:
   Automatisch zu überprüfen, ob eine gegebene Abstraktion korrekt ist, ist in keinem in dieser Arbeit untersuchtem Formalismus vorgesehen.
 \end{itemize}
 Diese Arbeit versucht beide Probleme durch die Einführung eines neuen Formalismus zu lösen, der die Vorteile von synchronen und asynchronen Formalismen vereint und zusätzlich die Möglichkeit bietet, sichere Abstraktionen durch Kontrakte einzuführen.
-
+\section{Inhalt}
+Zunächst werden in Kapitel \ref{sec:related_works} ähnliche Ansätze zur Lösung der angesprochenen Probleme präsentiert.
+Im nächsten Kapitel (Kapitel \ref{sec:gals}) werden dann GALS-Architekturen formal definiert und verschiedene Ausführungssemantiken eingeführt.
+Kapitel \ref{sec:basics} beschäftigt sich mit Grundlagen, die für das Verständnis der nachfolgenden Kapitel unabdingbar sind.
+Im Kapitel \ref{sec:gtl} beginnt dann die eigentliche Leistung dieser Arbeit: Die \emph{GTL}-Sprache wird definiert und mit einer Semantik versehen.
+Daraufhin wird in Kapitel \ref{sec:translation} beschrieben, wie sich die vorher definierte Sprache in den Formalismus verschiedener Verifikationssprachen übersetzen lässt.
+Es werden außerdem Möglichkeiten zur Optimierung vorgestellt und ein Verfahren zur Erkennung von fehlerhaften Spezifikationen erläutert.
+Die Implementierung der beschriebenen Sprache und ihrer Transformationen wird dann in Kapitel \ref{sec:implementation} behandelt.
+Für den Praktiker wird die Arbeit in Kapitel \ref{sec:case_studies} interessant:
+Hier wird die beschriebene Implementierung anhand von einem kleinen und einem großen Beispiel getestet und die Resultate bewertet.
+Schließlich liefert Kapitel \ref{sec:conclusion} eine Zusammenfassung der gesamten Arbeit und versucht, die Arbeit in Perspektive zu setzen sowie einen Ausblick auf zukünftige Entwicklungen zu geben.
 \section{Andere Arbeiten}
+\label{sec:related_works}
 Die Idee, GALS-Systeme durch eine Kombination von synchronen und asynchronen Sprachen zu verifizieren, wird in verschiedenen Arbeiten behandelt:
 \begin{enumerate}
 \item Damien Thivolle und Hubert Garavel erklären die grundsätzliche Herangehensweise und zeigen anhand der Verifikation eines Kommunikationsprotokolls die Vorteile dieses Ansatzes~\cite{gals_sam}.
