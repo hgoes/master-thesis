@@ -2,6 +2,7 @@
   <declaration> ::= <model\_decl>
   \alt <connect\_decl>
   \alt <verify\_decl>
+  \alt <instance\_decl>
 
   <model\_decl> ::= `model' `[' <id> `]' <id> `(' (<string> (`,' <string>)*)? `)' <model\_contract>
 
@@ -15,6 +16,8 @@
   <connect\_decl> ::= `connect' <id> `.' <id> <id> `.' <id> `;'
 
   <verify\_decl> ::= `verify' `{' (<formula> `;')* `}'
+
+  <instance\_decl> ::= `instance' <id> <id> <model\_contract>
 
   <formula> ::= <atom>
   \alt `not' <formula>

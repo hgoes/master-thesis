@@ -7,6 +7,13 @@
 \usepackage[nounderscore]{syntax} % Syntax im BNF-Stil (Niemals das "nounderscore entfernen, das macht alles kaputt!)
 \usepackage{listings}
 
+\lstdefinelanguage{gtl}{
+  morekeywords={model,and,or,next,not,connect,verify,always,contract,init},
+  sensitive=true,
+  morestring=[b]",
+  otherkeywords={.,=>}
+}
+
 \title{GTL Überblick}
 \author{Henning Günther}
 

@@ -30,6 +30,7 @@ iti.pdf: iti.svg
 
 overview.pdf: overview.tex grammar-only.tex
 	pdflatex overview.tex
+	pdflatex overview.tex > /dev/null
 
 clean:
 	rm -f $(BDDS)

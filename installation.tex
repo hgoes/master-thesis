@@ -1,5 +1,5 @@
 \chapter{Installation}
-Hier wird beschrieben, wie die im Rahmen dieser Arbeit entwickelte Software installiert werden kann.
+Hier wird beschrieben, wie das GTL-Tool installiert werden kann.
 \section{Voraussetzungen}
 Die folgenden Software-Pakete werden für die Kompilierung der Software benötigt:
 \begin{itemize}
@@ -52,12 +52,19 @@ Liegt eine GTL-Spezifikation im in Abschnitt \ref{sec:grammar} beschriebenen For
 gtl -m local spec.gtl
 \end{verbatim}
 ausgeführt.
-\item Um ein Promela-Modell zu erhalten, dass die Kontrakte nativ übersetzt zu erhalten kann man
+Die SCADE-Modelle werden dabei aus der Datei extrahiert, die im ersten Parameter des Modells übergeben wird.
+Der Name in der SCADE-Datei wird über den zweiten Parameter festgelegt.
+Der folgende Code gibt also an, dass sich das gesuchte Beispiel in der Datei "`\verb|ExampleCar.scade|"' befindet und dort den Namen "`\verb|Car|"' trägt.
+\begin{lstlisting}[language=gtl]
+model[scade] car("ExampleCar.scade","Car");
+\end{lstlisting}
+\item Um ein Promela-Modell zu erhalten, dass die Kontrakte nativ übersetzt zu erhalten, wird
 \begin{verbatim}
 gtl -m native spec.gtl
 \end{verbatim}
-verwenden.
-\item Die dynamische BDD-Optimierung lässt sich wie folgt aufrufen
+ausgeführt.
+Das erzeugte Promela-Modell kann nun mit SPIN verifiziert werden.
+\item Die dynamische BDD-Optimierung lässt sich wie folgt aufrufen:
 \begin{verbatim}
 gtl -m promela-buddy spec.gtl
 \end{verbatim}
@@ -65,7 +72,12 @@ gtl -m promela-buddy spec.gtl
 \begin{verbatim}
 gtl -m native-c spec.gtl
 \end{verbatim}
-Hat man durch die Verifikation einer Spezifikation eine Fehlerspur "`\verb|error.gtltrace|"' erhalten, so kann man diese in der C-Integration verwenden, um zu überprüfen, ob es sich um einen echten Fehler oder eine Unterspezifikation der Kontrakte handelt, indem man
+Man erhält hierbei ein Promela-Modell, dass den C-Code der Komponenten einbindet.
+Die Kontrakte der Komponenten werden nicht verwendet.
+Es müssen bei der Kompilierung des Verifikations-Binaries die Ordner, die den generierten C-Quelltext enthalten mit angegeben werden.
+
+
+Hat man durch die Verifikation mit SPIN eines im zweiten oder dritten Punkt erzeugten GALS Modell in Promela eine Fehlerspur "`\verb|error.gtltrace|"' erhalten, so kann man diese in der C-Integration verwenden, um zu überprüfen, ob es sich um einen echten Fehler oder eine Unterspezifikation der Kontrakte handelt, indem man
 \begin{verbatim}
 gtl -m native-c spec.gtl -t error.gtltrace
 \end{verbatim}
