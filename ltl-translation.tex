@@ -24,7 +24,9 @@ Der Anfangsknoten hat einen beliebigen Namen, das Symbol \const{Init} in der \em
 Die restlichen Felder sind leer.
 Der zentrale Bestandteil des Algorithmus ist die \emph{expand}-Funktion.
 Diese nimmt einen Knoten und die Menge aller bisher generierten Knoten und erstellt durch rekursive Aufrufe ihrer selbst die resultierende Knotenmenge.
+Abbildung \ref{fig:expand_function} zeigt die Implementierung dieser Funktion.
 
+\begin{figure}
 \begin{codebox}
 \Procname{$\proc{Expand}(\id{Node},\id{NodeSet})$}
 \li \If $\attrib{Node}{New}\isequal\emptyset$ \Then
@@ -36,6 +38,7 @@ Diese nimmt einen Knoten und die Menge aller bisher generierten Knoten und erste
 \> $\id{New}\gets\attrib{Node}{Next}, \id{Old}\gets\emptyset, \id{Next}\gets\emptyset],$\\
 \> $\{\id{Node}\}\cup \id{NodeSet})$
 \Stopalign
+\End
 \li \Else
 \li $\eta\gets \attrib{Node}{New}[0]$
 \li $\attrib{Node}{New}\gets\attrib{Node}{New}\setminus\{\eta\}$
@@ -74,8 +77,10 @@ Diese nimmt einen Knoten und die Menge aller bisher generierten Knoten und erste
 \Stopalign
 \End
 \End
-\End
 \end{codebox}
+\caption{Die \proc{Expand}-Funktion}
+\label{fig:expand_function}
+\end{figure}
 Die Hilfsfunktionen \proc{New1}, \proc{New2} und \proc{Next1} sind hierbei über Tabelle \ref{tab:helper_funcs} definiert.
 
 \begin{table}[h]
