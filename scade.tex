@@ -6,3 +6,6 @@ Die Sprache ist Datenfluss-orientiert, es werden also Gleichungen für die Ein- 
 Es stehen aber auch andere Mechanismen, wie zum Beispiel State-Machines zur Verfügung.
 
 Außerdem beinhaltet die SCADE Suite noch einen Model-Checker, den \emph{Design Verifier}, mit dessen Hilfe sich Eigenschaften von Modellen nachprüfen lassen\footnote{Entwickelt von der Firma \emph{Prover}, zu finden unter \url{http://prover.com}}.
+Der Design Verifier hat die Einschränkung, dass sich keine Liveness-Eigenschaften mit ihm nachweisen lassen.
+Aussagen wie "`Die Ausgangsvariable $x$ wird irgendwann einmal wahr"' lassen sich also nicht beweisen.
+Stattdessen werden solche Aussagen in SCADE beispielsweise verschärft zu "`Die Ausgangsvariable $x$ wird innerhalb von $t$ Ausführungsschritten einmal wahr"'.
