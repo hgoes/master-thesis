@@ -30,6 +30,10 @@
 
 \RequirePackage[utf8]{inputenc}
 
+\newcommand{\@keywords}{}
+\newcommand{\keywords}[1]{\renewcommand{\@keywords}{#1}}
+\newcommand{\keywordsname}{Schlüsselwörter}
+
 \renewcommand{\maketitle}{%
 \thispagestyle{empty}
 \begin{titlepage}
@@ -87,4 +91,26 @@
 
 \end{center}
 \end{titlepage}
+}
+
+\newcommand{\erklaerungname}{Eidesstattliche Erklärung}
+\newcommand{\erklaerung}[1]{%
+  \cleardoublepage
+  \pdfbookmark[0]{\erklaerungname}{erklaerungname}
+  \hskip 0mm
+  \vfill
+  \begin{center}\sffamily\bfseries\large
+    \erklaerungname
+  \end{center}
+  \bigskip\noindent Hiermit erkläre ich an Eides statt, dass
+  ich die vorliegende Arbeit selbstständig verfasst und keine
+  anderen als die angegebenen Hilfsmittel verwendet habe.\par
+  \bigskip\noindent Braunschweig,~\today\par
+  \vskip 10mm
+  \hfill
+  \begin{tabular}{c}
+    \hline
+    \makebox[6cm]{(#1)}
+  \end{tabular}
+  % \hfill\hrulefill
 }
