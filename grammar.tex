@@ -35,6 +35,8 @@ Eine Formel kann verschiedene Formen annehmen:
 \item Formeln können mit den logischen Operatoren \emph{and}, \emph{or}, \emph{implies} sowie \emph{not} wieder zu neuen Formeln zusammen gesetzt werden.
 \item Mithilfe der temporallogischen Operatoren \emph{always}, \emph{next} und \emph{finally} können neue Formeln aus anderen gebildet werden.
 \item Das Konstrukt \emph{exists} erlaubt die Bindung einer Variable an den aktuellen Wert einer anderen und somit die Referenzierung von früheren Werten.
+\item Automaten erlauben die Konstruktion von Zustandsautomaten, die abhängig von den Eingabewerten Ausgabewerte generieren können.
+  Ein Zustandsautomat besteht aus einer Menge von Zuständen.
 \end{itemize}
 \begin{grammar}
   <formula> ::= <atom>
@@ -46,10 +48,20 @@ Eine Formel kann verschiedene Formen annehmen:
   \alt `next' <formula>
   \alt `finally' <int> <formula>
   \alt `exists' <id> `=' <lit> `:' <formula>
+  \alt `automaton' `{' (<state>)* `}'
   \alt `(' <formula> `)'
   
   <lit> ::= <int>
   \alt <var>
+\end{grammar}
+Ein Zustand eines Automaten besteht hierbei aus dem Namen des Zustands, sowie der Annotierung, ob es sich um einen Initial- und/oder einen Finalzustand handelt und einer Menge von Formeln und Transitionen in andere Zustände.
+Die Formeln in einem Zustand sind Formeln, die gelten müssen, wenn der Zustand betreten werden soll.
+Die Transitionen aus dem Zustand in einen anderen Zustand können optional mit Bedingungen in Form von Formeln versehen werden, die gelten müssen, damit die Transition schalten kann.
+\begin{grammar}
+  <state> ::= `initial'? `final'? `state' <id> `{' (<state\_content> `;')* `}'
+
+  <state\_content> ::= <formula>
+  \alt `transition' (`[' <formula> `]')? <id>
 \end{grammar}
 Atomare Aussagen stellen Formelteile dar, die nicht durch LTL darstellbar sind (siehe Abschnitt \ref{sec:formula}) und daher im LTL-Übersetzungsalgorithmus als Atome behandelt werden müssen.
 Eine atomare Aussage kann entweder eine boolesche Variable, eine boolesche Konstante oder eine Relation zwischen zwei numerischen Ausdrücken sein.
