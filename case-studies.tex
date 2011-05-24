@@ -43,6 +43,7 @@ Wenig erstaunlich ist nun das Ergebnis der Verifikation:
 Da die BDD-Abstraktion die Bedingung $\mathit{outp}<10$ als eine Transition betrachtet, ist das resultierende Transitionssystem in der BDD-Verifikation bedeutend kleiner als in der C-Integration (Siehe Tabelle \ref{tab:source_sink_verifikation}).
 
 \begin{table}
+  \centering
   \begin{tabular}{|l|r|r|r|}
     \hline
     \textbf{Modus} & \textbf{Zustände} & \textbf{Transitionen} & \textbf{Speicherverbrauch}\\
@@ -54,3 +55,144 @@ Da die BDD-Abstraktion die Bedingung $\mathit{outp}<10$ als eine Transition betr
   \caption{Quelle-Senke Verifikationsergebnisse}
   \label{tab:source_sink_verifikation}
 \end{table}
+\section{Mutex Beispiel}
+Das Problem des gegenseitigen Ausschluss, besser bekannt unter der englischen Bezeichnung "`mutual exclusion"' oder kurz \emph{mutex} wurde erstmals 1965 von Edsger Dijkstra formalisiert~\cite{dijkstra_mutex}.
+Zwei oder mehr Prozesse versuchen in diesem Problem, Zugriff auf eine Ressource zu erhalten, die aber nur einem Prozess zur Zeit zur Verfügung stehen darf.
+Die Ressource kann hierbei beispielsweise ein Ausgabegerät sein, dass bei gleichzeitiger Benutzung fehlerhafte Ausgaben produziert, oder eine Speicherstelle, die inkonsistent beschrieben wird, wenn zwei Prozesse gleichzeitig auf sie schreiben.
+
+Die Aufgabe ist nun, ein Protokoll zu entwerfen, wie die Prozesse sich die Ressource teilen können und trotzdem die folgenden Eigenschaften erfüllt sind:
+\begin{itemize}
+\item Die Ressource wird immer nur von einem oder keinem Prozess zur Zeit verwendet.
+  Diese Eigenschaft stellt eine so genannte Sicherheitseigenschaft\footnote{engl. \emph{safety property}} dar, denn sie sagt aus, dass das System nie in einen unsicheren Zustand gerät.
+\item Wenn ein Prozess die Ressource haben möchte, so wird er sie irgendwann auch erhalten.
+  Diese Eigenschaft verhindert, dass man die Sicherheitseigenschaft einfach erfüllt, indem man die Ressource nie an einen Prozess vergibt.
+  Es handelt sich hierbei um eine so genannte Lebendigkeitseigenschaft\footnote{engl. \emph{liveness property}}, denn sie sagt aus, dass das System immer "`am Leben"' bleibt, indem alle Prozesse bedient werden (kein Prozess muss ewig warten).
+\end{itemize}
+Die Prozesse können sich in einem von vier Zuständen befinden:
+\begin{description}
+\item[nc] In diesem Zustand benötigt der Prozess die Ressource nicht.
+  Alle Prozesse starten in diesem Zustand.
+\item[acq] Der Prozess würde die Ressource gerne nutzen, besitzt sie aber noch nicht.
+  Kann ihm die Ressource gerade nicht zugeteilt werden, so muss er in diesem Zustand warten.
+\item[cs] Die Ressource befindet sich nun im Besitz des Prozesses.
+  Solange er mit der Ressource arbeiten muss, bleibt er in diesem Zustand.
+\item[rel] Hier gibt der Prozess die Kontrolle über die Ressource wieder ab.
+\end{description}
+In diesem Beispiel soll das Problem wie folgt gelöst werden:
+Ein Server ist für die Verwaltung der Ressource verantwortlich.
+Die Prozesse oder Klienten sind mit ihm verbunden und stellen, sobald sie sich im Zustand \emph{acq} befinden, eine Anfrage an den Server.
+Dieser muss nun entscheiden, wie er die Ressource vergibt.
+
+Zunächst modellieren wir einen Prozess.
+Ein Prozess kommuniziert seinen aktuellen Zustand über die Enum-Variable \emph{st} an den Server.
+Seine Eingabe-Variable \emph{proceed} gibt an, ob es dem Prozess momentan erlaubt ist, die Ressource an sich zu nehmen.
+\begin{lstlisting}[language=gtl,numbers=left]
+model[none] client() {
+  input bool proceed;
+  output enum { nc, acq, cs, rel } st;
+\end{lstlisting}
+Am Anfang befindet sich der Prozess im Zustand \emph{nc}:
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+  init st 'nc;
+\end{lstlisting}
+Das Verhalten des Prozesses wird nun über eine Zustandsmaschine angegeben.
+Der Prozess kann immer entweder im aktuellen Zustand verweilen, oder in den nächsten übergehen.
+Der Übergang vom Zustand \emph{acq} zu \emph{cs} ist allerdings nur möglich, wenn die Variable \emph{proceed} gesetzt ist.
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+  automaton {
+    init state nc {
+      st = 'nc;
+      transition acq;
+      transition nc;
+    }
+    state acq {
+      st = 'acq;
+      transition[proceed] cs;
+      transition[!proceed] acq;
+    }
+    state cs {
+      st = 'cs;
+      transition rel;
+      transition cs;
+    }
+    state rel {
+      st = 'rel;
+      transition nc;
+    }
+  };
+}
+\end{lstlisting}
+Der Server besitzt für jeden Prozess einen Eingang, der ihn über den aktuellen Zustand des Prozesses informiert.
+Außerdem kann er jedem Prozess die Ressource zuteilen, indem er den entsprechenden Eintrag in dem \emph{procouts}-Array setzt.
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+model[none] server() {
+  input enum { nc, acq, cs, rel }^3 procstates;
+  output bool^3 procouts;
+\end{lstlisting}
+Am Anfang ist es allen Prozessen untersagt die Ressource zu besitzen:
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+  init procouts [false,false,false];
+\end{lstlisting}
+Danach gilt: Fordert der erste Prozess die Ressource an, so wird sie ihm genau dann überlassen, wenn sich Prozess zwei und drei nicht im kritischen Abschnitt befinden.
+Das gleiche gilt symmetrisch für die anderen beiden Prozesse.
+Gilt keiner der Fälle, so darf kein Prozess die Ressource besitzen.
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+  always (procstates[0] = 'acq
+          and procstates[1] != 'cs
+          and procstates[2] != 'cs
+          and procouts = [true,false,false])
+         or (procstates[0] != 'acq 
+             and procstates[1] = 'acq
+             and procstates[0] != 'cs
+             and procstates[2] != 'cs
+             and procouts = [false,true,false])
+         or (procstates[0] != 'acq
+             and procstates[1] != 'acq
+             and procstates[2] = 'acq
+             and procstates[0] != 'cs
+             and procstates[1] != 'cs
+             and procouts = [false,false,true])
+         or (procouts = [false,false,false]);
+}
+\end{lstlisting}
+Nun werden die definierten Modell instanziiert, wobei drei Instanzen des Klienten und eine Instanz des Servers angelegt wird.
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+instance client c0;
+instance client c1;
+instance client c2;
+
+instance server s;
+\end{lstlisting}
+Die Variablen der Instanzen müssen natürlich verbunden werden, damit eine Kommunikation stattfindet.
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+connect c0.st s.procstates[0];
+connect c1.st s.procstates[1];
+connect c2.st s.procstates[2];
+
+connect s.procouts[0] c0.proceed;
+connect s.procouts[1] c1.proceed;
+connect s.procouts[2] c2.proceed;
+\end{lstlisting}
+Das Verifikationsziel ist die Sicherheitseigenschaft aus der Problem-Beschreibung:
+Es ist immer nur maximal ein Prozess in seiner kritischen Sektion.
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+verify {
+  always (c0.st = 'cs => !(c1.st = 'cs or c2.st = 'cs));
+  always (c1.st = 'cs => !(c0.st = 'cs or c2.st = 'cs));
+  always (c2.st = 'cs => !(c0.st = 'cs or c1.st = 'cs));
+}
+\end{lstlisting}
+Tabelle \ref{tab:mutex_results} zeigt die Ergebnisse der erfolgreichen Verifikation.
+\begin{table}
+  \centering
+  \begin{tabular}{|l|r|r|r|}
+    \hline
+    \textbf{Modus} & \textbf{Zustände} & \textbf{Transitionen} & \textbf{Speicherverbrauch}\\
+    \hline
+    Native & 11175 & 118773 & 5,337 MB\\
+    \hline
+  \end{tabular}
+  \caption{Mutex Verifikationsergebnisse}
+  \label{tab:mutex_results}
+\end{table}
+
