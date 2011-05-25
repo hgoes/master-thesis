@@ -1,0 +1,11 @@
+Dieser Abschnitt beschäftigt sich mit der Übersetzung der GTL in verschiedene Zielformalismen.
+Im Rahmen dieser Arbeit wurden drei verschiedene Übersetzungsmethoden entwickelt und zwei Optimierungsstrategien implementiert:
+\begin{itemize}
+\item Die erste Übersetzungsmethode verwendet die von SCADE generierten C-Modelle um ein Gesamtsystem in Promela zusammen zu setzen.
+\item Die Kontrakte der Modelle können mithilfe des SCADE-Design-Verifiers überprüft werden.
+\item Das Kontraktsystem kann nach Promela übersetzt werden.
+  \begin{itemize}
+  \item Statische BDD können verwendet werden, um den Zustandsraum bei der Verifikation zu verkleinern.
+  \item Dynamische BDD dienen dem selben Zweck, haben aber weniger Einschränkungen.
+  \end{itemize}
+\end{itemize}
