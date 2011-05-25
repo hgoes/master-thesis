@@ -1,5 +1,19 @@
 \section{Operationelle Semantik}
 \label{sec:sos}
+Struturelle operationelle Semantiken werden verwendet, um die Bedeutung von Programmen festzulegen~\cite{origins_sos}.
+Hierfür werden so genannte Ableitungsregeln benutzt, um anzugeben, welche Semantik sich aus welchen Konstrukten herleiten lässt.
+Eine Ableitungsregel besteht aus einem Namen, Prämissen $p_0,\dots,p_n$ und einer Ableitung $c$, dargestellt als
+\[
+\inference[name]{p_0 & \dots & p_n}{c}
+\]
+Die Bedeutung einer Ableitungsregel ist:
+Gelten die Prämissen $p_0$ bis $p_n$, so kann Regel \emph{name} angewandt werden um die Aussage $c$ herzuleiten.
+Die Notation kann auch verwendet werden, um Ableitungsbäume darzustellen:
+\[
+\inference[$r_2$]{\inference[$r_1$]{p_0 & p_1}{c_1} & p_2}{c_2}
+\]
+Dieser Baum stellt die Aussage dar, dass zunächst aus den Prämissen $p_0$ und $p_1$ mithilfe der Regel $r_1$ die Aussage $c_1$ abgeleitet werden kann.
+Mit dem Ergebnis $c_1$ sowie der Prämisse $p_2$ kann nun mit der Regel $r_2$ die Aussage $c_2$ bewiesen werden.
 \subsection{Variablen}
 In den LTL-Formeln der Semantik können frühere Werte von Variablen referenziert werden.
 Hierfür werden die Variablen mit einer natürlichen Zahl versehen, die die Anzahl von Schritten angibt, die in die Vergangenheit geschaut werden soll.
