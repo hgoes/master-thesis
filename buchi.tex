@@ -29,9 +29,11 @@ Dadurch wird erreicht, dass ein Zyklus nur dann zustande kommt, wenn ein Zustand
 
 Für einen verallgemeinerten Büchi-Automaten $(Q,\Sigma,\delta,\mu,q_0,F)$ konstruiert man also einen Büchi-Automaten $(Q',\Sigma,\delta',\mu',q_0',F')$.
 Dazu benötigt man zunächst eine Hilfsfunktion $i : F\rightarrow F$, die zyklisch durch alle Finalzustandsmengen geht.
-\begin{align*}
-  Q' &= \{ (q,f)\ |\ q\in Q, f\in F \}\\
-  \delta' &= \{ ((q_1,f_1),(q_2,f_2))\ |\ (q_1,q_2)\in\delta, (q_1\in f_1\land i(f_1)=f_2)\lor f_1=f_2\}\\
-  \mu'((q,f)) &= \mu(q)\\
-  F' &= \{ (q,f)\ |\ f\in F, q\in f \}
-\end{align*}
+Die neue Zustandsmenge enthält nun eine Kopie der ursprünglichen Zustände für jede Finalzustandsmenge.
+\[ Q' = \{ (q,f)\ |\ q\in Q, f\in F \} \]
+Die Übergangsfunktion $\delta'$ kopiert zunächst alle ursprünglichen Übergänge und fügt dann Übergänge zwischen den Ebenen hinzu, wenn der Ursprungszustand in der aktuellen Finalzustandsmenge liegt.
+\[ \delta' = \{ ((q_1,f_1),(q_2,f_2))\ |\ (q_1,q_2)\in\delta, (q_1\in f_1\land i(f_1)=f_2)\lor f_1=f_2\} \]
+Die atomaren Aussagen, die in den Zuständen gelten müssen werden einfach übernommen.
+\[ \mu'((q,f)) = \mu(q) \]
+Die Finalzustandsmenge besteht aus den Zuständen, die in der Finalzustandsmenge der aktuellen Ebene liegen.
+\[  F' = \{ (q,f)\ |\ f\in F, q\in f \} \]
