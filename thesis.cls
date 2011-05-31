@@ -24,7 +24,7 @@
   bibliography=totoc,
   openright,
   abstract=on,
-  cleardoublepage=current, % mit "empty" werden leere Seiten nicht nummeriert
+  cleardoublepage=empty, % mit "empty" werden leere Seiten nicht nummeriert
   toc=listof
   ]{scrreprt}
 
