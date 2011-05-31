@@ -15,14 +15,14 @@ Die Verifikation von GALS-Systemen steht vor zwei Problemen:
   Asynchrone Formalismen bieten zwar meist Unterstützung für synchrone Systeme, allerdings in den meisten Fällen nicht sehr elegant oder performant.
 \item Zum anderen können GALS-Systeme beträchtliche Größen annehmen und damit ohne die manuelle Einführung von Vereinfachungen und Abstraktionen nur noch schwer in absehbarer Zeit zu verifizieren sein.
   Das manuelle Einführen von Abstraktionen ist aber sehr schwierig und kann bei ungenauen Abstraktionen zu schwer auffindbaren Fehlern in der Verifikation führen.
-  Automatisch zu überprüfen, ob eine gegebene Abstraktion korrekt ist, ist in keinem in dieser Arbeit untersuchtem Formalismus vorgesehen.
+  Automatisch zu überprüfen, ob eine gegebene Abstraktion korrekt ist, ist in keinem aus der Literatur bekannten Formalismus vorgesehen.
 \end{itemize}
 Diese Arbeit versucht beide Probleme durch die Einführung eines neuen Formalismus zu lösen, der die Vorteile von synchronen und asynchronen Formalismen vereint und zusätzlich die Möglichkeit bietet, sichere Abstraktionen durch Kontrakte einzuführen.
 \section{Inhalt}
 Zunächst werden in Kapitel \ref{sec:related_works} ähnliche Ansätze zur Lösung der angesprochenen Probleme präsentiert.
 Im nächsten Kapitel (Kapitel \ref{sec:gals}) werden dann GALS-Architekturen formal definiert und verschiedene Ausführungssemantiken eingeführt.
 Kapitel \ref{sec:basics} beschäftigt sich mit Grundlagen, die für das Verständnis der nachfolgenden Kapitel unabdingbar sind.
-Im Kapitel \ref{sec:gtl} beginnt dann die eigentliche Leistung dieser Arbeit: Die \emph{GTL}-Sprache wird definiert und mit einer Semantik versehen.
+Im Kapitel \ref{sec:gtl} beginnt dann die eigentliche Leistung dieser Arbeit: Die \emph{GTL}\footnote{\emph{GTL} steht für "`gals translation language"' also eine Sprache um GALS Systeme in andere Formalismen zu übersetzen.}-Sprache wird definiert und mit einer Semantik versehen.
 Daraufhin wird in Kapitel \ref{sec:translation} beschrieben, wie sich die vorher definierte Sprache in den Formalismus verschiedener Verifikationssprachen übersetzen lässt.
 Es werden außerdem Möglichkeiten zur Optimierung vorgestellt und ein Verfahren zur Erkennung von fehlerhaften Spezifikationen erläutert.
 Die Implementierung der beschriebenen Sprache und ihrer Transformationen wird dann in Kapitel \ref{sec:implementation} behandelt.
@@ -36,12 +36,12 @@ Die Idee, GALS-Systeme durch eine Kombination von synchronen und asynchronen Spr
 \item Damien Thivolle und Hubert Garavel erklären die grundsätzliche Herangehensweise und zeigen anhand der Verifikation eines Kommunikationsprotokolls die Vorteile dieses Ansatzes~\cite{gals_sam}.
 Es wird erklärt, wie sich synchrone Komponenten als Funktionen ansehen lassen und wie sie sich in ein asynchrones Verifikationstool einbinden lassen.
 Im Gegensatz zu dieser Arbeit wird aber kein neuer Formalismus für die Spezifikation von GALS-Systemen eingeführt.
-Auch Techniken zur Optimierung wie sie in dieser Arbeit behandelt werden fehlen.
+Auch Techniken zur Optimierung, wie sie in dieser Arbeit behandelt werden, fehlen.
 \item Ein Artikel von Doucet et al. beschreibt die Übersetzung des synchronen Formalismus SIGNAL nach Promela~\cite{gals_signal}.
   Die Verifikation wird dann vollständig von SPIN übernommen und nicht wie in dieser Arbeit aufgeteilt in einen synchronen und asynchronen Teil.
 \item "`Multiclock Esterel"' erweitert die Beschreibungssprache von SCADE um die Möglichkeit, mehr als einen Takt für verschiedene Komponenten anzugeben~\cite{multiclock_esterel}.
   Der Formalismus bleibt allerdings vollständig deterministisch und jede Komponente lässt sich in eine äquivalente SCADE Komponente übersetzen.
-\item Der Formalismus "`Communicating Reactive State Machines"' wird in einer Arbeit verwendet, um GALS Systeme zu modelieren und zu verifizieren~\cite{gals_crsm}.
+\item Der Formalismus "`Communicating Reactive State Machines"' wird in \cite{gals_crsm} verwendet, um GALS Systeme zu modelieren und zu verifizieren.
 \item Das "`IF Toolset"' führt einen Formalismus zur Spezifikation von asynchronen Systemen ein, der wie der hier vorgestellte Formalismus auf der Komposition von Komponenten durch Verbindungen basiert~\cite{if_toolset}.
   Der Schwerpunkt der Arbeit liegt in der Bereitstellung eines Formalismus, der mächtig genug ist, um die vielen verschiedenen Design-Formalismen zu vereinen.
 \end{enumerate}
