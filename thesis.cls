@@ -29,7 +29,9 @@
   ]{scrreprt}
 
 \RequirePackage[utf8]{inputenc}
+\RequirePackage{chngcntr}
 
+\counterwithout{footnote}{chapter}
 \newcommand{\@keywords}{}
 \newcommand{\keywords}[1]{\renewcommand{\@keywords}{#1}}
 \newcommand{\keywordsname}{Schlüsselwörter}
