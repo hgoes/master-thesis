@@ -5,7 +5,7 @@ Versucht man, in einem Programm Funktionen genau wie Daten zu behandeln, so stö
 \item Wird die Funktion durch ihren Code repräsentiert, so ist die Darstellung nicht nur abhängig von der Wahl der Programmiersprache, sondern auch uneindeutig, da es in einer Turing-vollständigen Sprache unendlich viele Quelltexte gibt, die eine gegebene Funktion kodieren.
 \item Verwendet man zur Repräsentation die Wertetabelle der Funktion, so ist zwar eine eindeutige Kodierung sichergestellt, allerdings kann schon die Kodierung einer Funktion mit sehr kleinem Wertebereich enorm viel Speicher veranschlagen (Die Kodierung einer Funktion von 32-bit Integer nach Bool würde zum Beispiel schon 0.5 GB Daten benötigen).
 \end{itemize}
-Um diese Probleme zu lösen, kann man binäre Entscheidungsdiagramme (BDD)\footnote{In der englisch-sprachigen Literatur als "`binary decision diagrams"' bezeichnet und mit BDD abgekürzt} verwenden.
+Um diese Probleme zu lösen, kann man binäre Entscheidungsdiagramme (BDD)\footnote{In der englisch-sprachigen Literatur als "`binary decision diagrams"' bezeichnet und mit BDD abgekürzt} verwenden~\cite{knuth2011computer}.
 Diese lassen sich verwenden, um Funktionen der Form
 \[ f : \mathbb{B}^n\rightarrow\mathbb{B} \]
 eindeutig zu kodieren (Wobei $n$ beliebig, aber endlich ist).
@@ -39,7 +39,7 @@ Beispielsweise kann die Funktion $(\alpha\land\beta)\lor \gamma$ wie in Abbildun
   \label{fig:example1_bdd}
 \end{figure}
 Diese Art der Kodierung hat nun aber das folgende Problem: Sie ist nicht eindeutig.
-Beispielsweise stellt das Diagramm in Abbildung \ref{fig:example2_bdd} die selbe Funktion dar.
+Beispielsweise stellt das Diagramm in Abbildung \ref{fig:example2_bdd} dieselbe Funktion dar.
 \begin{figure}[h]
   \centering
   \includegraphics[scale=.5]{example2}
@@ -77,22 +77,22 @@ Die so eingeführten \emph{geordneten}, \emph{reduzierten} binären Entscheidung
   Endet man bei dem Knoten $\top$, so ist das Ergebnis der Funktion wahr, endet man bei $\bot$, so ist es falsch.
 \item Für viele Funktionen ist das entsprechende Entscheidungsdiagramm sehr klein.
   Allerdings lässt sich zeigen, dass es Funktionen gibt, für die keine effiziente Repräsentation als Entscheidungsdiagramm existiert, wie zum Beispiel die Multiplikationsfunktion~\cite{Bryant98onthe}.
-\item Speichert man mehrere Entscheidungsdiagramme, so kann man den Speicherbedarf enorm verringern, indem man gleiche Knoten zwischen Diagrammen teilt.
+\item Speichert man mehrere Entscheidungsdiagramme, so kann man den Speicherbedarf enorm verringern, indem die Diagramme sich gleiche Knoten teilen.
 \end{itemize}
 
 In dem Rest dieser Arbeit sind mit dem Begriff "`Entscheidungsdiagramm"' immer geordnete, reduzierte und geteilte Entscheidungsdiagramme gemeint.
-Mehr zu Entscheidungsdiagrammen im allgemeinen lässt sich in \cite{knuth2011computer} finden.
+Mehr zu Entscheidungsdiagrammen im Allgemeinen lässt sich in \cite{knuth2011computer} finden.
 \section{Datentypen als Entscheidungsdiagramme}
 Da Enscheidungsdiagramme binäre Funktionen auf boolesche Werte kodieren, lassen sie sich auch verwenden, um Mengen von endlichen Datentypen zu kodieren.
 Das ist möglich, weil sich jeder endliche Datentyp binär kodieren lässt (Notfalls durch Durchnummerierung aller möglichen Werte).
 Die entsprechende Funktion gibt also \emph{wahr} zurück, wenn sich das Element, dass der binären Kodierung entspricht sich in der Menge befindet.
 
-Ist also ein endlicher Datentyp $T$ zusammen mit einer Kodierungsfunktion $c : T\rightarrow \{0,1\}^n$ gegeben, so lässt sich ein BDD für eine beliebige Menge $Q\subseteq T$ konstruieren, indem man für jedes Element $q\in Q$ der Menge das BDD konstruiert, dass die Funktion repräsentiert, die nur bei dem Wert $c(q)$ wahr ist.
+Ist also ein endlicher Datentyp $T$ zusammen mit einer Kodierungsfunktion $c : T\rightarrow \{0,1\}^n$ gegeben, so lässt sich ein BDD für eine beliebige Menge $Q\subseteq T$ konstruieren, indem man für jedes Element $q\in Q$ der Menge das BDD konstruiert, dass die Funktion $f:\{0,1\}^n\rightarrow \{0,1\}$ repräsentiert, die nur bei dem Wert $c(q)$ wahr ist (Das ist die charakteristische Funktion von $c(q)$).
 Die so generierten BDD werden dann per Disjunktion zu einem BDD zusammengefügt.
 Diese Konstruktion ist aber extrem ineffizient, da sehr viele BDDs erstellt und sofort wieder verworfen werden.
 Effizienter ist es, das BDD mit einem \emph{divide-and-conquer}-Algorithmus zu erstellen:
 Dieser erhält eine Menge der noch zu kodierenden Werte sowie die Bitposition, an der gerade kodiert wird (beginnend bei Bit null).
-Der Algorithmus teilt nun die Menge in zwei Mengen:
+Der Algorithmus teilt nun die gegebene Menge $Q$ in zwei Mengen:
 Die eine enthält die Werte deren Kodierung an der aktuellen Bitposition eine null aufweisen, die andere Menge enthält die restlichen Werte.
 Auf diesen Mengen wird der Algorithmus nun rekursiv aufgerufen.
 Die vollständige Implementierung ist in Abbildung \ref{alg:create_bdd} zu sehen.
@@ -165,17 +165,17 @@ Im folgenden wird die Implementierung einiger einfacher Operationen erläutert.
 
 \subsubsection{Addition}
 Um beispielsweise die elementweise Addition von zwei Mengen angeben zu können, definiert man zunächst eine Hilfsfunktion "`plus"', die zusätzlich noch einen Parameter enthält, die den Übertrag der letzten Bit-Addition speichert.
-Addiert man nun zwei Diagramme, deren Hauptknoten die selbe Markierung $x$ haben, so ergibt sich ein neues Diagramm mit dem Hauptknoten der Markierung $x$, der wie folgt aufgebaut ist:
+Addiert man nun zwei Diagramme, deren Hauptknoten dieselbe Markierung $x$ haben, so ergibt sich ein neues Diagramm mit dem Hauptknoten der Markierung $x$, der wie folgt aufgebaut ist:
 \[ \textrm{plus}\Bigg(\bdd{plus1_lhs},\bdd{plus1_rhs},0\Bigg) = \bdd{plus1_res} \]
 Der linke Ast des Resultats muss hierbei den Fall behandeln, dass das Ergebnis der Addition im Bit $x$ den Wert 1 erhält.
 Dies kann nur dann passieren, wenn genau eines der Argument-Bits 1 ist.
-Hierfür gibt es trivialerweise zwei Möglichkeiten, bei der einen ist das erste Argument 1 und der linke Ast des ersten Argument wird ohne Überhang mit dem rechten Ast des zweiten Arguments addiert; bei der anderen Möglichkeit ist es genau andersrum.
+Hierfür gibt es trivialerweise zwei Möglichkeiten, bei der einen ist das erste Argument 1 und der linke Ast des ersten Argument wird ohne Überhang mit dem rechten Ast des zweiten Arguments addiert; bei der anderen Möglichkeit ist es genau umgekehrt.
 Da beide Möglichkeiten auftreten können, müssen die Ergebnisse vereinigt werden, was auf Entscheidungsdiagramm-Ebene einer Disjunktion entspricht.
 Für den rechten Ast des Resultats muss man nun die Möglichkeiten betrachten, bei denen das Bit $x$ den Wert 0 erhalten kann.
 Dies kann geschehen, wenn beide Bits der Argumente 0 sind, oder wenn beide 1 sind.
-Im letzteren Fall muss dann beim rekursiven Aufruf der Überhang hinzugefügt werden.
+Im letzteren Fall muss dann beim rekursiven Aufruf der Übertrag hinzugefügt werden.
 
-Wird bei der Addition bereits ein Überhang berücksichtigt, so ändert sich die Argumentation leicht, ist aber im wesentlichen symmetrisch:
+Wird bei der Addition bereits ein Übertrag berücksichtigt, so ändert sich die Argumentation leicht, ist aber im wesentlichen symmetrisch:
 \[ \textrm{plus}\Bigg(\bdd{plus1_lhs},\bdd{plus1_rhs},1\Bigg) = \bdd{plus2_res} \]
 
 Im Fall, dass der Knoten eines der Argumente niedrigere Ordnung besitzt -- hier wird nur der Fall betrachtet, dass das zweite Argument niedrigere Ordnung hat, da die Addition symmetrisch ist -- kann man sich überlegen, dass das zweite Argument hierbei äquivalent zu einem Diagramm ist, bei dem ein mit $x$ markierter Knoten oben steht, dessen Äste beide zum ursprünglichen Diagramm führen.

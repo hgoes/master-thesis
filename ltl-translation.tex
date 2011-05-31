@@ -9,7 +9,7 @@ Außerdem müssen für den Algorithmus alle Negationen so weit wie möglich nach
 Um die Größe der Formeln nicht unnötig zu erhöhen wird dual zum \emph{until}-Operator $U$ der Operator $V$ eingeführt, der über die folgende Identität definiert ist:
 \[ \varphi V\psi = \lnot (\lnot\varphi U\lnot\psi) \]
 
-Für die Konstruktion des Büchi-Automaten wird ein Graph aufgebaut, der Schrittweise erweitert wird, bis der Büchi-Automat vollständig ist.
+Für die Konstruktion des Büchi-Automaten wird ein Graph aufgebaut, der schrittweise erweitert wird, bis der Büchi-Automat vollständig ist.
 Die Knoten des Graphen benötigen die folgenden Felder:
 \begin{description}
 \item[Name] Ein eindeutiger Bezeichner für den Knoten.
@@ -104,7 +104,7 @@ Die Hilfsfunktionen \proc{New1}, \proc{New2} und \proc{Next1} sind hierbei über
 Um eine gegebene Formel $\varphi$ zu übersetzen, ruft man die Funktion also wie folgt auf:
 \begin{align*}
   \proc{Expand}([&\id{Name}\gets\proc{NewName}(),\\
-                 &\id{Incoming}\gets\const{Init},\\
+                 &\id{Incoming}\gets\{\const{Init}\},\\
                  &\id{New}\gets\{\varphi\},\\
                  &\id{Old}\gets\emptyset,\\
                  &\id{Next}\gets\emptyset],\emptyset) = ns
@@ -128,15 +128,14 @@ Es ergibt sich also ein verallgemeinerter Büchi-Automat $(Q,\Sigma,\delta,\mu,q
 Dieser kann nun mithilfe der in Abschnitt \ref{sec:gba} definierten Methode in einen normalen Büchi-Automaten umgewandelt werden.
 
 \subsection{Übersetzung des Existenzquantors}
-Mithilfe des Existenzquantors ist es möglich, Werte zu einem bestimmten Zeitpunkt zu binden und zu einem späteren Zeitpunkt wieder zu verwenden
-\footnote{Eine sehr viel generellere Definition des Existenzquantors findet sich in \cite{exists_quantor}.
+Mithilfe des Existenzquantors ist es möglich, Werte zu einem bestimmten Zeitpunkt zu binden und zu einem späteren Zeitpunkt wieder zu verwenden.\footnote{Eine sehr viel generellere Definition des Existenzquantors findet sich in \cite{exists_quantor}.
   Es wird jedoch kein allgemeiner Übersetzungsalgorithmus angegeben, weshalb in dieser Arbeit eine sehr eingeschränkte Version verwendet wird.
-}.
+}
 Beispielsweise gibt die Formel
 \[ \textbf{exists}\ u = \mathit{Engine}.\mathit{state} : \textbf{next}\ u = \mathit{Engine}.\mathit{state} \]
 an, dass die Variable "`$\mathit{Engine}.\mathit{state}$"' im nächsten Zustand den gleichen Wert wie im aktuellen besitzen soll.
 
-Um dieses Konstrukt zu übersetzen kann man Variablen einführen, die die Geschichte von Variablen speichern.
+Um dieses Konstrukt zu übersetzen kann man Variablen einführen, die die Historie von Variablen speichern.
 Muss also beispielsweise der Wert einer Variable überprüft werden, der drei Schritte in der Vergangenheit liegt, so müssen drei neue Variablen in das Modell eingefügt werden, die die letzten drei Werte der Variablen speichern.
 
 Die Anzahl der Schritte, die in die Vergangenheit geschaut werden muss ist allerdings nicht immer endlich.

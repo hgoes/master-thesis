@@ -10,15 +10,18 @@ wobei die Symbole folgende Bedeutung haben:
   \item $Q$ ist die Menge der Zustände des Automaten.
   \item Die Menge von atomaren Aussagen $\Sigma$, die gültig oder ungültig sein können.
   \item $\delta\subseteq Q\times Q$ ist die Übergangsrelation des Automaten.
-  \item $\mu : Q\rightarrow\Sigma$ gibt an, welche Aussagen in einem Zustand gelten müssen.
+  \item $\mu : Q\rightarrow2^\Sigma$ gibt an, welche Aussagen in einem Zustand gelten müssen.
   \item $q_0\subseteq Q$ ist die Startzustandsmenge.
   \item $F\subseteq Q$ ist die Finalzustandsmenge.
 \end{itemize}
 Eine Folge von Aussagen $a_0a_1a_2\dots$ wird nun also genau dann akzeptiert, wenn es eine Folge von Zuständen $q_0q_1q_2\dots$ gibt, wobei stets gilt $q_n\delta q_{n+1}$ und in der mindestens ein Zustand aus $F$ unendlich oft vorkommt.
-Außerdem muss jede Aussage $a_n$ mit der Menge von Aussagen $\mu(q_n)$ kompatibel sein.
+Außerdem muss jede Aussage $a_n$ mit der Menge von Aussagen $\mu(q_n)$ kompatibel sein, das heißt $a_n\in \mu(a_n)$.
 
 \subsection{Verallgemeinerter Büchi-Automat}
 \label{sec:gba}
+Für das Übersetzungsverfahren in Abschnitt \ref{sec:ltl-translation} sind Büchi-Automaten wegen ihrer Beschränkung auf eine Finalzustandsmenge ungeeignet.
+Algorithmen wie \cite{Gerth95simpleon-the-fly} verwenden daher eine abgewandelte Form von Büchi-Automaten.
+
 Ein Verallgemeinerter Büchi-Automat\footnote{Im englischen als "`generalized buchi automaton"' bezeichnet und als \emph{GBA} abgekürzt.} unterscheidet sich von einem normalen Bü\-chi-Au\-to\-ma\-ten durch die Definition des Akzeptanzverhaltens.
 Während ein Büchi-Automat akzeptiert, wenn unendlich oft ein Finalzustand betreten wird, ist $F$ hier eine Menge von Finalzustandsmengen ($F\subseteq\mathcal{P}(Q)$).
 Der Automat akzeptiert nun, wenn aus jeder Finalzustandsmenge mindestens ein Zustand unendlich oft betreten wird.
@@ -28,11 +31,11 @@ Jede Ebene enthält die gleichen Zustände und Transitionen wie der ursprünglic
 Dadurch wird erreicht, dass ein Zyklus nur dann zustande kommt, wenn ein Zustand aus allen Finalzustandsmengen betreten wird.
 
 Für einen verallgemeinerten Büchi-Automaten $(Q,\Sigma,\delta,\mu,q_0,F)$ konstruiert man also einen Büchi-Automaten $(Q',\Sigma,\delta',\mu',q_0',F')$.
-Dazu benötigt man zunächst eine Hilfsfunktion $i : F\rightarrow F$, die zyklisch durch alle Finalzustandsmengen geht.
+Ohne Beschränkung der Allgemeinheit kann $F=\{f_0,f_1,\dots,f_{n-1}\}$ angenommen werden.
 Die neue Zustandsmenge enthält nun eine Kopie der ursprünglichen Zustände für jede Finalzustandsmenge.
 \[ Q' = \{ (q,f)\ |\ q\in Q, f\in F \} \]
 Die Übergangsfunktion $\delta'$ kopiert zunächst alle ursprünglichen Übergänge und fügt dann Übergänge zwischen den Ebenen hinzu, wenn der Ursprungszustand in der aktuellen Finalzustandsmenge liegt.
-\[ \delta' = \{ ((q_1,f_1),(q_2,f_2))\ |\ (q_1,q_2)\in\delta, (q_1\in f_1\land i(f_1)=f_2)\lor f_1=f_2\} \]
+\[ \delta' = \{ ((q_1,f_i),(q_2,f_j))\ |\ (q_1,q_2)\in\delta, (q_1\in f_i\land j=(i+1)\bmod n)\lor (q_1\not\in f_i\land i=j)\} \]
 Die atomaren Aussagen, die in den Zuständen gelten müssen werden einfach übernommen.
 \[ \mu'((q,f)) = \mu(q) \]
 Die Finalzustandsmenge besteht aus den Zuständen, die in der Finalzustandsmenge der aktuellen Ebene liegen.
