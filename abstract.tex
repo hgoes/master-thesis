@@ -1,1 +1,6 @@
-Diese Arbeit stellt einen Formalismus zur Spezifikation von GALS Systemen vor, implementiert einen Algorithmus zur Verifikation und zeigt Möglichkeiten für Optimierungen auf.
+Viele Hard- und Software-Systeme lassen sich als ein System aus synchronen Komponenten auffassen, die asynchron miteinander kommunizieren.
+Solche GALS-Systeme ("`globally asynchronous, locally synchronous"') treten in vielen industriellen Anwendungen, wie zum Beispiel in verteilten, sicherheitskritischen Überwachungssystemen, aber auch im Chipentwurf mit mehreren Zeitgebern auf.
+Die Verifikation dieser Systeme wird momentan dadurch behindert, dass es kaum Werkzeuge gibt, die mit ihnen umgehen können und die resultierenden Modelle zu viele Zustände aufweisen, da noch wenig Techniken bekannt sind, die GALS-Systeme vereinfachen können.
+
+Diese Arbeit stellt daher einen Formalismus zur Spezifikation von GALS Systemen vor, der es erlaubt mehrere in dem synchronen Formalismus SCADE implementierte Komponenten zu einem asynchgronen Gesamtsystem zusammen zu fassen.
+Außerdem wird basierend auf dem SPIN Model-Checker ein Algorithmus zur Verifikation präsentiert und außerdem Möglichkeiten für Optimierungen aufgezeigt.
