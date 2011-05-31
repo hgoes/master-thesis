@@ -1,5 +1,5 @@
 Ein GALS System -- GALS steht für "`Globally asynchronous, locally synchronous"' -- besteht aus mehreren synchronen Komponenten, die asynchron miteinander kommunizieren.
-Die synchronen Komponenten lassen sich dabei als Mealy-Automaten auffassen.
+Die synchronen Komponenten lassen sich dabei als Mealy-Automaten auffassen\footnote{Mächtigere Formalismen wie beispielsweise Turing-Maschinen sind ungeeignet, da sie einen unendlichen Zustandsraum aufweisen können und daher mit aktuellen Model-Checkern nicht überprüft werden können.}.
 In einem Mealy-Automaten hängt die Ausgabe sowohl von der Eingabe als auch dem aktuellen Zustand ab~\cite{Mealy}.
 Mealy-Automaten sind so allgemein formuliert, dass sich jedes in einem synchronen Formalismus formulierte Modell in einen bisimularen Mealy-Automaten transformieren lässt.
 Ein Beispiel für einen Mealy-Automaten ist in Abbildung \ref{fig:mealy} dargestellt.
@@ -41,7 +41,7 @@ Abbildung \ref{fig:mealy2} zeigt einen Beispiel-Automaten, der Tupel der Form $\
 \end{figure}
 
 Um ein GALS-System zu erstellen, kann man nun die Ausgabekanäle von Automaten mit den Eingabekanälen von anderen Automaten verbinden und so ein Netzwerk aus Mealy-Automaten erhalten.
-Ist die Eingabe eines Automaten mit einer Ausgabe verbunden, so verwendet der Automat immer die letzte produzierte Ausgabe des verbundenen Automaten als Eingabesymbol.
+Ist eine Ausgabe eines Automaten $A$ mit einer Eingabe eines Automaten $B$ verbunden, so verwendet $B$ als Eingabe in jedem Schritt die letzte von $A$ produzierte Ausgabe.
 
 Abbildung \ref{fig:mealy3} zeigt ein solches System.
 Das Gesamtsystem hat sämtliche unverbundenen Aus- und Eingaben als Aus- und Eingaben.
@@ -49,6 +49,7 @@ Ein Schritt des Gesamtsystems wird nun durch einen Schritt eines beliebigen Meal
 Durch diese Eigenschaft wird das GALS-System nicht-deterministisch und asynchron.
 Ein Problem ergibt sich nun, wenn die Quelle einer Verbindung noch keinen Schritt durchgeführt hat: in diesem Fall gibt es keinen letzten Wert für die Verbindung und die Eingabe des Ziel-Automaten ist undefiniert.
 Dieser Fall kann durch die Definition von Default-Werten oder durch das Verbot, Schritte mit Automaten durchzuführen, deren Eingaben (teilweise) undefiniert sind gelöst werden.
+In dieser Arbeit wird das Problem durch die Einführung von impliziten oder expliziten Default-Werten gelöst.
 \begin{figure}[h]
   \centering
   \input{mealy3}
@@ -58,9 +59,9 @@ Dieser Fall kann durch die Definition von Default-Werten oder durch das Verbot, 
 
 Das in Abbildung \ref{fig:mealy3} gezeigte System hat also nur die Eingabe $x$ und die Ausgabe $\mathit{res}$.
 Der Gesamtzustand des Systems ist nun durch den Zustand der Verbindungen und den aktuellen Zustand der Prozesse definiert.
-Der Startzustand des abgebildeten Systems kann also beispielsweise durch $(p_0,q_0,\bot)$ dargestellt werden, wobei $\bot$ angibt, dass die Verbindung zwischen $\mathit{out}$ und $\mathit{on}$ undefiniert ist.
+Der Startzustand des abgebildeten Systems kann also beispielsweise durch $(p_0,q_0,\bot)$ dargestellt werden, wobei $\bot$ angibt, dass die Verbindung zwischen $\mathit{out}$ und $\mathit{on}$ einen undefinierten Wert besitzt.
 Eine Transition wird dargestellt durch ein Tupel, dass die Ein- und Ausgaben des Systems sowie den Mealy-Automaten, der den aktuellen Schritt durchführt, enthält.
-Die Transition $(4,P_1)/3$ gibt also beispielsweise an, dass die Eingabe $x$ den Wert $4$, die Ausgabe $\mathit{res}$ den Wert $3$ besitzt und der Automat $P_1$ einen Schritt durchführt hat.
+Die Transition $(x=4,P_1)/3$ gibt also beispielsweise an, dass die Eingabe $x$ den Wert $4$, die Ausgabe $\mathit{res}$ den Wert $3$ besitzt und der Automat $P_1$ einen Schritt durchführt hat.
 Das resultierende Transitionssystem für das GALS-System aus Abbildung \ref{fig:mealy3} ist beispielsweise in Abbildung \ref{fig:gals_trans} dargestellt.
 
 \begin{figure}[h]
@@ -94,12 +95,14 @@ Eine synchrone Komponente mit $n$ Eingängen und $m$ Ausgängen lässt sich als 
   \item $q_0\in Q$ ist der Startzustand des Automaten.
 \end{itemize}
 
-Ein GALS-System ist ein Tripel $\mathcal{G}=(A,p,C)$ mit $A$ als einer Menge von Automatennamen, $p$ als eine Funktion, die Automatennamen einen konkreten Mealy-Automaten zuordnet und $C\subseteq (A\times\mathbb{N})\times(A\times\mathbb{N})$ das die Verbindungen zwischen Ein- und Ausgaben der Automaten definiert.
+\begin{definition}
+  Ein GALS-System ist ein Tripel $\mathcal{G}=(A,p,C)$ mit $A$ als einer Menge von Automatennamen, $p$ als eine Funktion, die Automatennamen einen konkreten Mealy-Automaten zuordnet und $C\subseteq (A\times\mathbb{N})\times(A\times\mathbb{N})$ das die Verbindungen zwischen Ein- und Ausgaben der Automaten definiert.
+\end{definition}
 Ein Tupel $(a,n,b,m)\in C$ bezeichnet also eine Verbindung der $n$-ten Ausgabe des Mealy-Automaten $p(a)$ mit der $m$-ten Eingabe des Mealy-Automaten $p(b)$.
 
-Um die Referenzierung von Automatenkomponenten zu ermöglichen sei $p$ wie folgt definiert:
+Um die Referenzierung von Automatenkomponenten zu ermöglichen, benutzen wir folgende Konvention:
 \[ p(a) = (Q^a,\Sigma^a,\Omega^a,\delta^a,q_0^a) \]
-Eine Aus- oder Eingabe ist spezifiziert duch den Automaten und den Index im Ein- oder Ausgabetupel.
+Eine Aus- oder Eingabe ist spezifiziert durch den Automaten und den Index im Ein- oder Ausgabetupel.
 Für eine Verbindung $((a,i),(b,j))\in C$ muss immer gelten, dass die Ausgabesymbole den Eingabesymbolen entsprechen, also $\Omega_i^a = \Sigma_j^b$ gilt.
 
 \begin{notation}
@@ -108,11 +111,11 @@ Für eine Verbindung $((a,i),(b,j))\in C$ muss immer gelten, dass die Ausgabesym
   \[ X|^a \]
   notiert.
   Es gilt dann also beispielsweise:
-  \begin{eqnarray*}
-    s &:& \Sigma^a_0\times\Sigma^a_2\times\Sigma^b_1\times\Sigma^b_2\\
-    s &=& (a,b,c,d)\\
-    s|^b &=& (c,d)
-  \end{eqnarray*}
+  \begin{align*}
+    s &\in \Sigma^a_0\times\Sigma^a_2\times\Sigma^b_1\times\Sigma^b_2\\
+    s &= (a,b,c,d)\\
+    s|^b &= (c,d)
+  \end{align*}
 \end{notation}
 
 Die Ein- und Ausgaben des GALS Systems ergeben sich aus den Automaten des Systems sowie den Verbindungen.
@@ -129,12 +132,12 @@ Der Zustandsraum $S(\mathcal{G})$ des Systems ergibt sich dann aus den Zustände
   S_C(\mathcal{G}) &= \prod_{((a,i),\_)\in C} \Sigma^a_i\\
   S(\mathcal{G}) &= S_Q(\mathcal{G})\times S_C(\mathcal{G})
 \end{align*}
-Da die Eingaben für einen konkreten Automaten sich nun entweder im Zustandsraum $S(\mathcal{G})$ oder in den globalen Eingaben $I(\mathcal{G})$ befinden können, definiert man eine Hilfsfunktion 
-\begin{eqnarray*}
-  \pi_I^a &:& S(\mathcal{G})\times I(\mathcal{G})\rightarrow Q^a\times\Sigma^a\\
-  \pi_I^a((q,s),i) &=& ((q|^a,s|^a),i|^a)
-\end{eqnarray*}
-die die benötigten Parameter für einen gegebenen Automaten $a$ extrahieren.
+Da die Eingaben für einen konkreten Automaten sich nun entweder im Zustandsraum $S(\mathcal{G})$ oder in den globalen Eingaben $I(\mathcal{G})$ befinden können, definiert man eine Familie von Hilfsfunktionen
+\begin{align*}
+  \pi_I^a &\in S(\mathcal{G})\times I(\mathcal{G})\rightarrow Q^a\times\Sigma^a\\
+  \pi_I^a((q,s),i) &= ((q|^a,s|^a),i|^a)
+\end{align*}
+für $a\in\mathcal{A}$, die die benötigten Parameter für den gegebenen Automaten $a$ extrahieren.
 \begin{notation}
   Um alle zum Automaten $a$ gehörigen Komponenten eines Tupels $X$ unter berücksichtigung der Reihenfolge durch alle Komponenten aus dem Tupel $Y$ zu ersetzen, wird die folgende Notation verwendet:
   \[ X[a\mapsto Y] \]
@@ -143,24 +146,24 @@ die die benötigten Parameter für einen gegebenen Automaten $a$ extrahieren.
   und
   \[ \forall b\in A,b\neq a: \left.X[a\mapsto Y]\right|_b = X|_b \]
 \end{notation}
-Analog definiert man eine weitere Funktion 
+Analog definiert man eine weitere Familie von Funktionen
 \begin{align*}
-  \pi_O^a &: S(\mathcal{G})\times Q^a\times\Omega^a\rightarrow S(\mathcal{G})\times O(\mathcal{G})\\
+  \pi_O^a &\in S(\mathcal{G})\times Q^a\times\Omega^a\rightarrow S(\mathcal{G})\times O(\mathcal{G})\\
   \pi_O^a ((q,s),q',o) &= ((q[a\mapsto q'],s[a\mapsto o]),(\bot,\dots,\bot)[a\mapsto o])
 \end{align*}
 die Ausgaben und Zustand eines Automaten zurück in den Zustandsvektor des Gesamtsystems sowie die Gesamtausgaben schreibt.
-Dabei gilt
-\[ s'|_{\{n\}}^b = \left\{\begin{array}{lr}
-    o|_{\{m\}} & \exists ((a,m),(b,n))\in C\\[10pt]
-    s|_{\{n\}}^b & \textrm{sonst}
-  \end{array}\right. \]
+%Dabei gilt
+%\[ s'|_{\{n\}}^b = \left\{\begin{array}{lr}
+%    o|_{\{m\}} & \exists ((a,m),(b,n))\in C\\[10pt]
+%    s|_{\{n\}}^b & \textrm{sonst}
+%  \end{array}\right. \]
 Um die Notation zu erleichtern, wird zusätzlich noch eine Zustandsübergangsfunktion $\lambda$ definiert, die den Zustandsübergang des GALS Systems bei Ausführung eines Automatenschritts angibt.
-\begin{eqnarray*}
-  \lambda &:& S(\mathcal{G})\times I(\mathcal{G})\times A\rightarrow S(\mathcal{G})\times O(\mathcal{G})\\
-  (q,i,a) &\mapsto& \pi_O^a(q,\delta^a(\pi_I^a(q,i)))
-\end{eqnarray*}
+\begin{align*}
+  \lambda &\in S(\mathcal{G})\times I(\mathcal{G})\times A\rightarrow S(\mathcal{G})\times O(\mathcal{G})\\
+  (q,i,a) &\mapsto \pi_O^a(q,\delta^a(\pi_I^a(q,i)))
+\end{align*}
 Der Initialzustand $\alpha(\mathcal{G})\in\mathcal{S}(\mathcal{G})$ ergibt sich als Kombination aller Initialzustände der Komponenten und den undefinierten Verbindungen
-\[ \alpha(\mathcal{G}) = (<q_0^a>_{a\in A},(\bot,\dots,\bot)) \]
+\[ \alpha(\mathcal{G}) = (\langle q_0^a\rangle_{a\in A},(\bot,\dots,\bot)) \]
 
 Das System in Abbildung \ref{fig:mealy3} wird formal beispielsweise so dargestellt:
 \[ \mathcal{G} = (\{a_1,a_2\},p,\{ (a_1,0),(a_2,0) \}) \]
@@ -190,14 +193,14 @@ Daraus ergeben sich die abgeleitetenden Eingaben, Ausgaben und Zustandsmengen zu
 Man kann nun das maximale Transitionssystem des GALS-Systems wie folgt über die Transitionsrelation $T$ definieren:
 \[ \xymatrix { s \ar[r]^{i/o}_>T & s' } \Leftrightarrow \exists a\in A: \lambda(s,i,a) = (s',o) \]
 Je nach dem, was man für Systeme betrachtet ist dieses Transitionssystem aber nicht unbedingt realistisch:
-Es schließt beispielsweise nicht aus, dass immer nur Schritte von einer Komponente durchgeführt werden, während die anderen "`verhungern"'.
+Es schließt beispielsweise nicht aus, dass immer nur Schritte von einer Komponente durchgeführt werden, während alle anderen Komponenten nie einen Schritt machen (sie "`verhungern"' sozusagen).
 Viele Formeln, die bei einer realistischen Ausführung des Systems erfüllt sind können so Fehler produzieren und eine formale Verifikation unmöglich machen.
 Daher werden in diesem Abschnitt verschiedene Ausführungsarten mit ihren Vor- und Nachteilen vorgestellt.
 Dazu wird zunächst informell die Ausführungsart beschrieben und danach formal die Herleitung des entsprechenden Transitionssystems erklärt.
 
 \subsection{Synchrone Ausführung}
 Bei der synchronen Ausführung führen alle Systeme gleichzeitig ihren Berechnungsschritt aus.
-Da eine echte Gleichzeitigkeit aber von SPIN nicht unterstützt wird, muss sie dadurch angenähert werden, dass die Komponenten zwar nacheinander ihre Schritte ausführen, aber dies  immer in der gleichen Reihenfolge tun.
+Da eine echte Gleichzeitigkeit aber von den in dieser Arbeit verwendeten Verifikationsformalismen nicht unterstützt wird, muss sie dadurch angenähert werden, dass die Komponenten zwar nacheinander ihre Schritte ausführen, aber dies  immer in der gleichen Reihenfolge tun.
 
 \begin{figure}[h]
   \centering
@@ -210,7 +213,7 @@ Da eine echte Gleichzeitigkeit aber von SPIN nicht unterstützt wird, muss sie d
     \node[fill=d2,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_2$] at (2,0) {};
     \node[fill=d3,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_3$] at (2.5,0) {};
 
-    \node at (3,0) {\dots};
+    \node at (3.25,0) {\dots};
     
   \end{tikzpicture}
   \caption{Synchrone Ausführung}
@@ -227,10 +230,11 @@ Der Nachteil ist jedoch, dass es für viele Szenarien sehr unrealistisch ist, pe
 In Kommunikationsnetzen bedeuten schon minimale Verzögerungen bei der Zustellung von Nachrichten, dass Prozesse nicht mehr echt synchron laufen, selbst wenn ihre Uhren genau gleich gehen.
 
 Formal lässt sich das Transitionssystem für die synchrone Ausführung herleiten, indem man den Automaten, der als nächstes ausgeführt werden soll in den Zustand übernimmt.
-Außerdem muss man eine Funktion $f : A\rightarrow A$ angeben, die die Ausführungsreihenfolge festlegt.
+Sei ohne Beschränkung der Allgemeinheit $A=\{P_0,P_1,\dots,P_{n-1}\}$.
+%Außerdem muss man eine Funktion $f : A\rightarrow A$ angeben, die die Ausführungsreihenfolge festlegt.
 Der Zustandsvektor des Gesamtsystems ist dann $(a,s)$, wobei $a\in A$ ein Automatenname und $s\in S(\mathcal{G})$ der Zustand des Systems ist.
 Die Zustandsübergangsrelation ergibt sich dann wie folgt:
-\[ \xymatrix { (a,s) \ar[r]^{l_i/l_o} & (a',s') } \Leftrightarrow f(a)=a'\land \lambda(s,l_i,a) = (s',l_o) \]
+\[ \xymatrix { (P_j,s) \ar[r]^{l_i/l_o} & (P_k,s') } \Leftrightarrow k=(j+1)\bmod n\land \lambda(s,l_i,a) = (s',l_o) \]
 
 \subsection{Vollständig asynchrones System}
 %In der vollständig asynchronenen Semantik können Komponenten zu jedem Zeitpunkt, unabhängig von dem Ausführungsstand der anderen, einen Schritt ausführen.
@@ -238,7 +242,7 @@ Die Zustandsübergangsrelation ergibt sich dann wie folgt:
 %Diese Semantik deckt zwar jede Ausführungsreihenfolge der Komponenten ab, ist aber nicht unbedingt realistisch.
 Im Gegensatz zur synchronen Architektur steht die vollständig asynchrone: 
 Hier kann zu jedem Zeitpunkt jeder Prozess unabhängig vom Fortschritt der anderen einen Berechnungsschritt ausführen.
-Eine Mögliche asynchrone Ausführung von drei Prozessen ist in Abbildung \ref{fig:asynchronous_execution} gezeigt.
+Eine mögliche asynchrone Ausführung von drei Prozessen ist in Abbildung \ref{fig:asynchronous_execution} gezeigt.
 \begin{figure}[h]
   \centering
   \begin{tikzpicture}
@@ -250,7 +254,7 @@ Eine Mögliche asynchrone Ausführung von drei Prozessen ist in Abbildung \ref{f
     \node[fill=d3,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_3$] at (2.5,0) {};
     \node[fill=d1,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_1$] at (3,0) {};
     \node[fill=d3,draw=black,minimum height=1cm,minimum width=0.5cm,label=below:$P_3$] at (3.5,0) {};
-    \node at (4,0) {\dots};
+    \node at (4.25,0) {\dots};
   \end{tikzpicture}
   \caption{Asynchrone Ausführung}
   \label{fig:asynchronous_execution}
@@ -273,16 +277,21 @@ In der Verifikation können so Fehlerzustände erkannt werden, die in der Realit
 \subsection{Asynchrone Ausführung mit Fairness}
 Um das Problem zu umgehen, dass einzelne Prozesse "`verhungern"', also nie einen Rechenschritt ausführen dürfen, kann man so genannte \emph{Fairness}-Kriterien definieren:
 Diese besagen, dass nur Ausführungen für die Verifikation in Betracht gezogen werden, in denen jeder Prozess immer mal wieder an die Reihe kommt.
-SPIN unterstützt die Modellierung von Fairness-Kriterien durch die Definition von Labels, die immer mal wieder erreicht werden müssen, damit die Ausführung in Betracht gezogen wird.
+Viele Verifikationsformalismen unterstützen die Modellierung von Fairness durch die Definition von Zuständen, die immer mal wieder erreicht werden müssen, damit die Ausführung in Betracht gezogen wird.
+
+Da Fairness-Eigenschaften aber etwas umständlich zu formulieren sind und für den Rest der Arbeit keine Bedeutung haben, wird das resultierende Transitionssystem hier nicht explizit angegeben.
+Mehr zum Thema Fairness kann in \cite{model_checking_fairness} nachgelesen werden.
 \subsection{Asynchrone Ausführung mit Schranken}
 %Um die Probleme der vollständig asynchronen Ausführung zu umgehen kann man die Asynchronität soweit begrenzen, dass die Anzahl der ausgeführten Schritte nie um mehr als einen festen Wert divergiert.
 Obwohl das Hinzufügen von Fairness-Eigenschaften die Fälle entfernt, in denen ein Prozess niemals zur Ausführung kommt, so werden immer noch extrem unrealistische Szenarien betrachtet:
 In der Realität wird es beispielsweise nie vorkommen, dass ein Prozess nur ein mal einen Berechnungsschritt durchführt, während ein anderer im gleichen Zeitraum 1000 ausführt.
 Wesentlich realistischere Ausführungen erreicht man, wenn einzelnen Prozessen nur für einen gewissen Zeitraum erlaubt, mehr oder weniger Schritte als die anderen auszuführen.
 Hierzu zählt man die Berechnungsschritte, die jeder Prozess bereits ausgeführt hat und überprüft, dass zu jedem Zeitpunkt der Verifikation die Bedingung "`Keine zwei Prozesse liegen um mehr als $x$ Berechnungsschritte von einander entfernt"' erfüllt ist.
+
+Genau wie Fairness-Eigenschaften ist diese Eigenschaft jedoch auch formal unhandlich zu definieren, nicht relevant für den Rest der Arbeit und daher weg gelassen.
 \section{Kontrakte}
 \label{sec:contracts}
-Eine Komponente in einem GALS-System besitzt durch ihre Spezifikation eine Menge von Verhaltensweisen.
+Eine Komponente in einem GALS-System besitzt durch ihre Spezifikation als Mealy-Automat eine Menge von Verhaltensweisen.
 Jede Verhaltensweise ist eine Kombination aus Eingaben und Ausgaben.
 Betrachtet man den Raum aller Verhaltensweisen, also aller Kombinationen von Eingaben und Ausgaben, so nimmt jede Komponente einen Teilraum ein.
 
@@ -309,7 +318,7 @@ Der erläuterte Zusammenhang zwischen \emph{Verhalten}, \emph{erlaubtem Verhalte
   \label{fig:contracts}
 \end{figure}
 
-Ist ein vereinfachender Kontrakt-Automat gefunden, so muss die formelle Verifikation zunächst beweisen, dass der Kontrakt von der ursprünglichen Komponente eingehalten wird.
+Ist ein vereinfachender Kontrakt-Automat gefunden, so muss die formale Verifikation zunächst beweisen, dass der Kontrakt von der ursprünglichen Komponente eingehalten wird.
 Dies kann beispielsweise festgestellt werden, indem der Kontrakt in den Formalismus der Komponente übersetzt wird und dort verifiziert wird.
 Ist gesichert, dass alle Kontrakte von den Komponenten erfüllt werden, so werden die Kontrakte verwendet, um das Gesamtsystem zu verifizieren.
 Sind die Kontrakte allerdings zu locker formuliert, spezifizieren also mehr Verhalten als die zu verifizierende Formel erlaubt, so werden bei der Verifikation Fehler gefunden, die bei einer normalen Verifikation ohne Kontrakte nicht auftreten würden.
