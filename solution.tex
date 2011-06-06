@@ -1,0 +1,16 @@
+Mit Hilfe von Kontrakten lässt sich das Verhalten von jeder Komponente in einem GALS-System beschreiben.
+Die Komponenten sind in der synchronen Modellierungssprache SCADE (siehe Abschnitt \ref{sec:scade}) modelliert.
+Eine Verifikation eines solchen GALS-Systems muss nun zwei Aufgaben erfüllen:
+\begin{enumerate}
+\item Die Korrektheit der angegebenen Kontrakte muss überprüft werden.
+  Die Kontrakte sind korrekt, wenn das unter liegende SCADE Modell die Kontrakt-Formel erfüllt.
+  Um diese Eigenschaft nachzuweisen wird der SCADE Design Verifier verwendet.
+\item Es muss nachgewiesen werden, dass das Zusammenspiel der Kontrakte das globale Verifikationsziel erfüllt.
+  Diese Eigenschaft wird überprüft, indem das System aus Komponent-Kontrakten in den Promela Formalismus übersetzt wird und die Gültigkeit der Formel mit SPIN nachgewiesen wird.
+\end{enumerate}
+\begin{figure}[h]
+  \centering
+  \input{structure}
+  \caption{GTL Implementierung}
+  \label{fig:gtl_implementation2}
+\end{figure}
