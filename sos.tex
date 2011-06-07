@@ -1,6 +1,6 @@
 \section{Operationelle Semantik}
 \label{sec:sos}
-Struturelle operationelle Semantiken werden verwendet, um die Bedeutung von Programmen festzulegen~\cite{origins_sos}.
+Struturelle operationelle Semantiken werden verwendet, um die Bedeutung von Programmen festzulegen, indem meist die resultierenden Transitionssysteme hergeleitet werden~\cite{origins_sos}.\footnote{Im Unterschied zu den meisten anderen Arbeiten wird hier allerdings kein Transitionssystem abgeleitet, sondern eine abstrakte GTL-Spezifikation hergeleitet.}
 Hierfür werden so genannte Ableitungsregeln benutzt, um anzugeben, welche Semantik sich aus welchen Konstrukten herleiten lässt.
 Eine Ableitungsregel besteht aus einem Namen, Prämissen $p_0,\dots,p_n$ und einer Ableitung $c$, dargestellt als
 \[
@@ -15,44 +15,61 @@ Die Notation kann auch verwendet werden, um Ableitungsbäume darzustellen:
 Dieser Baum stellt die Aussage dar, dass zunächst aus den Prämissen $p_0$ und $p_1$ mithilfe der Regel $r_1$ die Aussage $c_1$ abgeleitet werden kann.
 Mit dem Ergebnis $c_1$ sowie der Prämisse $p_2$ kann nun mit der Regel $r_2$ die Aussage $c_2$ bewiesen werden.
 \subsection{Variablen}
-In den LTL-Formeln der Semantik können frühere Werte von Variablen referenziert werden.
+In den LTL-Formeln können frühere Werte von Variablen referenziert werden.
 Hierfür werden die Variablen mit einer natürlichen Zahl versehen, die die Anzahl von Schritten angibt, die in die Vergangenheit geschaut werden soll.
 
+\begin{definition}
+  Die Menge aller in einer GTL-Spezifikation vorkommenden Bezeichner heißt $\mathit{Id}$.
+  In der echten Programmimplementierung handelt es sich hierbei um Strings aus Buchstaben und Zahlen.
+\end{definition}
 Variablen kommen in der operationellen Semantik in zwei Formen vor:
-In der zu verifizierenden Formel kommen sie qualifiziert mit dem Modellnamen vor, die Variablen sind also Element der Menge $\mathit{Id}\times\mathit{Id}\times\mathbb{N}$.
+In der zu verifizierenden Formel kommen sie qualifiziert mit dem Modellnamen vor, die Variablen sind also Elemente der Menge $\mathit{Id}\times\mathit{Id}\times\mathbb{N}$.
 In Modell-Kontrakten ist der Modellname klar, daher sind die Variablen hier unqualifiziert und damit Element der Menge $\mathit{Id}\times\mathbb{N}$.
+
+Variablen können je nach Typ unterschiedliche Werte haben.
+\begin{definition}
+  Die Menge aller Möglichen Werte, die die Variablen eines Systems annehmen können wird mit $\mathit{Val}$ bezeichnet.
+\end{definition}
 \subsection{Aufbau}
 \label{sec:sos_defs}
-Die Semantik eines GTL-Modells wird durch ein Tripel angegeben, bestehend aus der Menge der Modelle, der Menge der Verbindungen zwischen den Variablen, sowie der LTL-Formel, deren Gültigkeit verifiziert werden soll.
-\[ \mathit{GTL} = \mathcal{P}(\mathcal{M})\times\mathcal{P}(\mathcal{C})\times\mathit{LTL}(\mathit{Id}\times\mathit{Id}\times\mathbb{N}) \]
-Die LTL-Formel ist über Paare von Namen definiert, wobei der erste den Namen des Modells angibt und der zweite den der Variable im Modell.
-Eine Modellkonfiguration $\mathcal{M}$ ist gegeben durch einen Namen, den synchronen Automaten, den Kontrakt und Initialisierungswerten für die Variablen.
-\[ \mathcal{M} = \mathit{Id}\times\mathcal{A}\times\mathit{LTL}(\mathit{Id})\times\mathcal{P}(\mathcal{D}) \]
-Die Initialisierungswerte werden über eine Abbildung von Variablennamen auf Werte $\mathit{Val}$ dargestellt:
-\[ \mathcal{D} = \mathit{Id}\rightarrow\mathit{Val} \]
-Die Verbindungen zwischen Modellen werden als Viertupel dargestellt, die das Modell und die Variable angibt, von dem die Verbindung ausgeht und Modell und Variable, in dem die Verbindung endet.
-\[ \mathcal{C} = \mathit{Id}\times\mathit{Id}\times\mathit{Id}\times\mathit{Id} \]
+Ein GALS-System besteht aus Komponentenkonfigurationen, Verbindungen und einer Verifikationsformel.
+\begin{definition}
+  Eine Komponentenkonfiguration $m\in\mathcal{M}$ ist gegeben durch einen Namen, den synchronen Automaten (Element der Menge $\mathcal{A}$), den Kontrakt (falls die Komponente mehrere Kontrakte besitzt werden diese durch Konjunkion zusammen gefasst) und Initialisierungswerten für die Variablen.
+  \[ \mathcal{M} = \mathit{Id}\times\mathcal{A}\times\mathit{LTL}(\mathit{Id})\times(\mathit{Id}\rightarrow\mathit{Val}) \]
+  Die Initialisierungswerte werden über eine Abbildung von Variablennamen auf Werte $\mathit{Val}$ dargestellt.
+\end{definition}
+\begin{definition}
+  Die Verbindungen zwischen Komponenten werden als Viertupel dargestellt, die die Komponente und die Variable angibt, von dem die Verbindung ausgeht und Komponente und Variable, in dem die Verbindung endet.
+  \[ \mathcal{C} = \mathit{Id}\times\mathit{Id}\times\mathit{Id}\times\mathit{Id} \]
+\end{definition}
+\begin{definition}
+  Die Semantik $s$ eines GTL-Modells wird angegeben als ein Element der Menge aller möglichen GTL-Spezifikationen $\mathcal{L}_{GTL}$.
+  Eine konkrete Semantik besteht dabei aus einer Menge von Komponenten, einer Menge von Verbindungen zwischen den Komponenten sowie einer Formel, die verifiziert werden soll.
+  \[ \mathcal{L}_{GTL} = \mathcal{P}(\mathcal{M})\times\mathcal{P}(\mathcal{C})\times\mathit{LTL}(\mathit{Id}\times\mathit{Id}\times\mathbb{N}) \]
+  Die LTL-Formel ist über Paare von Namen definiert, wobei der erste den Namen des Modells angibt und der zweite den der Variable im Modell.
+\end{definition}
+
 \subsection{Ableitungsregeln}
 Um nun die Ableitungsregeln zu formulieren zu können, die angeben, wie ein gegebenes Textmodell in ein GTL-Modell übersetzt wird, müssen zuerst die Ableitungsarten eingeführt werden.
 Zunächst gibt es die globale Ableitungsrelation $\vdash$.
 Die Aussage $\gamma,T\vdash m$ sagt also aus:
-Gegeben ein Textmodell $\gamma$ und eine Typenbindung $T : \mathit{Id}\times\mathit{Id}\rightarrow\mathit{Type}\times\{\mathit{Inp},\mathit{Outp}\}$ lässt sich das GTL-Modell $m : \mathit{GTL}$ ableiten.
+Gegeben ein Textmodell $\gamma$ und eine Typenbindung $T : \mathit{Id}\times\mathit{Id}\rightarrow\mathit{Type}\times\{\mathit{Inp},\mathit{Outp}\}$, die jeder Komponenten-Variable einen Typen und eine Richtung (Eingabe oder Ausgabe) zuordnet, lässt sich das GTL-Modell $m \in \mathcal{L}_{GTL}$ ableiten.
 
 Die Ableitung $\vdash_C$ leitet den Kontrakt von Modellen sowie die Initialisierungswerte ihrer Variablen her.
 Die Aussage $\gamma,T\vdash_C (c,d)$ gibt also an: Gegeben eine textuelle Repräsentation $\gamma$ und eine Typbindung $T$ lässt sich der Kontrakt(LTL-Formel) $c$ und die Initialisierung $d : \mathit{Id}\rightarrow \mathit{Val}$ ableiten.
 
 Formeln werden mithilfe von $\vdash_V$ abgeleitet.
 Diese Relation gibt an, ob sich ein Ausdruck zu einer Formel eines bestimmten Typs ableiten lässt.
-Die Aussage $e,T\vdash_V (f,t)$ sagt also aus, dass gegeben die Typisierung $T$ und den Ausdruck $e$ sich die LTL-Formel $f$ vom Typ $t$ herleiten lässt.
+Die Aussage $e,T,\gamma\vdash_V (f,t)$ sagt also aus, dass gegeben die Typisierung $T$, einer Variablenbindung $\gamma$ und den Ausdruck $e$ sich die LTL-Formel $f$ vom Typ $t$ herleiten lässt.
 
 Um die korrekte Typisierung von Modellen sicher stellen zu können, benötigt man noch eine weitere Ableitungsart:
-$\vdash_T$ gibt an, ob ein synchrones Modell, dass durch die übergebenen Parameter spezifiziert wird, eine gegebene Typisierung erfüllt und einem gegebenen Automaten entspricht.
+$\vdash_T$ gibt an, ob eine synchrone Komponente, die durch die übergebenen Parameter spezifiziert wird, eine gegebene Typisierung erfüllt und einem gegebenen Automaten entspricht.
 Die Aussage
 \[ \textrm{scade},(\textrm{"`model.scade"'})\vdash_T T,a \]
 bedeutet also: Das Scade-Modell "`model.scade"' erfüllt die Typenbindung $T$ und entspricht dem synchronen Automaten $a$.
 Da diese Ableitung abhängig vom synchronen Formalismus ist, wird sie hier nicht explizit angegeben.
 
-Zunächst wird definiert, wie sich ein leeres Textmodell herleiten lässt; die Modelle und Verbindungen sind leer, die zu verifizierende Formel ist $\top$, also immer wahr.
+Zunächst wird definiert, wie sich ein leeres Textmodell herleiten lässt; die Komponenten und Verbindungen sind leer, die zu verifizierende Formel ist $\top$, also immer wahr.
 \[
 \inference[empty]{}{\epsilon,T\vdash (\emptyset,\emptyset,\top)}
 \]
@@ -174,14 +191,16 @@ Für die Verbindungen benötigt man eine Hilfsfunktion $r : \mathit{Id}\times\ma
 \[ C = \{(a_f,r(a_f,v_f),a_t,r(a_t,v_t)\ |\ (a_f,v_f,a_t,v_t)\in c\} \]
 Um das GALS-System zu erhalten, das das Zusammenspiel der Kontrakte repräsentiert muss man statt der synchronen Automaten die mithilfe des in Abschnitt \ref{sec:ltl-translation} angebenen Algorithmus übersetzten LTL-Kontraktformeln verwenden.
 \subsection{Interpretation der Kontrakte als GALS-System}
-Anstatt die synchronen Automaten der Komponenten für die Komposition des GALS-Systems zu verwenden, ist es auch möglich, die Kontrakte wie in Abschnitt \ref{sec:contracts} erläutert als obere Schranke für das System-Verhalten zu verwenden.
+Anstatt die synchronen Automaten der Komponenten für die Komposition des GALS-Systems zu verwenden, ist es auch möglich, die Kontrakte wie in Abschnitt \ref{sec:contracts} erläutert als "`obere Schranke"' für das System-Verhalten zu verwenden.
 Da jeder Kontrakt durch eine LTL-Formel beschrieben wird, lässt sich mit dem Algorithmus aus Abschnitt \ref{sec:ltl-translation} ein äquivalenter Büchi-Automat konstruieren.
 Dieser enthält in jedem Zustand eine Menge von atomaren Aussagen, die gelten müssen, damit der Zustand betreten werden darf.
-Für eine Menge von Variablen $V$ und die Typzuordnung $T : V\rightarrow \mathit{Type}$ erzeugt jede atomare Aussage $f$ eine Menge von Zuordnungen $l(f)$, die die entsprechende Aussage erfüllen.
-Für die atomare Aussage $x\leq y$ ergibt sich mit der Variablenmenge $\{x,y\}$ und der Typzuordnung $T = \{ (x,\mathbb{N}),(y,\mathbb{N}) \}$ die Zuordnungen
-\[ \{ \{ (x,0), (y,0) \}, \{ (x,0), (y,1) \}, \{ (x,0), (y,2) \},\dots,\{ (x,1), (y,1) \}, \{ (x,1), (y,2) \},\dots \} \]
+Für eine Menge von Variablen $V$ und die Typzuordnung $T : V\rightarrow \mathit{Type}$ definiert jede atomare Aussage $f$ eine Menge von Belegungen $l(f)$, die die entsprechende Aussage erfüllen.
+\begin{beispiel}
+  Für die atomare Aussage $x\leq y$ ergibt sich mit der Variablenmenge $\{x,y\}$ und der Typzuordnung $T = \{ (x,\mathbb{N}),(y,\mathbb{N}) \}$ die Zuordnungen
+  \[ \{ \{ (x,0), (y,0) \}, \{ (x,0), (y,1) \}, \{ (x,0), (y,2) \},\dots,\{ (x,1), (y,1) \}, \{ (x,1), (y,2) \},\dots \} \]
+\end{beispiel}
 
-Gegeben ein Büchi-Automat $(Q,\Sigma,\delta,\mu,q_0,\emptyset)$ lässt sich ein äquivalenter nicht-de\-ter\-mi\-nis\-tischer Mealy Automat $(Q\cup\{\const{init}\},\Sigma',\Omega,\delta',\{\const{init}\})$ erzeugen mit:
+Gegeben ein Büchi-Automat $(Q,\Sigma,\delta,\mu,q_0,\emptyset)$ lässt sich ein äquivalenter nicht-de\-ter\-mi\-nis\-tischer Mealy Automat $(Q\cup\{\const{init}\},\Sigma,\Omega,\delta',\{\const{init}\})$ erzeugen mit:
 \[
 \begin{array}{c}
   \forall q,q'\in Q: q\neq \const{init}\Rightarrow\\
@@ -192,3 +211,4 @@ Gegeben ein Büchi-Automat $(Q,\Sigma,\delta,\mu,q_0,\emptyset)$ lässt sich ein
 \forall q\in q_0: \mu(q) = p \Leftrightarrow (\forall a\in l(p): (\const{init},\mathit{inp}(a))\delta'(q,\mathit{outp}(a)))
 \]
 wobei $\mathit{inp}$ den Vektor von Eingaben aus einer Belegung extrahiert und $\mathit{outp}$ den Vektor von Ausgaben.
+

@@ -1,4 +1,4 @@
-Um ein zu verifizierendes GALS-Modell vollständig zu definieren müssen die folgenden Eigenschaften spezifiziert werden:
+Um ein zu verifizierendes GALS-Modell vollständig zu definieren, müssen die folgenden Eigenschaften spezifiziert werden:
 \begin{itemize}
 \item Die synchronen Komponenten, aus denen das Gesamtsystem zusammen gesetzt wird.
   Jede synchrone Komponente ist eine Instanz eines in einer synchronen Sprache spezifizierten Modells.
@@ -7,18 +7,19 @@ Um ein zu verifizierendes GALS-Modell vollständig zu definieren müssen die fol
 \item Die zu verifizierende Eigenschaft in Form einer LTL Formel über die Variablen der einzelnen Komponenten.
 \end{itemize}
 
-Die GTL-Sprache verwendet externe Formalismen, um die synchronen Komponenten zu beschreiben.
+\begin{description}
+\item[Komponenten] Die GTL-Sprache verwendet externe Formalismen, um die synchronen Komponenten zu beschreiben.
 Auf die Implementierungen der synchronen Komponenten wird in der Beschreibung nur verwiesen.
 Hierfür wird das Schlüsselwort \emph{model} verwendet.
 Das folgende Codefragment deklariert eine Komponente mit dem Namen \emph{EntrySensor}, die im \emph{SCADE}-Formalismus definiert wurde:
 \begin{lstlisting}[language=gtl]
   model[scade] EntrySensor("LightBarrier");
 \end{lstlisting}
-Die Ausdrücke in Klammern ("`LightBarrier"') machen formalismus-spezifische Angaben, in diesem Fall geben sie beispielsweise die Klasse des gewünschten Modells an.
+Die Ausdrücke in Klammern ("`LightBarrier"') machen formalismus-spezifische Angaben, in diesem Fall geben sie beispielsweise deb Baneb des zu der Komponente gehörenden SCADE-Knotens an.
 Zu beachten ist, dass in der Komponentendeklaration keine Ein- oder Ausgabekanäle definiert werden.
 Die GTL-Sprache setzt voraus, dass diese implizit in dem Modell-Formalismus vorhanden sind.
 
-Um nun Zusicherungen zu formulieren, die die Komponente einhalten wird, kann man die Deklaration um so genannte Kontrakte erweitern:
+\item[Kontrakte] Um nun Zusicherungen zu formulieren, die die Komponente einhalten muss, kann man die Deklaration um so genannte Kontrakte erweitern:
 \begin{lstlisting}[language=gtl]
   model[scade] EntrySensor("LightBarrier") {
     obscured and (next obscured) and (not offline) => alert;
@@ -26,16 +27,19 @@ Um nun Zusicherungen zu formulieren, die die Komponente einhalten wird, kann man
 \end{lstlisting}
 Dieser Kontrakt besagt beispielsweise, dass wenn der Sensor der Lichtschranke zwei Zeitschritte verdeckt ist und der Sensor nicht ausgeschaltet ist, auf jeden Fall Alarm ausgelöst wird.
 Kontrakte dürfen nur Aussagen über Variablen der lokalen Komponente machen.
+Aus Gründen der Lesbarkeit können Kontrakte mit dem einleitenden Schlüsselwort "`contract"' versehen werden.
 
-Die Verbindungen zwischen Komponenten werden durch \emph{connect}-Deklarationen angegeben.
+\item[Verbindungen] Die Verbindungen zwischen Komponenten werden durch \emph{connect}-Deklarationen angegeben.
 Eine Verbindung gibt dabei eine Variable einer Komponente an, von der sie ausgeht und eine Variable eines anderen Modells, zu der sie geht.
 \begin{lstlisting}[language=gtl]
   connect EntrySensor.alert TrapDoor.open;
 \end{lstlisting}
 Diese Verbindung gibt beispielsweise an, dass das Ausgabesignal \emph{alert} der Komponente \emph{EntrySensor} mit dem Eingabesignal \emph{open} der Komponente \emph{TrapDoor} verbunden sein soll.
 Es können nur Ausgabesignale mit Eingabesignalen verknüpft werden.
+Ist das selbe Ausgabesignal mit mehreren Eingabesignalen verknüpft, so erhält jede Eingabe eine Kopie des von der Ausgabe gemachten Wertes.
+Sind jedoch mehrere Ausgabesignale mit der gleichen Eingabe verbunden, so erhält die Eingabe jeweils den Wert der zuletzt aktiven Komponente.
 
-Um nun Aussagen über das Gesamtsystem treffen zu können, verwendet man das \emph{verify}-Schlüsselwort.
+\item[Verifikationsziel] Um nun Aussagen über das Gesamtsystem formulieren zu können, verwendet man das \emph{verify}-Schlüsselwort.
 Mit diesem lassen sich LTL-Formeln angeben, die Gültigkeit im System besitzen sollen.
 \begin{lstlisting}[language=gtl]
   verify {
@@ -43,7 +47,9 @@ Mit diesem lassen sich LTL-Formeln angeben, die Gültigkeit im System besitzen s
   }
 \end{lstlisting}
 Im Gegensatz zu Kontrakten können diese Formeln Variablen aus mehreren Modellen enthalten.
+\end{description}
 Die gesamte Grammatik der GTL-Sprache ist im nächsten Abschnitt \ref{sec:grammar} angegeben.
+Ausführlichere Syntax-Beispiele findet man im Abschnitt \ref{sec:case_studies}.
 
 \section{Grammatik}
 \label{sec:grammar}
@@ -51,8 +57,8 @@ Die gesamte Grammatik der GTL-Sprache ist im nächsten Abschnitt \ref{sec:gramma
 
 \section{Formeln}
 \label{sec:formula}
-Die Ausdrücke, die zur Spezifikation von Kontrakten sowie zur Formulierung von einzuhaltenden Bedingungen verwendet werden, stellen eine Untermenge der so genannten LTL-Formeln (LTL steht für "`linear temporal logic"') dar.
-Allerdings sind die Atome der LTL-Formel nicht nur boolesche Variablen und Konstanten, sondern auch Relationen zwischen numerischen Variablen, Ausdrücken und/oder Konstanten.
+Die Ausdrücke, die zur Spezifikation von Kontrakten sowie zur Formulierung von einzuhaltenden Bedingungen verwendet werden, stellen eine Untermenge der so genannten LTL-Formeln (LTL steht für "`linear temporal logic"', siehe dazu auch Abschnitt \ref{sec:ltl}) dar.
+Allerdings sind die Atome der LTL-Formeln, die in dieser Arbeit betrachtet werden nicht nur boolesche Variablen und Konstanten, sondern auch Relationen zwischen numerischen Variablen, Ausdrücken und/oder Konstanten.
 
 Da der SCADE Design Verifier nicht in der Lage ist, Liveness-Eigenschaften zu verifizieren, können in den Formeln allerdings keine \emph{until}-Konstrukte verwendet werden.
 
