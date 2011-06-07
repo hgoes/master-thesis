@@ -1,5 +1,26 @@
 Mit Hilfe von Kontrakten lässt sich das Verhalten von jeder Komponente in einem GALS-System beschreiben.
 Die Komponenten sind in der synchronen Modellierungssprache SCADE (siehe Abschnitt \ref{sec:scade}) modelliert.
+Die Kontrakte treffen Aussagen über die Ein- und Ausgangsvariablen der Komponenten.
+Kommunikation zwischen den Komponenten wird ermöglicht, indem Ausgabevariablen mit Eingabevariablen verbunden werden.
+Eine Verbindung gibt dabei immer die Ursprungskomponente und ihre Ausgabevariable sowie die Zielkomponente mit ihrer Eingabevariable an.
+Diese Zusammenhänge sind in Abbildung \ref{fig:nomenclature} gezeigt.
+\begin{figure}
+  \centering
+  \includegraphics[scale=.33]{nomenclature}
+  \caption{GTL Nomenklatur}
+  \label{fig:nomenclature}
+\end{figure}
+
+Grafisch lässt sich eine einzelne Komponente in Anlehnung an die Notationssprache UML~\cite{uml} wie in Abbildung \ref{fig:example_generator} darstellen.
+\begin{figure}
+  \centering
+  \includegraphics[scale=.33]{generator}
+  \caption{Beispielkomponente}
+  \label{fig:example_generator}
+\end{figure}
+Die abgebildete Komponente stellt dabei einen Generator dar, der einen booleschen Eingang "`on"' und einen numerischen Ausgang "`output"' besitzt.
+Der Kontrakt sagt aus, dass falls der Eingang auf "`wahr"' gesetzt wird, der Ausgang immer höchstens den Wert 10 ausgibt.
+
 Eine Verifikation eines solchen GALS-Systems muss nun zwei Aufgaben erfüllen:
 \begin{enumerate}
 \item Die Korrektheit der angegebenen Kontrakte muss überprüft werden.
@@ -8,9 +29,3 @@ Eine Verifikation eines solchen GALS-Systems muss nun zwei Aufgaben erfüllen:
 \item Es muss nachgewiesen werden, dass das Zusammenspiel der Kontrakte das globale Verifikationsziel erfüllt.
   Diese Eigenschaft wird überprüft, indem das System aus Komponent-Kontrakten in den Promela Formalismus übersetzt wird und die Gültigkeit der Formel mit SPIN nachgewiesen wird.
 \end{enumerate}
-\begin{figure}[h]
-  \centering
-  \includegraphics[scale=.33]{nomenclature}
-  \caption{GTL Nomenklatur}
-  \label{fig:nomenclature}
-\end{figure}
