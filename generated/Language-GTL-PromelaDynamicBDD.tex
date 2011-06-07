@@ -148,9 +148,9 @@ Translate a buchi automaton representing a verify expression into a never claim.
 \item[\begin{tabular}{@{}l}
 type\ AtomCache\ =\ Map\ (GTLAtom\ (Maybe\ String,\ String))\ (Integer,\ Bool,\ String)
 \end{tabular}]\haddockbegindoc
-A cache that maps atoms to C-functions that represent them.
-   The C-functions are encoded by a unique number, whether they are a test- or
-   assignment-function and their source code representation.
+A cache that maps atoms to C functions that represent them.
+   The C functions are encoded by a unique number, whether they are a test or
+   assignment function and their source code representation.
 \par
 
 \end{haddockdesc}
@@ -198,8 +198,8 @@ parseGTLRelation
  \\
                                                                                                                                                                                                                                                                                                                                      \haddockdecltt{->} & \haddockdecltt{(Integer, Bool, String)} & \\
 \end{tabulary}\par
-Parse a GTL relation into a C-Function.
-   Returns a unique number for the resulting function, whether its a test- or assignment function and
+Parse a GTL relation into a C function.
+   Returns a unique number for the resulting function, whether it is a test or assignment function and
    its source-code representation.
 \par
 

@@ -18,7 +18,7 @@
 
 Diese Übersetzungsmethode führt keine Optimierungen oder Abstraktionen durch, sondern simuliert das Modell exakt so, wie durch die Spezifikation angegeben.
 Die Kontrakte für die synchronen Komponenten werden also ignoriert.
-Um die Komponenten zu simulieren reichen die Informationen in der GTL-Spezifikation nicht aus, denn die Modell sind hier nur als Referenzen vorhanden.
+Um die Komponenten zu simulieren reichen die Informationen in der GTL-Spezifikation nicht aus, denn die Komponenten sind hier nur als Referenzen vorhanden.
 Die eigentliche Implementierung findet in den synchronen Formalismen statt, also in dieser Arbeit in SCADE.
 Die SCADE-Komponenten müssen also nach Promela übersetzt werden, damit das Gesamtmodell simuliert und verifiziert werden kann.
 Eine direkte Übersetzung ist zwar prinzipiell möglich, aber aufgrund der Mächtigkeit der SCADE Sprache mit sehr viel Aufwand verbunden.
@@ -27,7 +27,7 @@ Einfacher ist es, die von SCADE angebotene C-Übersetzung zu verwenden und den g
 Zunächst wird jede synchrone Komponente mit Hilfe des SCADE-Compilers nach C übersetzt.
 Da der Übersetzungsprozess für jede Komponente einzeln durchgeführt werden muss, muss darauf geachtet werden, dass die Modelle keine Namenskonflikte aufweisen oder die gleichen Sub-Komponenten enthalten~\cite{scade_c_integration}.
 
-Der Compiler generiert nun für jede Komponente zwei Datenstrukturen, die erste enthält die Eingabevariablen und erhält das Namensprefix "`inC\_"', die zweite enthält die Ausgabevariablen sowie den internen Zustand der Komponente und ist mit dem Prefix "`outC\_"' versehen.
+Der Code-Generator generiert nun für jede Komponente zwei Datenstrukturen, die erste enthält die Eingabevariablen und erhält das Namensprefix "`inC\_"', die zweite enthält die Ausgabevariablen sowie den internen Zustand der Komponente und ist mit dem Prefix "`outC\_"' versehen.
 Außerdem werden zwei Funktionen erstellt:
 Die erste initialisiert den internen Zustand der Komponente und hat das Suffix "`\_reset"', die zweite führt einen einzelnen Berechnungsschritt der Komponente durch und ist genau wie die Komponente benannt.
 

@@ -2,7 +2,7 @@
 Dieses minimalistische Beispiel soll die grundsätzliche Funktionsweise des Verifikationsalgorithmus und der BDD-Optimierung erläutern und demonstrieren, wie durch die Optimierung der Zustandsraum von Modellen reduziert werden kann.
 
 Das System besteht aus zwei Komponenten:
-Die Quelle hat einen Ausgang und produziert gibt die Sequenz der natürlichen Zahlen modulo 10 zurück, also
+Die Quelle hat einen Ausgang und gibt die Sequenz der natürlichen Zahlen modulo 10 zurück, also
 \[ 0,1,2,3,4,5,6,7,8,9,0,1,2,\dots \]
 Der Ausgang der Quelle ist mit der Eingabe der Senke verbunden.
 Diese prüft, ob der Wert an ihrem Eingang kleiner als 12 ist und setzt dann den Ausgang auf den Wert 0, andernfalls auf 1.
@@ -155,7 +155,7 @@ Gilt keiner der Fälle, so darf kein Prozess die Ressource besitzen.
          or (procouts = [false,false,false]);
 }
 \end{lstlisting}
-Nun werden die definierten Modell instanziiert, wobei drei Instanzen des Klienten und eine Instanz des Servers angelegt wird.
+Nun werden die definierten Modelle instanziiert, wobei drei Instanzen des Klienten und eine Instanz des Servers angelegt wird.
 \begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
 instance client c0;
 instance client c1;
@@ -183,6 +183,7 @@ verify {
 }
 \end{lstlisting}
 Tabelle \ref{tab:mutex_results} zeigt die Ergebnisse der erfolgreichen Verifikation.
+Eine Verifikation mit der BDD-Optimierung ist im aktuellen Entwicklungsstadium des Tools noch nicht möglich.
 \begin{table}
   \centering
   \begin{tabular}{|l|r|r|r|}

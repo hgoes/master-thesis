@@ -1,7 +1,7 @@
 \section{Native Promela Übersetzung}
 Diese Übersetzung verwendet die Kontrakte, um die Komponenten zu repräsentieren, aber führt keinerlei Optimierungen durch.
 
-Jedes Atom in einem Zustand, dass eine Ausgabevariable $o$ determiniert, wird in ein Tupel $(l_u,l_l,v_a,v_f,e_{eq},e_{neq})$ übersetzt, wobei die Variablen folgende Bedeutung haben:
+Jedes Atom in einem Zustand, dass eine Ausgabevariable $o$ determiniert, wird in ein \emph{Einschränkungs-Tupel} $(l_u,l_l,v_a,v_f,e_{eq},e_{neq})$ übersetzt, wobei die Variablen folgende Bedeutung haben:
 \begin{itemize}
 \item $l_u$ enthält alle Ausdrücke, die eine obere Schranke für die Variable angeben.
   Es gilt:

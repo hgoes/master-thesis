@@ -13,7 +13,7 @@
   \node[tape,draw,fill=d1!40,tape bend top=none] (c) at (4,-5) {C};
   \node[cloud,draw,fill=d4!40,cloud ignores aspect,inner sep=0em] (native) at (0,-8) {\begin{tabular}{c}Native\\Verifier\end{tabular}};
   \node[tape,draw,fill=d1!40,tape bend top=none] (scade2) at (2,-5) {\begin{tabular}{c}SCADE\\Testnode\end{tabular}};
-  \node[cloud,draw,fill=d4!40,cloud ignores aspect,inner sep=0em] (scade verifier) at (6,-7) {\begin{tabular}{c}SCADE\\Verifier\end{tabular}};
+  \node[cloud,draw,fill=d4!40,cloud ignores aspect,inner sep=0em] (scade verifier) at (6,-7) {\begin{tabular}{c}SCADE\\Design\\Verifier\end{tabular}};
   \draw[->] (gtl) -- (parser);
   \draw[->] (parser) -- (gtl ast);
   \draw[->] (gtl ast) -- (type checker);
