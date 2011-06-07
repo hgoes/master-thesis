@@ -43,3 +43,14 @@ Der entsprechende Wrapper für die Beispielkomponente aus Abbildung \ref{fig:exa
 
 Für den Nachweis der zweiten Eigenschaft ist es erforderlich, die Kontrakte in Komponenten zu übersetzen, die jedes Verhalten zeigen können, dass der Kontrakt ihnen vorgibt.
 Hierfür werden im Promela-Formalismus nicht-deterministische Automaten konstruiert, deren Zusammenspiel dann mit SPIN überprüft wird.
+
+\section{Offene Fragen}
+Mit dem in dieser Arbeit vorgestellten Ansatz lassen sich Sicherheitseigenschaften von GALS-Systemen gut nachweisen, da für Sicherheitseigenschaften wichtig ist, dass Komponenten ein oder mehrere bestimmte Verhalten \emph{nicht} zeigen.
+Die Kontrakte stellen daher auch sicher, dass eine Komponente nicht mehr Verhalten zeigt, als es der Kontrakt zulässt.
+
+Bei der Verifikation von Lebendigkeitseigenschaften stellt sich jedoch ein Problem:
+Lebendigkeitseigenschaften fordern, dass eine Komponente ein bestimmtes Verhalten garantiert besitzt.
+Da die Korrektheit eines Kontraktes bedeutet, dass der Kontrakt mindestens so viel Verhalten wie die Komponente selbst besitzt, kann der Kontrakt Verhalten erlauben, dass die Lebendigkeitseigenschaft erfüllt.
+Das bedeutet aber nicht zwangsläufig, dass die Komponente dieses Verhalten auch besitzt.
+
+Dieses Problem wird in dieser Arbeit aber nicht behandelt sondern es wird davon ausgegangen, dass alle zu verifizierenden Eigenschaften Sicherheitseigenschaften sind.
