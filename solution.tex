@@ -29,3 +29,15 @@ Eine Verifikation eines solchen GALS-Systems muss nun zwei Aufgaben erfüllen:
 \item Es muss nachgewiesen werden, dass das Zusammenspiel der Kontrakte das globale Verifikationsziel erfüllt.
   Diese Eigenschaft wird überprüft, indem das System aus Komponent-Kontrakten in den Promela Formalismus übersetzt wird und die Gültigkeit der Formel mit SPIN nachgewiesen wird.
 \end{enumerate}
+
+Die erste Eigenschaft wird überprüft, indem in SCADE ein Wrapper um die Komponente konstruiert wird, der alle Eingaben der Komponente repliziert und auf den Ausgaben die Tests durchführt, die der Kontrakt spezifiziert.
+Der entsprechende Wrapper für die Beispielkomponente aus Abbildung \ref{fig:example_generator} ist in Abbildung \ref{fig:example_generator_test} skizziert.
+\begin{figure}
+  \centering
+  \includegraphics[scale=.33]{generator_test}
+  \caption{SCADE-Wrapper für Beispielkomponente}
+  \label{fig:example_generator_test}
+\end{figure}
+
+Für den Nachweis der zweiten Eigenschaft ist es erforderlich, die Kontrakte in Komponenten zu übersetzen, die jedes Verhalten zeigen können, dass der Kontrakt ihnen vorgibt.
+Hierfür werden im Promela-Formalismus nicht-deterministische Automaten konstruiert, deren Zusammenspiel dann mit SPIN überprüft wird.
