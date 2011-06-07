@@ -10,12 +10,14 @@ BDDS=top.pdf bot.pdf con.pdf example1.pdf example2.pdf example3.pdf example4.pdf
      example_set1.pdf plus1_lhs.pdf plus1_rhs.pdf plus1_res.pdf plus2_res.pdf plus3_rhs.pdf\
      plus3_res.pdf async.pdf minus1_res.pdf minus2_res.pdf minus3_res.pdf
 
+DIAGRAMS=nomenclature.pdf
+
 GENERATED=generated/*.tex generated/haddock.sty
 
 thesis-opt.pdf: thesis.pdf
 	pdfopt thesis.pdf thesis-opt.pdf
 
-thesis.pdf: thesis.tex $(SOURCES) lit.bib $(BDDS) $(GENERATED) iti.pdf
+thesis.pdf: thesis.tex $(SOURCES) lit.bib $(BDDS) $(GENERATED) iti.pdf $(DIAGRAMS)
 	pdflatex thesis.tex
 	bibtex thesis.aux
 	pdflatex thesis.tex > /dev/null
@@ -23,6 +25,11 @@ thesis.pdf: thesis.tex $(SOURCES) lit.bib $(BDDS) $(GENERATED) iti.pdf
 
 $(BDDS): %.pdf: %.dot
 	dot -Tsvg $< -o $*.svg
+	inkscape -z -f $*.svg -A $@
+	pdfcrop $@ $@
+
+$(DIAGRAMS): %.pdf: %.dia
+	dia $< -e $*.svg -t svg
 	inkscape -z -f $*.svg -A $@
 	pdfcrop $@ $@
 
@@ -36,3 +43,4 @@ overview.pdf: overview.tex grammar-only.tex
 clean:
 	rm -f $(BDDS)
 	rm -f thesis.aux thesis.out thesis.log thesis.blg thesis.bbl missfont.log
+	rm -f nomenclature.tex
