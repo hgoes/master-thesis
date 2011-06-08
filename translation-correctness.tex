@@ -10,7 +10,7 @@ Diese Anweisung muss blockieren, bis die Bedingungen erfüllt sind und muss seit
 Die generierte Anweisung darf niemals blockieren.
 
 Für jede Komponente wird nun ein äquivalenter Prozess wie folgt definiert:
-\begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small,caption={Komponenten-Übersetzung als Promela-Prozess}]
+\begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small,caption={Komponenten-Übersetzung als Promela-Prozess},label=lst:component]
 proctype $m$() {
   if $[ \forall i\in q_0:$
   :: atomic {
@@ -77,15 +77,15 @@ init {
 \end{lstlisting}
 
 \subsection{Korrektheit der Übersetzung}
-Um zu beweisen, dass die angegebene Promela-Übersetzung korrekt ist, muss gezeigt werden, dass eine Semantik des Systems, repräsentiert durch eine Untermenge des vollständigen Transitionssystems $T'\subseteq T$ (Siehe Abschnitt \ref{sec:semantic}), mit der Semantik des übersetzten Promela-Modells übereinstimmt.
+Um zu beweisen, dass die angegebene Promela-Übersetzung korrekt ist, muss gezeigt werden, dass eine Semantik des Systems, repräsentiert durch eine Untermenge des vollständigen Transitionssystems $T'\subseteq T$ (Siehe Abschnitt \ref{sec:semantic}), mit der Semantik des übersetzten Promela-Modells bisimular ist.
 Um dies zu zeigen, wird die Promela-Semantik verwendet, wie sie in \cite{Gallardo04formalaspects} beschrieben ist.
-Da in dieser Semantik gefordert ist, dass jede Anweisung ein implizites Label erhält, werden folgende Labels für die Anweisungen vergeben:
+Da in dieser Semantik gefordert ist, dass jede Anweisung ein implizites Label erhält, werden folgende Labels für die Anweisungen in \lstlistingname~\ref{lst:component} (Seite \pageref{lst:component}) vergeben:
 \begin{itemize}
-\item Die \emph{If}-Anweisung in Zeile 2 erhält das Label \emph{Start}
-\item In diesem Zweig wird der Ausdruck in Zeile 4 mit dem Label \emph{CI\_$i$} versehen
-\item Die nachfolgende Zuweisung in Zeile 5 wird mit dem Label \emph{AI\_$i$} gekennzeichnet
-\item Der If-Zweig in Zeile 12 kann über das Label \emph{C\_$q$\_$q'$} angesprungen werden
-\item Die darauf folgende Anweisung in Zeile 13 bekommt das Label \emph{A\_$q$\_$q'$} zugewiesen
+\item Die \emph{If}-Anweisung in Zeile 2 erhält das Label \emph{Start}.
+\item In diesem Zweig wird der Ausdruck in Zeile 4 mit dem Label \emph{CI\_$i$} versehen.
+\item Die nachfolgende Zuweisung in Zeile 5 wird mit dem Label \emph{AI\_$i$} gekennzeichnet.
+\item Der If-Zweig in Zeile 12 kann über das Label \emph{C\_$q$\_$q'$} angesprungen werden.
+\item Die darauf folgende Anweisung in Zeile 13 bekommt das Label \emph{A\_$q$\_$q'$} zugewiesen.
 \end{itemize}
 
 Mit diesen Kennzeichnungen ergibt sich nun die \emph{next}-Funktion der Semantik wie folgt:
