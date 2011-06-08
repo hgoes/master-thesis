@@ -5,8 +5,12 @@ Die Zustände der Automaten enthalten aber nicht nur konkrete Wertzuweisungen f�
 Um zumindest Einschränkungen der Wertebereiche, die nicht von anderen Variablen abhängen (Zum Beispiel $x < 5$), übersetzen zu können, kann man BDDs benutzen.
 
 Dazu wird jede Relation der Form $x R c$, wobei $x$ eine Variable und $c$ eine Konstante ist in ein BDD übersetzt.
+Diese Übersetzungsmethode ist somit eingeschränkt auf diese Art von Relationen.
+Relationen zwischen mehreren Ein- oder Ausgabe-Variablen sind daher nicht möglich.
 Das BDD kann nun statt der Werte, die es repräsentiert zur Verifikation verwendet werden.
-Da die Verifikation allerdings keinen direkten Zugriff mehr auf die Information hat, welches BDD von einem Wert repräsentiert wird, muss vor der Verifikation eine Tabelle erstellt werden, in der gespeichert wird, welche BDD miteinander kompatibel sind, also zwischen welchen die Implikation "`$\Rightarrow$"' gilt.
+Es wird allerdings nicht das BDD selbst verwendet, sondern ein Identifier, der es repräsentiert.
+
+Da die Verifikation so allerdings keinen direkten Zugriff mehr auf die Information hat, welches BDD von einem Identifier repräsentiert wird, muss vor der Verifikation eine Tabelle erstellt werden, in der gespeichert wird, welche BDD kompatibel miteinander sind, das heißt, welche von den BDD repräsentierte Mengen Untermengen von welchen anderen BDD-Mengen sind, damit die Bedingungen von Zustandsübergängen geprüft werden können.
 \subsubsection{Korrektheit}
 Um die formale Korrektheit der Übersetzung durch statische BDDs zu beweisen, müssen zunächst die Symbole $\Sigma$, $\llbracket\rrbracket_C$, $\llbracket\rrbracket_A$ sowie $\llbracket\rrbracket_D$ definiert werden.
 Die Semantiksymbole $\Sigma$ sind hierbei eine Menge von Relationen, die höchstens eine Variable enthalten können, also z.B. "`$\{x<5,y=4\}$"'.
