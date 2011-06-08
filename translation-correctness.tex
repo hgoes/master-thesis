@@ -3,8 +3,13 @@ Gegeben ein wie in Abschnitt \ref{sec:sos_defs} spezifiziertes System $s\in \mat
 Für jede Komponente $(m,(\mathit{contr},\mathit{init}))\in ms$ mit dem Namen $m$, dem Kontrakt $\mathit{contr}$ und der Initialisierung $\mathit{init}$ wird nun der Kontrakt in einen äquivalenten Büchi-Automaten $(Q,\Sigma,\delta,\mu,q_0,\emptyset)$ übersetzt (Siehe Abschnitt \ref{sec:ltl-translation}).
 Hierbei ist zu beachten, dass die generierten Automaten Bedingungen auf den Variablen als Ein- und Ausgabesymbole verwenden, da Relationen wie $x\leq y$ von dem LTL-Übersetzungsalgorithmus als atomare Aussagen betrachtet werden.
 
+Für die Übersetzung werden die Funktionen $\llbracket\rrbracket_C$ und $\llbracket\rrbracket_A$ benötigt.
+Die Funktion $\llbracket\rrbracket_C$ generiert aus den übergebenen Atomen einen Promela-Ausdruck, der abhängig vom globalen Zustand testet, ob alle Bedingungen, die durch die übergebenen Atome an die Eingabe-Variablen gestellt sind, erfüllt sind.
+Diese Anweisung muss blockieren, bis die Bedingungen erfüllt sind und muss seiteneffektfrei sein, den globalen Zustand also nicht verändern.
+Ähnlich dazu generiert die Funktion $\llbracket\rrbracket_A$ eine Anweisung, die die Ausgabevariablen entsprechend den übergebenen Atomen anpasst und damit den globalen Zustand verändert.
+Die generierte Anweisung darf niemals blockieren.
 
-Anschließend wird ein neuer Prozess wie folgt definiert:
+Für jede Komponente wird nun ein äquivalenter Prozess wie folgt definiert:
 \begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small,caption={Komponenten-Übersetzung als Promela-Prozess}]
 proctype $m$() {
   if $[ \forall i\in q_0:$
@@ -25,10 +30,10 @@ proctype $m$() {
   $]$
 }
 \end{lstlisting}
-Hierbei gibt $\llbracket\rrbracket_C$ einen Promela-Ausdruck an, der abhängig vom globalen Zustand testet, ob alle Bedingungen, die durch die übergebenen Atome spezifiziert sind, erfüllt sind.
-Die Anweisung muss blockieren, bis die Bedingungen erfüllt sind und darf den globalen Zustand nicht verändern.
-Ähnlich dazu generiert die Funktion $\llbracket\rrbracket_A$ eine Anweisung, die den globalen Zustand anhand der übergebenen Atome transformiert.
-Die generierte Anweisung darf nicht blockieren.
+%Hierbei gibt $\llbracket\rrbracket_C$ einen Promela-Ausdruck an, der abhängig vom globalen Zustand testet, ob alle Bedingungen, die durch die übergebenen Atome spezifiziert sind, erfüllt sind.
+%Die Anweisung muss blockieren, bis die Bedingungen erfüllt sind und darf den globalen Zustand nicht verändern.
+%Ähnlich dazu generiert die Funktion $\llbracket\rrbracket_A$ eine Anweisung, die den globalen Zustand anhand der übergebenen Atome transformiert.
+%Die generierte Anweisung darf nicht blockieren.
 
 Die zu verifizierende Formel $v$ wird negiert ebenfalls in einen Büchi-Automaten $(Q,\Sigma,\delta,\mu,q_0,F)$ übersetzt und in eine äquivalente Promela \emph{never}-Deklaration übersetzt:
 \begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small,caption={Verifikationsziel-Übersetzung als \emph{never}-Prozess}]
@@ -53,20 +58,22 @@ never {
 }
 \end{lstlisting}
 
-Um den Initialzustand zu erreichen, wird vor dem starten aller Prozesse noch eine Initialisierung durchgeführt:
+Um den Initialzustand zu erreichen, wird vor dem Starten aller Prozesse noch eine Initialisierung durchgeführt.
+Hierfür muss die konkrete Übersetzung die Funktion $\llbracket\rrbracket_D$ bereit stellen.
+Diese generiert, gegeben eine Komponente, eine Variable und einen Initialisierungswert für die Variable, eine Anweisung, die den globalen Zustand so verändert, dass die Variable nun den entsprechenden Wert besitzt.
 \begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small,caption={Initialisierungsprozess}]
-  init {
-    $[ \forall (m,a,f,d)\in ms:$
-      $[ \forall (v,val)\in d:$
-      $\llbracket m,v,val\rrbracket_D$
-      $]$
+init {
+  $[ \forall (m,a,f,d)\in ms:$
+    $[ \forall (v,val)\in d:$
+    $\llbracket m,v,val\rrbracket_D$
     $]$
-    atomic {
-    $[ \forall (m,a,f,d)\in ms:$
-      run $m$();
-    $]$
-    }
+  $]$
+  atomic {
+  $[ \forall (m,a,f,d)\in ms:$
+    run $m$();
+  $]$
   }
+}
 \end{lstlisting}
 
 \subsection{Korrektheit der Übersetzung}
