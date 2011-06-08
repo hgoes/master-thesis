@@ -127,37 +127,36 @@ Für den Ausführungsmodus(\emph{mode}) ergibt sich:
   \hline
 \end{tabular}
 
-Zunächst ist es nützlich ein paar allgemeine Aussagen aufzustellen, die die Verifikation der Richtigkeit der Übersetzung erleichtern.
-\begin{enumerate}
-\item Es ist leicht einzusehen, dass für alle Prozesse die Umgebung $\phi_e$ gleich ist, da die Prozesse keine lokalen Variablen deklarieren.
-\end{enumerate}
+Zunächst ist es nützlich ein paar allgemeine Aussagen aufzustellen, die die Verifikation der Korrektheit der Übersetzung erleichtern.
+Es ist leicht einzusehen, dass für alle Prozesse die Umgebung $\phi_e$ gleich ist, da die Prozesse keine lokalen Variablen deklarieren.
+Daher kann für die Betrachtung der Gesamtumgebung des Promela-Systems die Umgebung eines beliebigen Prozesses herangezogen werden.
 
-Um nun zeigen zu können, dass das definierte GTL-System $(ms,cs,vs)$ bisimular zum übersetzten Promela Modell $tr(ms,cs,vs)$ ist, müssen folgende Anforderungen an die Semantik gestellt werden:
+Um nun zu zeigen, dass das definierte GTL-System $(ms,cs,vs)$ bisimilar zum übersetzten Promela Modell ist, werden folgende Anforderungen an die Semantik gestellt:
 \begin{enumerate}
 \item Es muss eine Bijektion $i$ zwischen Zuständen der Verbindungen sowie Eingaben $s\in S_C(\mathcal{G})\times I(\mathcal{G})$ und der Promela-Umgebung $\sigma_e$ existieren.
 \item Die Definitionen $\llbracket \alpha \rrbracket_D$ müssen eine initiale Umgebung $\sigma_e^0$ definieren, die isomorph zum Initialzustand $\alpha$ ist: 
   \[ i(\alpha) = \sigma_e^0 \]
 \item Befinden sich beide Systeme in isomorphen Zuständen, so wird der von $\llbracket \rrbracket_C$ erzeugte Ausdruck genau dann wahr, wenn es im abstrakten Modell einen entsprechenden Übergang zwischen den Zuständen gibt:
   \begin{equation}
-    \begin{array}{rc}
-      i(s,\beta) = \sigma_e \Rightarrow \forall q'\in Q^a: &
-      \mathit{exec}(\llbracket \mu(q')\rrbracket_C,\sigma_e)) \\
-      & \Leftrightarrow\\
-      & (\forall q\in Q^a: \delta^a(q,(s|^a,\beta|^a))=(q',o))
-    \end{array}
+    i(s,\beta) = \sigma_e \Rightarrow \forall q'\in Q^a: \left(
+      \begin{array}{c}
+        \mathit{exec}(\llbracket \mu(q')\rrbracket_C,\sigma_e)) \\
+        \Leftrightarrow\\
+        (\forall q\in Q^a: \delta^a(q,(s|^a,\beta|^a))=(q',o))
+    \end{array}\right)
     \label{eq:assert1}
   \end{equation}
 \item Die Anweisung, die von $\llbracket \rrbracket_A$ generiert wird, darf nie blockieren und muss isomorphe Zustände beibehalten:
   \begin{equation}
-    \begin{array}{rc}
-      i(s,\beta) = \sigma_e \Rightarrow \forall q'\in Q^a: &
-      \xymatrix { \left<\sigma_e,L\right> \ar[rr]^-{\llbracket \mu(q')\rrbracket_A} & & \left<\sigma_e',L'\right> } \\
-      & \Leftrightarrow\\
-      & (\forall q\in Q^a: \delta^a(q,(s|^a,\beta|^a)) = (q',o)\\
-      & \land\\
-      & i(s[a\mapsto o],\beta[a\mapsto o]) = \sigma_e')
-    \end{array}
-    \label{eq:assert2}
+    i(s,\beta) = \sigma_e \Rightarrow \forall q'\in Q^a: \left(
+      \begin{array}{c}
+        \xymatrix{ \left<\sigma_e,L\right> \ar[rr]^-{\llbracket \mu(q')\rrbracket_A} & & \left<\sigma_e',L'\right> } \\
+        \Leftrightarrow\\
+        (\forall q\in Q^a: \delta^a(q,(s|^a,\beta|^a)) = (q',o)\\
+        \land\\
+        i(s[a\mapsto o],\beta[a\mapsto o]) = \sigma_e')
+      \end{array}\right)
+     \label{eq:assert2}
   \end{equation}
 \end{enumerate}
 Nun kann man die Relation $\cong$ angeben, die Zustände des abstrakten Modells mit Zuständen des übersetzten Promela-Modells in Relation setzt.
@@ -173,7 +172,7 @@ Zwei Zustände stehen genau dann in Relation, wenn ihre globalen Zustände isomo
 \end{array}
 \]
 Nun muss gezeigt werden, dass es sich bei der eben definierten Relation tatsächlich um eine Bisimulationsrelation handelt.
-Hierfür muss nachgewiesen werden, dass es für jede Transition, die ein bisimularer Zustand durchführen kann, eine Transition des anderen Zustands gibt und die Zielzustände der beiden Transitionen auch wieder bisimular sind.
+Hierfür muss nachgewiesen werden, dass es für jede Transition, die ein bisimilarer Zustand durchführen kann, eine Transition des anderen Zustands gibt und die Zielzustände der beiden Transitionen auch wieder bisimilar sind.
 
 Betrachten wir also einen Zustand des abstrakten Modells $s=(q_0,\dots,q_N,c_0,\dots)$ und einen Zustand des Promela-Modells $\gamma$.
 Sind diese Zustände bisimular, so gilt nach Konstruktion
@@ -182,6 +181,7 @@ und für jeden Prozesszustand $q_j$ entweder
 \[ \gamma(j).\sigma_l = \textrm{st\_}q_j \]
 oder
 \[ \gamma(j).\sigma_l = \textrm{Start} \land q_j = \const{init} \]
+Nun wird gezeigt, dass falls einer dieser Zustände eine Transition in einen neuen Zustand zulässt, es einen Übergang im abstrakten Modell gibt, der in einen Zustand führt, der mit dem neuen Zustand des Promela-Modells bisimilar ist.
 Gilt der erste Fall, so lässt sich herleiten
 \[ \inference[IfDo-proc]{
   \inference[Basic-proc]{\mathit{exec}(\textrm{C\_}q_j\textrm{\_}q_j',\gamma(j).\sigma_e) & \mathit{next}(\textrm{C\_}q_j\textrm{\_}q_j') = \textrm{A\_}q_j\textrm{\_}q_j'}{
@@ -265,11 +265,11 @@ Diese zwei Vorbedingungen sind nach Gleichung \ref{eq:assert1} und \ref{eq:asser
 \[ \delta^a(q_j,((c_0,\dots)|^a,\beta|^a)) = (q_j',o) \]
 gilt.
 Dies ist äquivalent dazu dass
-\[ \lambda(((q_0,\dots,q_j,\dots,q_N),c),\beta,j) = (((q_0,\dots,q_j',\dots,q_N),c[a\mapsto o]),(\bot,\dots,\bot)[a\mapsto o]) \]
+\[ \lambda(((q_0,\dots,q_j,\dots,q_N),c),j,\beta) = (((q_0,\dots,q_j',\dots,q_N),c[a\mapsto o]),(\bot,\dots,\bot)[a\mapsto o]) \]
 gilt.
-Nach Gleichung \ref{eq:assert2} gilt außerdem
+Nach Gleichung \ref{eq:assert2} gilt außerdem, dass der veränderte globale Zustand $\sigma_e'$ isomorph zum abstrakten Zustand $c[a\mapsto o]$ ist:
 \[ i(c[a\mapsto o],\beta) = \sigma_e' \]
-wobit die Bisimularität für diesen Fall gezeigt ist, denn
+womit die Bisimularität für diesen Fall gezeigt ist, denn
 \[
 \begin{array}{c}
   i(c[a\mapsto o],\beta) = \sigma_e' \land ((q_0,\dots,q_j,\dots,q_N),c)\cong\gamma\\
@@ -278,4 +278,4 @@ wobit die Bisimularität für diesen Fall gezeigt ist, denn
 \end{array}
 \]
 
-Der Beweis für den Fall, dass sich der Prozess am Label \emph{Start} befindet ist, bis auf Änderung der Label-Namen äquivalent und daher ausgelassen.
+Der Beweis für den Fall, dass sich der Prozess am Label \emph{Start} befindet ist, bis auf Änderung der Label-Namen analog und daher ausgelassen.

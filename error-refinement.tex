@@ -49,7 +49,7 @@ Hierzu betrachten wir Abbildung \ref{fig:error-refinement}:
 \begin{itemize}
 \item Zunächst muss der aus der GTL-Spezifikation generierte Promela-Code in der Lage sein, Fehlerspuren zu erzeugen, die Aufschluss darüber geben, welche Transitionen des generierten Büchi-Automaten zu dem Fehler führten.
   Zwar erzeugt auch SPIN schon Fehlerspuren, jedoch geben diese Auskunft über die Ausführungsposition im Quelltext und sind daher extrem schwer zurück auf die Zustände des Büchi-Automaten zu rechnen.
-  Die Lösung besteht darin, im generierten Quelltext vor jedem Betreten eines Zustands mit der \emph{printf}-Anweisung eine Ausgabe zu erzeugen, die den Namen des betretenden Zustands enthält.
+  Die hier verwendete Lösung besteht darin, im generierten Quelltext vor jedem Betreten eines Zustands mit der \emph{printf}-Anweisung eine Ausgabe zu erzeugen, die den Namen des betretenden Zustands enthält.
   Spielt man eine generierte Fehlerspur nun in SPIN ab, so erhält man genau die Ausgaben für die betretenden Zustände und kann eine genaue Fehlerspur für den Büchi-Automaten berechnen.
 \item Die Fehlerspur wird kodiert als eine Liste, in der jedes Element einem Zeitschritt entspricht.
   Ein Element enthält eine Abbildung von den Variablen des Systems auf BDDs, die den erlaubten Wertebereich dieser Variablen zum Zeitpunkt des Elements festlegen.

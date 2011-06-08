@@ -160,7 +160,7 @@ die Ausgaben und Zustand eines Automaten zurück in den Zustandsvektor des Gesam
 Um die Notation zu erleichtern, wird zusätzlich noch eine Zustandsübergangsfunktion $\lambda$ definiert, die den Zustandsübergang des GALS Systems bei Ausführung eines Automatenschritts angibt.
 \begin{align*}
   \lambda &\in S(\mathcal{G})\times I(\mathcal{G})\times A\rightarrow S(\mathcal{G})\times O(\mathcal{G})\\
-  (q,i,a) &\mapsto \pi_O^a(q,\delta^a(\pi_I^a(q,i)))
+  \lambda(q,i,a) &= \pi_O^a(q,\delta^a(\pi_I^a(q,i)))
 \end{align*}
 Der Initialzustand $\alpha(\mathcal{G})\in\mathcal{S}(\mathcal{G})$ ergibt sich als Kombination aller Initialzustände der Komponenten und den undefinierten Verbindungen
 \[ \alpha(\mathcal{G}) = (\langle q_0^a\rangle_{a\in A},(\bot,\dots,\bot)) \]
