@@ -11,18 +11,18 @@ Das BDD kann nun statt der Werte, die es repräsentiert zur Verifikation verwend
 Es wird allerdings nicht das BDD selbst verwendet, sondern ein Identifier, der es repräsentiert.
 
 Da die Verifikation so allerdings keinen direkten Zugriff mehr auf die Information hat, welches BDD von einem Identifier repräsentiert wird, muss vor der Verifikation eine Tabelle erstellt werden, in der gespeichert wird, welche BDD kompatibel miteinander sind, das heißt, welche von den BDD repräsentierte Mengen Untermengen von welchen anderen BDD-Mengen sind, damit die Bedingungen von Zustandsübergängen geprüft werden können.
-\subsubsection{Korrektheit}
-Um die formale Korrektheit der Übersetzung durch statische BDDs zu beweisen, müssen zunächst die Symbole $\Sigma$, $\llbracket\rrbracket_C$, $\llbracket\rrbracket_A$ sowie $\llbracket\rrbracket_D$ definiert werden.
-Die Semantiksymbole $\Sigma$ sind hierbei eine Menge von Relationen, die höchstens eine Variable enthalten können, also z.B. "`$\{x<5,y=4\}$"'.
+\subsubsection{Übersetzung}
+Um die Übersetzung durch statische BDD zu beschreiben, müssen die Funktionen $\llbracket\rrbracket_C$, $\llbracket\rrbracket_A$ sowie $\llbracket\rrbracket_D$ definiert werden.
 
-Durch einfache Umformungen lässt sich also jedes Semantiksymbol $\eta\in\Sigma$ als eine Abbildung von Variablen $V$ auf ein Entscheidungsdiagramm, dass die Relationen auf der entsprechenden Variable repräsentiert darstellen:
-\[ \eta : V\rightarrow \mathbb{BDD} \]
+Da die atomaren Aussagen auf Relationen mit genau einer Variable beschränkt sind, lässt sich eine Menge von atomaren Ausagen $\sigma\subseteq\Sigma$ als eine Abbildung $\eta$ von Variablen auf Entscheidungsdiagramme darstellen:
+\[ \eta : \mathit{Id}\rightarrow\mathbb{BDD} \]
 Ist keine Relation für eine Variable angegeben, so ist die Variable unbeschränkt und durch das BDD repräsentiert, dass alle möglichen Werte enthält.
 
 Die Funktion $\llbracket\rrbracket_C$ betrachtet die Eingabevariablen des übergebenen Semantiksymbols $\eta$, also die Menge
 \[ \{ (v,\eta(v))\ |\ v\in \mathit{Inp}_i \} \]
 Für jedes dieser Tupel wird nun ein Promela Ausdruck generiert, der überprüft, ob die Variable $v$ mit einem zu $\eta(v)$ kompatiblen BDD belegt ist.
-Kompatibel bedeutet hierbei, dass die Gleichung $v\cap\eta(v)\neq \emptyset$ erfüllt ist.
+Ist die Variable also mit dem BDD $f\in\mathbb{BDD}$ belegt, so muss gelten:
+\[ f\cap\eta(v)\neq\emptyset \]
 
 Die Anweisungen, die von der $\llbracket\rrbracket_A$-Funktion generiert werden, weisen den Ausgabevariablen der Komponente neue BDDs zu.
 Das bedeutet, dass für jedes Tupel der Menge
@@ -36,3 +36,7 @@ generiert wird.
 Für jede Variable der Komponente wird durch $\llbracket\rrbracket_D$ eine globale Integer Variable generiert, die die Repräsentation des entsprechenden BDDs enthält.
 Sind die Variablen von zwei Komponenten durch eine \emph{connect}-Deklaration verbunden, so wird nur eine Variable für die Eingangsvariable generiert, damit das Modell nicht unnötig vergrößert wird.
 Schreibt der Ausgabeprozess auf seine Variable, so wird das Ergebnis stattdessen direkt in die gemeinsam verwendete Variable geschrieben.
+\subsubsection{Probleme}
+Die statische BDD Abstraktion hat das Problem, dass Relationen zwischen Variablen nicht möglich sind.
+Damit ist sie ungeeignet für die meisten realistischen Modelle, in denen es fast immer direkte Beziehungen zwischen Ein- und Ausgabevariablen gibt.
+Auf einen Beweis der Korrektheit der Übersetzung wird aus diesem Grund auch verzichtet.
