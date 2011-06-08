@@ -5,7 +5,7 @@ Hierbei ist zu beachten, dass die generierten Automaten Bedingungen auf den Vari
 
 
 Anschließend wird ein neuer Prozess wie folgt definiert:
-\begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small]
+\begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small,caption={Komponenten-Übersetzung als Promela-Prozess}]
 proctype $m$() {
   if $[ \forall i\in q_0:$
   :: atomic {
@@ -31,30 +31,30 @@ Die Anweisung muss blockieren, bis die Bedingungen erfüllt sind und darf den gl
 Die generierte Anweisung darf nicht blockieren.
 
 Die zu verifizierende Formel $v$ wird negiert ebenfalls in einen Büchi-Automaten $(Q,\Sigma,\delta,\mu,q_0,F)$ übersetzt und in eine äquivalente Promela \emph{never}-Deklaration übersetzt:
-\begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small]
-  never {
-    if $[ \forall i\in q_0:$
+\begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small,caption={Verifikationsziel-Übersetzung als \emph{never}-Prozess}]
+never {
+  if $[ \forall i\in q_0:$
+  :: atomic {
+    $\llbracket \mu(i) \rrbracket_C$;
+    goto st_$i$
+  }
+  $]$
+  fi;
+  $[ \forall q\in Q:$
+  $[ q\in F:$ accept_$q$: $]$
+  st_$q$:
+    if $[ \forall q'\in Q,q\delta q':$
     :: atomic {
-      $\llbracket \mu(i) \rrbracket_C$;
-      goto st_$i$
+      $\llbracket \mu(q') \rrbracket_C$;
+      goto st_$q'$
     }
     $]$
-    fi;
-    $[ \forall q\in Q:$
-    $[ q\in F:$ accept_$q$: $]$
-    st_$q$:
-      if $[ \forall q'\in Q,q\delta q':$
-      :: atomic {
-        $\llbracket \mu(q') \rrbracket_C$;
-        goto st_$q'$
-      }
-      $]$
-    $]$
-  }
+  $]$
+}
 \end{lstlisting}
 
 Um den Initialzustand zu erreichen, wird vor dem starten aller Prozesse noch eine Initialisierung durchgeführt:
-\begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small]
+\begin{lstlisting}[language=Promela,mathescape=true,numbers=left,numberstyle=\small,caption={Initialisierungsprozess}]
   init {
     $[ \forall (m,a,f,d)\in ms:$
       $[ \forall (v,val)\in d:$

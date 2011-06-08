@@ -47,7 +47,7 @@ Dazu wird zunächst die Ausgabevariable $o$ auf die größte untere Schranke ges
 Existiert keine untere Schranke, so wird der kleinste Wert des Wertebereichs der Variable gewählt.
 Ansonsten wird mit Promela \emph{If}-Anweisungen ein Entscheidungsbaum aufgebaut.
 Existieren also beispielsweise die drei unteren Schranken $l_l = \{ e1,e2,e3\}$, so sieht die Übersetzung wie folgt aus:
-\begin{lstlisting}[language=promela,numbers=left]
+\begin{lstlisting}[language=promela,numbers=left,caption={Berechnung der unteren Schranke}]
 if :: e1 < e2;
       if :: e1 < e3;
             o = e1
@@ -65,7 +65,7 @@ fi
 Danach wird in einer \emph{Do}-Schleife die Ausgabevariable so lange hoch gezählt, bis eine der oberen Schranken erreicht wird.
 Für jeden Wert muss nun noch geprüft werden, ob er die restlichen Bedingungen des Einschränkungstupels erfüllt.
 Gilt also beispielsweise $l_u = \{ u1,u2 \}$ sowie $v_f=\{ f1, f2 \}$, so ergibt sich der folgende Code:
-\begin{lstlisting}[language=promela,numbers=left,firstnumber=last]
+\begin{lstlisting}[language=promela,numbers=left,firstnumber=last,caption={Generierung von möglichen Werten}]
 do :: o<u1 && o<u2;
       o = o+1
    :: o==f1 || o==f2;

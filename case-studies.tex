@@ -11,7 +11,7 @@ Zu verifizieren ist in diesem Beispiel, dass der Ausgabewert der Senke stehts 0 
 Für den Kontrakt bietet sich also an zu spezifizieren, dass die Quelle stets Werte produziert, die kleiner als 10 sind.
 Die Senke produziert für Werte kleiner 10 stets die Ausgabe 0, was sich ebenfalls als Kontrakt formulieren lässt.
 Die resultierende GTL-Beschreibung sieht wie folgt aus:
-\begin{lstlisting}[language=gtl]
+\begin{lstlisting}[language=gtl,caption={Quelle-Senke Beispiel}]
 model[scade] source("source_sink.scade","Source") {
   contract always outp < 10;
   init outp 9;
@@ -86,7 +86,7 @@ Dieser muss nun entscheiden, wie er die Ressource vergibt.
 Zunächst modellieren wir einen Prozess.
 Ein Prozess kommuniziert seinen aktuellen Zustand über die Enum-Variable \emph{st} an den Server.
 Seine Eingabe-Variable \emph{proceed} gibt an, ob es dem Prozess momentan erlaubt ist, die Ressource an sich zu nehmen.
-\begin{lstlisting}[language=gtl,numbers=left]
+\begin{lstlisting}[language=gtl,numbers=left,caption={Mutex Client}]
 model[none] client() {
   input bool proceed;
   output enum { nc, acq, cs, rel } st;
@@ -124,7 +124,7 @@ Der Übergang vom Zustand \emph{acq} zu \emph{cs} ist allerdings nur möglich, w
 \end{lstlisting}
 Der Server besitzt für jeden Prozess einen Eingang, der ihn über den aktuellen Zustand des Prozesses informiert.
 Außerdem kann er jedem Prozess die Ressource zuteilen, indem er den entsprechenden Eintrag in dem \emph{procouts}-Array setzt.
-\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last,caption={Mutex Server}]
 model[none] server() {
   input enum { nc, acq, cs, rel }^3 procstates;
   output bool^3 procouts;
@@ -156,7 +156,7 @@ Gilt keiner der Fälle, so darf kein Prozess die Ressource besitzen.
 }
 \end{lstlisting}
 Nun werden die definierten Modelle instanziiert, wobei drei Instanzen des Klienten und eine Instanz des Servers angelegt wird.
-\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last,caption={Mutex Instanzen}]
 instance client c0;
 instance client c1;
 instance client c2;
@@ -164,7 +164,7 @@ instance client c2;
 instance server s;
 \end{lstlisting}
 Die Variablen der Instanzen müssen natürlich verbunden werden, damit eine Kommunikation stattfindet.
-\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last,caption={Mutex Verbindungen}]
 connect c0.st s.procstates[0];
 connect c1.st s.procstates[1];
 connect c2.st s.procstates[2];
@@ -175,7 +175,7 @@ connect s.procouts[2] c2.proceed;
 \end{lstlisting}
 Das Verifikationsziel ist die Sicherheitseigenschaft aus der Problem-Beschreibung:
 Es ist immer nur maximal ein Prozess in seiner kritischen Sektion.
-\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last]
+\begin{lstlisting}[language=gtl,numbers=left,firstnumber=last,caption={Mutex Verifikationsziel}]
 verify {
   always (c0.st = 'cs => !(c1.st = 'cs or c2.st = 'cs));
   always (c1.st = 'cs => !(c0.st = 'cs or c2.st = 'cs));
