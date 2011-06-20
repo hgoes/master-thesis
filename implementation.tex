@@ -1,5 +1,3 @@
-
-
 Die Implementierung besteht zum einen aus der eigentlichen Anwengung -- \emph{gtl} -- und zum anderen aus verschiedenen Bibliotheken, die zusätzlich entwickelt werden.
 Diese sind:
 \begin{itemize}
@@ -17,18 +15,57 @@ Diese sind:
 
 Abbildung \ref{fig:gtl_implementation} zeigt den Datenfluss der \emph{gtl}-Anwendung.
 Zunächst wird mithilfe des Parsers eine textuelle GTL-Repräsentation in einen abstrakten Syntax-Baum\footnote{englisch: abstract syntax tree, AST} transformiert.
-Der Parser wird im Abschnitt \ref{module:Language.GTL.Parser} beschrieben, der Syntax-Baum in \ref{module:Language.GTL.Parser.Syntax}.
+Der Parser wird im Abschnitt \ref{module:Language.GTL.Parser}, Modul "`\verb|Language.GTL.Parser|"' beschrieben, der Syntax-Baum in \ref{module:Language.GTL.Parser.Syntax}, Modul "`\verb|Language.Parser.Syntax|"'.
 Daraufhin wird der Syntax-Baum an die Typüberprüfung weiter gereicht.
 Diese extrahiert die Typinformationen aus den verwendeten synchronen Komponenten und überprüft, ob alle Kontrakte und Verifikationsformeln wohl-getypt sind (Siehe Abschnitt \ref{sec:sos}).
 Für das SCADE-Backend müssen also die Dateien mit den Beschreibungen der SCADE-Komponenten geparst werden, die Modelle in dem entstandenen Syntax-Baum gefunden werden und die SCADE-Typen in GTL-Typen umgewandelt werden.
-Daraufhin wird der Syntax-Baum in eine Instanz des \emph{GTLSpec}-Datentyps umgewandelt (Beschrieben in Abschnitt \ref{module:Language.GTL.Model}).
+Daraufhin wird der Syntax-Baum in eine Instanz des \emph{GTLSpec}-Datentyps umgewandelt (Beschrieben in Abschnitt \ref{module:Language.GTL.Model} und implementiert durch das Modul "`\verb|Language.GTL.Model|"').
 
 Ab hier entscheidet sich nun, welche Transformation vom Benutzer gewählt wurde.
-Für die SCADE-Verifikation der Komponenten wird für jede Komponente ein SCADE-Observer erzeugt, der dann zusammen mit dem Quelltext der Modelle mit dem SCADE Design-Verifier geprüft wird (Beschrieben in Abschnitt \ref{module:Language.GTL.Backend.Scade}).
+Für die SCADE-Verifikation der Komponenten wird für jede Komponente ein SCADE-Observer erzeugt, der dann zusammen mit dem Quelltext der Modelle mit dem SCADE Design-Verifier geprüft wird (Beschrieben in Abschnitt \ref{module:Language.GTL.Backend.Scade}, Modul "`\verb|Language.GTL.Backend.Scade|"').
+Die Verwendung von anderen synchronen Formalismen wird durch das Interface in Modul "`\verb|Language.GTL.Backend|"' in Abschnitt \ref{module:Language.GTL.Backend} ermöglicht.
 
 Für die C-Übersetzung wird der SCADE Code-Generator KCG aufgerufen, der wie in Abschnitt \ref{sec:c_integration} beschrieben C-Code für alle Komponenten liefert.
 Es wird dann Promela-Code generiert, der die einzelnen C-Code-Modelle vereint.
-Die Implementierung dieses Verfahrens wird in Abschnitt \ref{module:Language.GTL.PromelaCIntegration} genauer beschrieben.
+Die Implementierung dieses Verfahrens wird in Abschnitt \ref{module:Language.GTL.PromelaCIntegration}, Modul "`\verb|Language.GTL.PromelaCIntegration|"' genauer beschrieben.
 
 Für die Übersetzung der Kontrakte mithilfe von binären Entscheidungsdiagrammen, wie in Abschnitt \ref{sec:bdd} beschrieben, wird Promela-Code generiert und dann gegen die CUDD-Bibliothek gelinkt.
-Genauere Details des Verfahrens sind in Abschnitt \ref{module:Language.GTL.PromelaDynamicBDD} angegeben.
+Das Verfahren wird im Modul "`\verb|Language.GTL.PromelaDynamicBDD|"' in Abschnitt \ref{module:Language.GTL.PromelaDynamicBDD} genauer beschrieben.
+\section{Backend}
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.3]{impl-backend}
+  \caption{UML Diagramm für Backend-Implementierung}
+  \label{fig:backend-uml}
+\end{figure}
+Die Backend-Implementierung stellt eine Möglichkeit zur Verfügung, synchrone Verifikationsformalismen in das GTL-Tool zu integrieren.
+Dazu steht die Klasse "`\emph{GTLBackend}"' (Siehe Abschnitt \ref{module:Language.GTL.Backend}) bereit.
+Abbildung \ref{fig:backend-uml} zeigt das UML-Diagramm des Paketes\footnote{Da UML nicht für die Modellierung funktionaler Sprachen wie Haskell ausgelegt ist, sind einige Syntax-Elemente sehr liberal verwendet. Die Abbildung ist nicht als formal korrektes UML-Diagramm gedacht sondern als Orientierungshilfe.}.
+Instanzen der Klasse müssen eine Funktion \emph{backendName} bereit stellen, die den Namen des Backends zurück gibt (Diese Information wird benutzt um das richtige Backend für ein gegebenes Modell zu finden).
+Wird ein Modell gefunden, dass dieses Backend verwendet, so wird die Initialisierungs-Funktion \emph{initBackend} mit den übergebenen Modellparametern aufgerufen.
+Diese muss eine Instanz des assoziierten Datentyps "`\emph{GTLBackendModel}"' zurück liefern.
+
+Mit dem initialisierten Backend-Modell können nun verschiedene Aktionen ausgeführt werden:
+\begin{description}
+\item[Typüberprüfung] Die Funktion \emph{typeCheckInterface} überprüft und vervollständigt eine gegebene Typbindung.
+  Hierfür müssen die Typen der Variablen aus der Backend-Abhängigen Beschreibungssprache extrahiert werden und mit den bereits im Modell spezifizierten Variablen verglichen werden.
+  Existiert hierbei kein Konflikt, so werden die Typbindungen vereinigt und zurück gegeben.
+\item[C-Übersetzung] Mithilfe der Funktion \emph{cInterface} wird ein Wert vom Typ "`\emph{CInterface}"' zurück gegeben, mit dem es möglich sein muss, das entsprechende Modell nach C zu übersetzen.
+  Es wird hierbei davon ausgegangen, dass die generierte C-Struktur einer Zustandsmaschine ähnelt.
+  Der Datentype "`\emph{CInterface}"' stellt hierbei folgende Informationen zur Verfügung:
+  \begin{itemize}
+  \item Die einzubindenden Header-Dateien (\emph{cIFaceIncludes}).
+  \item Die Typen der benötigten Zustandsvariablen (\emph{cIFaceStateType}).
+  \item Die Typen der Eingabe-Variablen (\emph{cIFaceInputType}).
+  \item Eine Funktion um einen Aufruf zu generieren, der die Zustandsmaschine initialisiert (\emph{cIFaceStateInit}).
+    Die Funktion erhält die Namen der Zustandsvariablen als Parameter.
+  \item Eine weitere Funktion um einen Aufruf zu generieren, der einen Schritt in der Zustandsmaschine durchführt (\emph{cIFaceIterate}).
+    Als Parameter werden die Namen von Zustands- und Eingabevariablen übergeben.
+  \item Funktionen um einzelne Variablen aus den Zustands- bzw. Eingabe-Variablen zu extrahieren (\emph{cIFaceGetOutputVar} bzw. \emph{cIFaceGetInputVar}).
+  \item Eine Funktion um GTL-Typen nach C zu übersetzen (\emph{cIFaceTranslateType}).
+  \end{itemize}
+\item[Lokale Verifikation] Um die Korrektheit der Kontrakte für eine Komponente sicherzustellen kann die Funktion \emph{backendVerify} verwendet werden.
+  Gegeben eine LTL-Formel muss diese in der Lage sein zu entscheiden, ob das Modell den Kontrakt einhält oder nicht.
+  Dazu wird ein Wert vom Typ "`\emph{Maybe Bool}"' zurück gegeben.
+  Ist der Wert "`\emph{Nothing}"', so ist die Verifikation unentscheidbar, ansonsten gibt der \emph{Bool}-Wert an, ob die Verifikation erfolgreich war.
+\end{description}
