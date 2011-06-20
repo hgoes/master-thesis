@@ -90,3 +90,36 @@ Die Formel ist über ein Paar von Strings spezifiziert, da alle Variablennamen q
 \item Name des Modells der Eingabe-Variable.
 \item Name der Eingabe-Variable.
 \end{enumerate}
+
+Jedes Modell enthält dabei die folgenden Attribute:
+\begin{itemize}
+\item Der Kontrakt des Modells ist in dem Attribut \emph{gtlModelContract} abgelegt.
+\item Das Backend des Modells wird in dem Attribut \emph{gtlModelBackend} gespeichert.
+  Der Typ des Backends wird dabei aus dem in der Modell-Datei spezifizierten String hergeleitet.
+\item Ein- und Ausgabe-Variablen mit ihren entsprechenden Typen sind in den Attributen \emph{gtlModelInput} sowie \emph{gtlModelOutput} hinterlegt.
+\item Initialisierungswerte für Variablen sind in \emph{gtlModelDefaults} zu finden.
+\end{itemize}
+\section{Ausdrücke}
+\begin{figure}
+  \centering
+  \includegraphics[scale=.3]{impl-expression}
+  \caption{UML-Diagramm für Ausdrücke}
+  \label{fig:uml-expr}
+\end{figure}
+Ausdrücke werden in der GTL-Sprache für Kontrakte und Verifikationsziele verwendet.
+Ein Ausdruck wird durch eine Instanz des Datentyps "`\emph{Expr}"' repräsentiert, der über den Namenstypen der Variablen $v$ und den Typen des Ausdrucks $a$ parametrisiert ist.
+Abbildung \ref{fig:uml-expr} zeigt eine Übersicht über die involvierten Datentypen.
+Ein Ausdruck kann dabei eine der folgenden Formen annehmen:
+\begin{itemize}
+\item Es kann sich um eine einfache Variable handeln (\emph{ExprVar}).
+  Diese wird mit ihrem Namen initialisiert und kann einen beliebigen Typen haben.
+\item Konstanten können mit dem Konstruktor \emph{ExprConst} erstellt werden.
+  Die resultierenden Ausdrücke haben dann denselben Typen wie die Konstante selbst.
+\item Arithmetik-Operationen über zwei Int-Ausdrücken werden durch den \emph{ExprBinInt}-Konstruktor ermöglicht.
+\item Boolesche binäre Ausdrücke werden durch den \emph{ExprBinBool}-Konstruktor repräsentiert.
+\item Zwei numerische Ausdrücke lassen sich mit dem Konstruktor \emph{ExprRel} in eine Relation setzten.
+  Der resultierende Type ist dann \emph{Bool}.
+\item Die Aussage "`Variable $v$ ist (nicht) Element der Menge $x$"' lässt sich mit dem Konstruktor \emph{ExprElem} realisieren.
+\item Negation wird mithilfe des Konstruktors \emph{ExprNot} bereit gestellt.
+\item Die temporalen Operatoren "`always"' und "`next"' stehen durch die Konstruktoren \emph{ExprAlways} und \emph{ExprNext} bereit.
+\end{itemize}
