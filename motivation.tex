@@ -1,3 +1,7 @@
+Trotz vieler Fortschritte auf dem Gebiet der formalen Verifikation bleibt das Problem der Zustandsexplosion weiterhin der hauptsächliche Hinderungsgrund für die Verwendung von formalen Verifikationstechniken in der Industrie~\cite{state_explosion}.
+Gleichzeitig werden sicherheitskritische Systeme, von deren korrekter Funktion im schlimmsten Fall tausende Menschenleben abhängen immer komplexer und schwieriger zu durchschauen.
+Diese Arbeit beschäftigt sich mit einem Teilgebiet der formalen Verifikation, so genannten GALS-Systemen.
+
 Ein GALS\footnote{englisch für "`globally asynchronous, locally synchronous"', also "`Global asynchron, lokal synchron"'} System besteht aus vielen synchronen, also deterministisch und getakteten Komponenten.
 Diese können innerhalb des GALS-Systems nun asynchron miteinander kommunizieren, was bedeutet, dass der Nachrichtenaustausch zwischen einzelnen Komponenten verzögert sein kann und Komponenten mit verschiedenen Taktraten laufen können.
 Beispiele für GALS-Systeme sind:
