@@ -35,7 +35,7 @@ Das Verfahren wird im Modul "`\verb|Language.GTL.PromelaDynamicBDD|"' in Abschni
 \begin{figure}
   \centering
   \includegraphics[scale=0.3]{impl-backend}
-  \caption{UML Diagramm für Backend-Implementierung}
+  \caption{UML Diagramm der Backend-Implementierung}
   \label{fig:backend-uml}
 \end{figure}
 Die Backend-Implementierung stellt eine Möglichkeit zur Verfügung, synchrone Verifikationsformalismen in das GTL-Tool zu integrieren.
@@ -69,3 +69,24 @@ Mit dem initialisierten Backend-Modell können nun verschiedene Aktionen ausgef�
   Dazu wird ein Wert vom Typ "`\emph{Maybe Bool}"' zurück gegeben.
   Ist der Wert "`\emph{Nothing}"', so ist die Verifikation unentscheidbar, ansonsten gibt der \emph{Bool}-Wert an, ob die Verifikation erfolgreich war.
 \end{description}
+\section{Modell}
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.3]{impl-model}
+  \caption{UML-Diagramm der Modell-Implementierung}
+  \label{fig:model-impl}
+\end{figure}
+Im Modul "`\emph{Language.GTL.Model}"' (Siehe auch Abschnitt \ref{module:Language.GTL.Model}) wird das Datenmodell des GTL-Tools implementiert.
+Abbildung \ref{fig:model-impl} zeigt die verwendeten Datenstrukturen.
+
+Die Klasse "`\emph{GTLSpec}"' stellt eine vollständig geparste und auf Typfehler überprüfte GTL-Datei dar.
+Das Attribut \emph{gtlSpecModels} enthält eine Abbildung von Modellnamen auf Werte vom Typ "`\emph{GTLModel}"' und repräsentiert alle in der Spezifikation angegebenen Modelle.
+Die Verifikationsformel ist im Attribut \emph{gtlSpecVerify} angegeben.
+Die Formel ist über ein Paar von Strings spezifiziert, da alle Variablennamen qualifiziert sein müssen.
+Über das Attribut \emph{gtlSpecConnections} werden die Variablenverbindungen spezifiziert und als Viertupel repräsentiert, wobei die Komponenten des Tupels folgende Bedeutung besitzen:
+\begin{enumerate}
+\item Name des Modells der Ausgabe-Variable.
+\item Name der Ausgabe-Variable.
+\item Name des Modells der Eingabe-Variable.
+\item Name der Eingabe-Variable.
+\end{enumerate}
