@@ -1,6 +1,6 @@
 \subsection{Abstraktion durch dynamische BDD}
 Um die Probleme der statischen BDD-Übersetzung zu lösen, bietet es sich an, die Berechnung der BDDs erst während der Verifikation durchzuführen.
-Der Vorteil ist, dass man nun auch mehrere Variablen miteinander in Beziehung setzten kann und auch Modelle verifizieren kann, die Zyklen enthalten.
+Der Vorteil ist, dass man nun auch mehrere Variablen miteinander in Beziehung setzen kann und auch Modelle verifizieren kann, die Zyklen enthalten.
 Es kann allerdings passieren, dass bei der Verifikation mehrfach die gleiche BDD Operation ausgeführt wird; dies lässt sich aber durch den Einsatz eines Operationscaches vermeiden.
 
 Für die Implementierung der dynamischen BDDs wurde die C-Bibliothek \emph{CUDD}
@@ -15,5 +15,5 @@ Wie auch bei der Abstraktion durch statische BDD werden die LTL-Formeln, die die
 Jede atomare Aussage, die eine Ausgabevariable enthält wird nun in die Form $\alpha R e$ gebracht, wobei $\alpha$ eine Ausgabevariable, $R$ eine beliebige Relation und $e$ ein Ausdruck, der keine Ausgabevariablen enthält ist.
 Enthält die atomare Aussage keine Ausgabevariable, so wird eine Testfunktion generiert, die prüft, ob die BDD der Eingabevariablen die Relation erfüllen.
 Ansonsten wird eine Funktion generiert, die zunächst das BDD für den Ausdruck $e$ berechnet und dann einen BDD aller Werte berechnet, die die Relation erfüllen.
-Für die Relation $=$ ist dieser BDD einfach der BDD für $e$, während er für $!=$ das Komplement ist.
+Für die Relation $=$ ist dieser BDD einfach der BDD für $e$, während er für $\neq$ das Komplement ist.
 Ist die Relation beispielsweise $>$, so berechnet die Funktion das Minimum des BDDs für $e$ und erstellt ein BDD, dass alle Werte, die größer sind enthält.
