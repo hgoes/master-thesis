@@ -75,3 +75,35 @@ do :: o<u1 && o<u2;
 od
 \end{lstlisting}
 Da sich der gesamte Code-Block zur Ausgabe-Erzeugung innerhalb eines \emph{atomic}-Blocks befindet und der Ablauf an keiner Stelle blockieren kann, läuft der gesamte Code in einem Schritt ab.
+
+Zusätzlich zu den Semantiken $\llbracket\rrbracket_C$, $\llbracket\rrbracket_A$ und $\llbracket\rrbracket_D$ muss noch die Bijektion $i$ definiert werden.
+In dieser Übersetzung ist diese sehr einfach, da die Werte der Verbindungen direkt in Variablen gespeichert werden.
+Die Bijektion konstruiert also nur eine Zuordnung $\sigma_e$, die die Werte für jede Verbindung aus dem Zustands- und Eingabevektor extrahiert.
+Es gilt also:
+\[ i((v_0,\dots,v_n),(v_{n+1},\dots,v_m)) = \sigma_e \]
+mit
+\[ \sigma_e(i) = v_i \]
+Da nur genau so viele Variablen deklariert werden, wie auch Verbindungen existieren ist es leicht einzusehen, dass $i$ in der Tat bijektiv ist.
+
+Nun ist noch zu zeigen, dass $i$ die verlangten Eigenschaften aufweist.
+Für ein $i(s,\beta)=\sigma_e$ muss nachgewiesen werden, dass die Äquivalenz aus \ref{eq:assert1}
+\[ \mathit{exec}(\llbracket \mu(q')\rrbracket_C,\sigma_e)\Leftrightarrow (\forall q\in Q^a: \delta^a(q,(s|^a,\beta|^a)) = (q',o)) \]
+für alle Zustände $q'\in Q^a$ erfüllt ist.
+Da $\llbracket\mu(q')\rrbracket_C$ eine Promela-Anweisung generiert, die nur ausgeführt werden kann, wenn die Belegungen in $\sigma_e$ den Bedingungen aus $\mu(q')$ entsprechen, existiert auch nur in diesem Fall ein Übergang zu dem Zustand $q'$.
+Desweiteren muss noch die Kompatibilität der Bijektion $i$ mit der Semantik $\llbracket\rrbracket_A$ gezeigt werden.
+Hierzu muss die Korrektheit der Äquivalenz aus Gleichung \ref{eq:assert2} nachgewiesen werden.
+Seien hierfür wieder $s$, $\beta$ und $\sigma_e$ mit 
+\[ i(s,\beta) = \sigma_e \]
+gegeben.
+Existiert nun ein Übergang im Promela-Modell mit
+\[ \xymatrix{ \left<\sigma_e,L\right> \ar[rr]^-{\llbracket \mu(q')\rrbracket_A} & & \left<\sigma_e',L'\right> } \]
+so ergibt sich, dass hierbei genau die Variablen verändert werden, die in $\mu(q')$ vorkommen und Ausgabe-Variablen sind.
+Nach der Konstruktion durch die Einschränkungstupel ergibt sich außerdem, dass die nicht-deterministischen Zuweisungen alle innerhalb der durch das Modell definierten Wertebereiche liegen.
+
+Die Default-Werte für die Variablen werden mit der Semantik $\llbracket\rrbracket_D$ definiert.
+Diese weißt den angegebenen Verbindungen einfach den angegebenen Wert zu.
+Für die initiale Umgebung gilt dann:
+\[ \llbracket \alpha\rrbracket_D = \sigma_e \]
+wobei
+\[ \sigma_e(i) = \alpha(i) \]
+es ist leicht einzusehen, dass diese Definition die Forderung aus Gleichung \ref{eq:assert0} erfüllt.
