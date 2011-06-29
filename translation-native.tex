@@ -106,7 +106,8 @@ Existiert nun ein Übergang im Promela-Modell mit
 \[ \xymatrix{ \left<\sigma_e,L\right> \ar[rr]^-{\llbracket \mu(q')\rrbracket_A} & & \left<\sigma_e',L'\right> } \]
 so ergibt sich, dass hierbei genau die Variablen verändert werden, die in $\mu(q')$ vorkommen und Ausgabe-Variablen sind.
 Nach der Konstruktion durch die Einschränkungstupel (Definition von $\llbracket\rrbracket_A$) ergibt sich außerdem, dass die nicht-deterministischen Zuweisungen alle innerhalb der durch das für die Übersetzung gegebene GTL-Modell definierten Wertebereiche liegen.
-Die Existenz des entsprechenden Übergangs in dem Promela-Modell ist durch die Korrektheit der Übersetzung der Einschränkungstupel gesichert.
+
+Umgekehrt sichert die Korrektheit der Übersetzung der Einschränkungstupel, dass für jeden Zustandsübergang des abstrakten Modells das Promela-Modell den gewünschten Übergang durchführen kann.
 
 Die Default-Werte für die Variablen werden mit der Semantik $\llbracket\rrbracket_D$ definiert.
 Diese weist den angegebenen Verbindungen einfach den angegebenen Wert zu.
