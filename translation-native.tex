@@ -42,6 +42,11 @@ Enthalten mehrere Atome keine Ausgabevariable, so werden die resultierenden Ausd
 Eine Menge von Atomen $a$ wird also in ein Tupel $(p,e)$ aus einer Abbildung von Ausgabe-Variablen auf Einschränkungstupel $p$ und einem Promela-Ausdruck $e$ übersetzt.
 Die Übersetzung $\llbracket \rrbracket_C$ liefert also nur den Promela-Ausdruck $e$, der die Bedingungen auf den Eingabe-Variablen repräsentiert:
 \[ \llbracket a\rrbracket_C = e \]
+Beispielsweise wird die Bedingung $x\leq 10\land x\neq y$ in den folgenden Promela-Code übersetzt:
+\begin{lstlisting}[language=promela]
+  x <= 10 && x!=y
+\end{lstlisting}
+
 Die Übersetzung der Einschränkungstupel gemäß der Semantik $\llbracket\rrbracket_A$ ist etwas komplizierter, da nicht-deterministisch alle möglichen Belegungen für die Ausgabevariable generiert werden müssen.
 Dazu wird zunächst die Ausgabevariable $o$ auf die größte untere Schranke gesetzt, indem die Schranken miteinander verglichen werden.
 Existiert keine untere Schranke, so wird der kleinste Wert des Wertebereichs der Variable gewählt.
@@ -76,34 +81,37 @@ od
 \end{lstlisting}
 Da sich der gesamte Code-Block zur Ausgabe-Erzeugung innerhalb eines \emph{atomic}-Blocks befindet und der Ablauf an keiner Stelle blockieren kann, läuft der gesamte Code in einem Schritt ab.
 
-Zusätzlich zu den Semantiken $\llbracket\rrbracket_C$, $\llbracket\rrbracket_A$ und $\llbracket\rrbracket_D$ muss noch die Bijektion $i$ definiert werden.
+Zusätzlich zu den Semantiken $\llbracket\rrbracket_C$ und $\llbracket\rrbracket_A$ muss noch die Bijektion $i$ und $\llbracket\rrbracket_D$ definiert werden (vgl. Seite \pageref{sec:translation-correctness}).
 In dieser Übersetzung ist diese sehr einfach, da die Werte der Verbindungen direkt in Variablen gespeichert werden.
 Die Bijektion konstruiert also nur eine Zuordnung $\sigma_e$, die die Werte für jede Verbindung aus dem Zustands- und Eingabevektor extrahiert.
 Es gilt also:
 \[ i((v_0,\dots,v_n),(v_{n+1},\dots,v_m)) = \sigma_e \]
-mit
-\[ \sigma_e(i) = v_i \]
+wobei
+\[ \sigma_e(j) \overset{def}{=} v_j \]
 Da nur genau so viele Variablen deklariert werden, wie auch Verbindungen existieren ist es leicht einzusehen, dass $i$ in der Tat bijektiv ist.
 
-Nun ist noch zu zeigen, dass $i$ die verlangten Eigenschaften aufweist.
-Für ein $i(s,\beta)=\sigma_e$ muss nachgewiesen werden, dass die Äquivalenz aus \ref{eq:assert1}
+Nun ist noch zu zeigen, dass $i$ die verlangten Eigenschaften 2.-4. von Seite \pageref{sec:bijection_conditions} aufweist.
+Für ein $i(s,\beta)=\sigma_e$ muss nachgewiesen werden, dass die Äquivalenz aus (\ref{eq:assert1})
 \[ \mathit{exec}(\llbracket \mu(q')\rrbracket_C,\sigma_e)\Leftrightarrow (\forall q\in Q^a: \delta^a(q,(s|^a,\beta|^a)) = (q',o)) \]
 für alle Zustände $q'\in Q^a$ erfüllt ist.
 Da $\llbracket\mu(q')\rrbracket_C$ eine Promela-Anweisung generiert, die nur ausgeführt werden kann, wenn die Belegungen in $\sigma_e$ den Bedingungen aus $\mu(q')$ entsprechen, existiert auch nur in diesem Fall ein Übergang zu dem Zustand $q'$.
+Genauso kann die Anweisung $\llbracket\mu(q')\rrbracket_C$ nur dann ausführbar sein, wenn es einen entsprechenden Übergang gibt, da die Bedingungen aus dem Zustand $q'$ hierfür alle erfüllt sein müssen.
+
 Desweiteren muss noch die Kompatibilität der Bijektion $i$ mit der Semantik $\llbracket\rrbracket_A$ gezeigt werden.
-Hierzu muss die Korrektheit der Äquivalenz aus Gleichung \ref{eq:assert2} nachgewiesen werden.
+Hierzu muss die Korrektheit der Äquivalenz aus Gleichung (\ref{eq:assert2}) nachgewiesen werden.
 Seien hierfür wieder $s$, $\beta$ und $\sigma_e$ mit 
 \[ i(s,\beta) = \sigma_e \]
 gegeben.
 Existiert nun ein Übergang im Promela-Modell mit
 \[ \xymatrix{ \left<\sigma_e,L\right> \ar[rr]^-{\llbracket \mu(q')\rrbracket_A} & & \left<\sigma_e',L'\right> } \]
 so ergibt sich, dass hierbei genau die Variablen verändert werden, die in $\mu(q')$ vorkommen und Ausgabe-Variablen sind.
-Nach der Konstruktion durch die Einschränkungstupel ergibt sich außerdem, dass die nicht-deterministischen Zuweisungen alle innerhalb der durch das Modell definierten Wertebereiche liegen.
+Nach der Konstruktion durch die Einschränkungstupel (Definition von $\llbracket\rrbracket_A$) ergibt sich außerdem, dass die nicht-deterministischen Zuweisungen alle innerhalb der durch das für die Übersetzung gegebene GTL-Modell definierten Wertebereiche liegen.
+Die Existenz des entsprechenden Übergangs in dem Promela-Modell ist durch die Korrektheit der Übersetzung der Einschränkungstupel gesichert.
 
 Die Default-Werte für die Variablen werden mit der Semantik $\llbracket\rrbracket_D$ definiert.
-Diese weißt den angegebenen Verbindungen einfach den angegebenen Wert zu.
+Diese weist den angegebenen Verbindungen einfach den angegebenen Wert zu.
 Für die initiale Umgebung gilt dann:
-\[ \llbracket \alpha\rrbracket_D = \sigma_e \]
+\[ \llbracket \alpha\rrbracket_D \overset{def}{=} \sigma_e \]
 wobei
-\[ \sigma_e(i) = \alpha(i) \]
+\[ \sigma_e(j) = \alpha(j) \]
 es ist leicht einzusehen, dass diese Definition die Forderung aus Gleichung \ref{eq:assert0} erfüllt.
