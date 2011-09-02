@@ -75,7 +75,7 @@
 %{\relsize{3}{\textbf{\textsc{\docUntertitel}}}}}
 {\relsize{1}\makeatletter\@author\makeatother}\\
 {Matrikelnummer: \docId\\[2ex]
-\today}\\
+\@date}\\
 
 \vfill
 {
